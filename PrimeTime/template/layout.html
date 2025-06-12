@@ -1,96 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PrimeTime Toolkit</title>
-    <link rel="icon" href="static/img/primetime_icon.png" type="image/png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrimeTime Toolkit</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    /* === Project Colours === */
+    :root {
+      --primary-color: #8A3FFC;    /* Violet */
+      --accent-color: #D62857;     /* Red-pink for buttons */
+      --bg-color: #fef7f1;         /* Soft background */
+      --text-color: #212529;       /* Default Bootstrap dark */
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    .navbar {
+      background-color: var(--bg-color);
+    }
+
+    .navbar-brand img {
+      height: 60px;
+    }
+
+    .nav-link {
+      color: var(--text-color);
+      font-weight: 500;
+    }
+
+    .nav-link:hover,
+    .dropdown-item:hover {
+      color: var(--primary-color);
+    }
+
+    .dropdown-menu {
+      background-color: #fff;
+      border-color: var(--primary-color);
+    }
+
+    .dropdown-item {
+      color: var(--text-color);
+    }
+
+    .btn-signup {
+      background-color: var(--accent-color);
+      color: white;
+      font-weight: bold;
+      padding: 6px 18px;
+      border-radius: 12px;
+    }
+
+    .btn-signup:hover {
+      background-color: #b91c47;
+      color: white;
+    }
+
+    h1 {
+      color: var(--primary-color);
+    }
+  </style>
 </head>
 
-<body style="background-color: #f5f5f5;">
-    <!-- Header -->
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow-sm">
-            <div class="container">
-                <!-- LOGO -->
-                <a class="navbar-brand" href="index.html">
-                    <img src="static/img/primetime_logo.png" alt="PrimeTime Toolkit Logo" width="100" height="80">
-                </a>
+<body>
+  <!-- Nav Bar -->
+  <nav class="navbar navbar-expand-lg shadow-sm">
+    <div class="container">
+      <!-- Logo -->
+      <a class="navbar-brand" href="#">
+        <img src="static/img/primetime_logo.png" alt="PrimeTime Toolkit" />
+      </a>
 
-                <!-- Toggle -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-                    aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+      <!-- Toggle -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-                <!-- NAVBAR -->
-                <div class="collapse navbar-collapse justify-content-between" id="navbarContent">
-                    <ul class="navbar-nav w-100 d-flex justify-content-around">
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-primary" href="index.html">
-                                <i class="fa fa-home me-1"></i> <b>Home</b>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-primary" href="overview.html">
-                                <i class="fas fa-toolbox me-1"></i> <b>Toolkit Overview</b>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-primary" href="budget.html">
-                                <i class="fas fa-calculator me-1"></i> <b>Budget Planner</b>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-primary" href="super.html">
-                                <i class="fas fa-piggy-bank me-1"></i> <b>Super Calculator</b>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+      <!-- Navigation Links -->
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Budget Planner</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Superannuation</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Investment Tools</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Guides & Resources</a></li>
 
-    <!-- Content -->
-    <main class="container mt-4">
-        <!-- Replace this with your page-specific content -->
-        <p>Welcome to the PrimeTime Toolkit — your financial planning guide for the next chapter.</p>
-    </main>
+          <!-- Dropdown: Learning Hub -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Learning Hub</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Workshops</a></li>
+              <li><a class="dropdown-item" href="#">Webinars</a></li>
+            </ul>
+          </li>
 
-    <!-- Footer -->
-    <footer class="footer bg-light text-center text-muted mt-5 py-4">
-        <hr>
-        <div class="container">
-            <div class="row justify-content-center align-items-center">
-                <div class="col-md-4">
-                    <h6>Contact</h6>
-                    <p>Email: <a href="mailto:support@primetimetoolkit.com.au">support@primetimetoolkit.com.au</a></p>
-                    <p>Phone: 1300 000 111</p>
-                    <p>Address: 88 Retirement Ave, Brisbane, QLD</p>
-                </div>
-                <div class="col-md-4">
-                    <img src="static/img/primetime_logo.png" alt="PrimeTime Logo" width="100" height="80">
-                </div>
-                <div class="col-md-4">
-                    <h6>Follow Us</h6>
-                    <a href="https://www.facebook.com" target="_blank" class="me-2"><i class="fab fa-facebook fa-2x text-primary"></i></a>
-                    <a href="https://www.instagram.com" target="_blank" class="me-2"><i class="fab fa-instagram fa-2x text-danger"></i></a>
-                    <a href="https://www.linkedin.com" target="_blank"><i class="fab fa-linkedin fa-2x text-info"></i></a>
-                </div>
-            </div>
-        </div>
-        <hr>
-        <p class="text-muted">© PrimeTime Toolkit 2025. All rights reserved.</p>
-    </footer>
+          <!-- Dropdown: About -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">About</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Our Mission</a></li>
+              <li><a class="dropdown-item" href="#">Meet the Team</a></li>
+            </ul>
+          </li>
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+          <!-- Log In -->
+          <li class="nav-item"><a class="nav-link" href="#">Log In</a></li>
+
+          <!-- Sign Up Button -->
+          <li class="nav-item ms-2">
+            <a href="#" class="btn btn-signup">Sign Up</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container mt-5">
+    <h1>Welcome to PrimeTime Toolkit</h1>
+    <p>Your trusted guide to planning a confident, empowered retirement journey.</p>
+  </main>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
