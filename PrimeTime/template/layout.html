@@ -11,90 +11,16 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <style>
-    :root {
-      --primary-color: #8A3FFC;
-      --accent-color: #D62857;
-      --bg-color: #FDF6ED;
-      --text-color: #212529;
-      --jade: #10A8A0;
-      --green: #156064;
-      --blue: #89A6FB;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      font-family: 'Roboto', sans-serif;
-      color: var(--text-color);
-      text-align: left;
-    }
-
-    h1, h2, h3, h4, h5 {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
-    }
-
-    .accent-text {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-weight: 600;
-    }
-
-    .navbar {
-      background-color: var(--bg-color);
-    }
-
-    .navbar-brand img {
-      height: 60px;
-    }
-
-    .nav-link {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 500;
-      color: var(--text-color);
-    }
-
-    .nav-link:hover,
-    .dropdown-item:hover {
-      color: var(--green);
-    }
-
-    .dropdown-menu {
-      background-color: #ffffff;
-      border: 1px solid var(--jade);
-    }
-
-    .dropdown-item {
-      font-family: 'Roboto', sans-serif;
-    }
-
-    .btn-signup {
-      background-color: var(--accent-color);
-      color: white;
-      font-weight: bold;
-      padding: 6px 18px;
-      border-radius: 12px;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    .btn-signup:hover {
-      background-color: #b91c47;
-      color: white;
-    }
-
-    .gradient-section {
-      background: linear-gradient(to right, var(--blue), var(--jade), var(--green));
-      color: white;
-      padding: 2rem;
-    }
-  </style>
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
 </head>
 
 <body>
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg shadow-sm">
     <div class="container">
-      <a class="navbar-brand" href="#">
-        <img src="static/img/primetime_logo.png" alt="PrimeTime Toolkit">
+      <a class="navbar-brand" href="{{ url_for('views.home') }}">
+        <img src="{{ url_for('static', filename='img/primetime_logo.png') }}" alt="PrimeTime Toolkit" height="60">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
         aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,49 +29,34 @@
 
       <div class="collapse navbar-collapse justify-content-end" id="mainNav">
         <ul class="navbar-nav align-items-center">
-          <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('views.home') }}">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Budget Planner</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Superannuation</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Investment Tools</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Guides & Resources</a></li>
-
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Learning Hub</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Workshops</a></li>
-              <li><a class="dropdown-item" href="#">Webinars</a></li>
-            </ul>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">About</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Our Mission</a></li>
-              <li><a class="dropdown-item" href="#">Meet the Team</a></li>
-            </ul>
-          </li>
-
-          <li class="nav-item"><a class="nav-link" href="#">Log In</a></li>
-          <li class="nav-item ms-2"><a href="#" class="btn btn-signup">Sign Up</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a></li>
+          <li class="nav-item ms-2"><a href="{{ url_for('auth.register') }}" class="btn btn-primary-custom">Sign Up</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <main class="container mt-5">
-    <h1>Welcome to <span class="accent-text">PrimeTime Toolkit</span></h1>
-    <p>Your trusted guide to planning a confident, empowered retirement journey.</p>
+  <!-- Page Content -->
+  <main class="container my-5">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
   </main>
 
-  
-  <section class="gradient-section mt-5 text-center">
-    <h2 class="accent-text">Your Journey, Your Future</h2>
-    <p>Explore tools tailored for Australians aged 47–65 to help plan, budget, and retire smart.</p>
-  </section>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-<!-- Footer -->
+  <!-- Footer -->
   <footer class="py-4 mt-5">
     <div class="container">
       <div class="row">
@@ -156,7 +67,7 @@
         <div class="col-md-4 mb-3">
           <h5 class="fw-bold">Quick Links</h5>
           <ul class="list-unstyled">
-            <li><a href="#" class="text-decoration-none text-dark">Home</a></li>
+            <li><a href="{{ url_for('views.home') }}" class="text-decoration-none text-dark">Home</a></li>
             <li><a href="#" class="text-decoration-none text-dark">Budget Planner</a></li>
             <li><a href="#" class="text-decoration-none text-dark">Superannuation</a></li>
             <li><a href="#" class="text-decoration-none text-dark">Investment Tools</a></li>
@@ -178,7 +89,7 @@
     </div>
   </footer>
 
-
-
-
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
