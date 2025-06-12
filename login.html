@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | Prime Time Toolkit</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff7d9;
+    }
+
+    /* Navbar styles */
+    header {
+      background-color: #fff7d9;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: sans-serif;
+      flex-wrap: wrap;
+    }
+
+    header nav a {
+      text-decoration: none;
+      color: #001133;
+      margin-right: 20px;
+      font-weight: 500;
+    }
+
+    header nav button {
+      background-color: #d52d54;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* Center content */
+    .center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 130px);
+      padding: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 30px 25px;
+      width: 100%;
+      max-width: 360px;
+      border-radius: 16px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .card h2 {
+      font-size: 22px;
+      margin-bottom: 8px;
+      color: #b32b2b;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background-color: #d52d54;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    .social-btn {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .facebook {
+      background-color: #1877f2;
+      color: white;
+      border: none;
+    }
+
+    .google {
+      background-color: white;
+      color: #333;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 13px;
+      color: #999;
+      position: relative;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: #ccc;
+    }
+
+    .divider::before {
+      left: 0;
+    }
+
+    .divider::after {
+      right: 0;
+    }
+
+    .switch-link {
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .switch-link a {
+      color: #d52d54;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .show-password {
+      position: relative;
+    }
+
+    .show-password input {
+      padding-right: 40px;
+    }
+
+    .toggle-eye {
+      position: absolute;
+      top: 9px;
+      right: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <div style="display: flex; align-items: center;">
+      <img src="static/img/primetime-logo.png" alt="Prime Time Toolkit" style="height: 50px;" />
+    </div>
+    <nav style="display: flex; align-items: center; gap: 25px; font-size: 16px; color: #001133;">
+      <a href="#">Podcast</a>
+      <a href="#">Book</a>
+      <a href="#">Course</a>
+      <a href="#">Shop</a>
+      <a href="#">Resources</a>
+      <a href="#">Planning Tools </a>
+      <a href="#">Newsletters </a>
+      <a href="#">About us </a>
+      <a href="#">Log In</a>
+      <button>Sign Up</button>
+    </nav>
+  </header>
+
+  <!-- Page Content -->
+  <div class="center">
+
+    <!-- LOGIN CARD -->
+    <div class="card" id="login-card">
+      <h2>Hi, Welcome Back! 👋</h2>
+      <form>
+        <input type="email" placeholder="example@gmail.com" required>
+        <div class="show-password">
+          <input type="password" placeholder="Enter Your Password" id="login-password" required>
+          <span class="toggle-eye" onclick="togglePassword('login-password')">👁️</span>
+        </div>
+        <div class="form-options">
+          <label><input type="checkbox"> Remember Me</label>
+          <a href="#" style="color:#d52d54;">Forgot Password?</a>
+        </div>
+        <button type="submit">Login</button>
+      </form>
+
+      <div class="divider">Or With</div>
+      <button class="social-btn facebook">🔵 Login with Facebook</button>
+      <button class="social-btn google">🔴 Login with Google</button>
+
+      <div class="switch-link">
+        Don’t have an account? <a onclick="switchToSignup()">Sign Up</a>
+      </div>
+    </div>
+
+    <!-- SIGNUP CARD -->
+    <div class="card hidden" id="signup-card">
+      <h2>Create an account</h2>
+      <p>Connect with your friends today!</p>
+      <form>
+        <input type="text" placeholder="Enter Your Username" required>
+        <input type="email" placeholder="Enter Your Email" required>
+        <input type="tel" placeholder="Enter Your Phone Number" required>
+        <div class="show-password">
+          <input type="password" placeholder="Enter Your Password" id="signup-password" required>
+          <span class="toggle-eye" onclick="togglePassword('signup-password')">👁️</span>
+        </div>
+        <button type="submit">Sign Up</button>
+      </form>
+
+      <div class="divider">Or With</div>
+      <button class="social-btn facebook">🔵 Signup with Facebook</button>
+      <button class="social-btn google">🔴 Signup with Google</button>
+
+      <div class="switch-link">
+        Already have an account? <a onclick="switchToLogin()">Login</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchToSignup() {
+      document.getElementById("login-card").classList.add("hidden");
+      document.getElementById("signup-card").classList.remove("hidden");
+    }
+
+    function switchToLogin() {
+      document.getElementById("signup-card").classList.add("hidden");
+      document.getElementById("login-card").classList.remove("hidden");
+    }
+
+    function togglePassword(fieldId) {
+      const field = document.getElementById(fieldId);
+      field.type = field.type === "password" ? "text" : "password";
+    }
+  </script>
+
+</body>
+</html>
