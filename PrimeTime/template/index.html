@@ -3,145 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PrimeTime Toolkit - Home</title>
+  <title>PrimeTime Toolkit</title>
 
-  <!-- Fonts -->
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&family=Roboto:wght@300;400;500&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <style>
-    :root {
-      --primary-color: #8A3FFC;
-      --accent-color: #D62857;
-      --bg-color: #FDF6ED;
-      --text-color: #212529;
-      --jade: #10A8A0;
-      --green: #156064;
-      --blue: #89A6FB;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      font-family: 'Roboto', sans-serif;
-      color: var(--text-color);
-    }
-
-    h1, h2, h3 {
-      font-family: 'Poppins', sans-serif;
-    }
-
-    .accent-text {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-weight: 600;
-    }
-
-    .hero-section {
-      padding: 4rem 0;
-      text-align: center;
-    }
-
-    .hero-section h1 {
-      color: var(--primary-color);
-    }
-
-    .btn-primary-custom {
-      background-color: var(--accent-color);
-      color: white;
-      font-weight: bold;
-      padding: 10px 24px;
-      border-radius: 12px;
-      font-family: 'Poppins', sans-serif;
-      text-decoration: none;
-    }
-
-    .btn-primary-custom:hover {
-      background-color: #b91c47;
-    }
-
-    .feature-box {
-      background-color: white;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 2rem;
-      height: 100%;
-      box-shadow: 0 0 8px rgba(0,0,0,0.05);
-    }
-
-    .feature-box h3 {
-      color: var(--primary-color);
-      font-weight: 600;
-    }
-
-    .gradient-section {
-      background: linear-gradient(to right, var(--blue), var(--jade), var(--green));
-      color: white;
-      padding: 4rem 0;
-    }
-
-    footer {
-      background-color: var(--bg-color);
-    }
-  </style>
+  <!-- Global Style -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
 </head>
 
 <body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg shadow-sm" style="background-color: #FDF6ED;">
+  <!-- Nav Bar -->
+  <nav class="navbar navbar-expand-lg shadow-sm">
     <div class="container">
-      <a class="navbar-brand" href="#"><img src="static/img/primetime_logo.png" alt="PrimeTime Toolkit" height="60"></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <a class="navbar-brand" href="#">
+        <img src="{{ url_for('static', filename='img/primetime_logo.png') }}" alt="PrimeTime Toolkit">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
+
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav align-items-center">
           <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Budget Planner</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Superannuation</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Investment Tools</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Learning Hub</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Workshops</a></li>
+              <li><a class="dropdown-item" href="#">Webinars</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">About</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Our Mission</a></li>
+              <li><a class="dropdown-item" href="#">Meet the Team</a></li>
+            </ul>
+          </li>
           <li class="nav-item"><a class="nav-link" href="#">Log In</a></li>
-          <li class="nav-item ms-2"><a class="btn btn-primary-custom" href="#">Sign Up</a></li>
+          <li class="nav-item ms-2"><a href="#" class="btn btn-primary-custom">Sign Up</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero-section">
+  <!-- Static Header -->
+  <section class="hero-section text-center py-5">
     <div class="container">
       <h1>Welcome to <span class="accent-text">PrimeTime Toolkit</span></h1>
-      <p class="mt-3 mb-4">Helping Australians aged 47–65 plan smarter for retirement.</p>
-      <a href="#" class="btn-primary-custom">Get Started</a>
+      <p class="mt-3">Helping Australians aged 47–65 plan smarter for retirement.</p>
+      <a href="#" class="btn btn-primary-custom mt-3">Get Started</a>
     </div>
   </section>
 
-  <!-- Features Section -->
+  <!-- Static Content -->
   <section class="container my-5">
     <div class="row text-center g-4">
       <div class="col-md-4">
         <div class="feature-box">
           <h3>Budget Planner</h3>
-          <p>Track income, expenses, and plan savings goals with clarity and ease.</p>
+          <p>Track income, expenses, and savings goals in one place.</p>
         </div>
       </div>
       <div class="col-md-4">
         <div class="feature-box">
-          <h3>Super Calculator</h3>
-          <p>Estimate your retirement super balance and explore your future options.</p>
+          <h3>Superannuation Tools</h3>
+          <p>Estimate your retirement super balance and forecast growth.</p>
         </div>
       </div>
       <div class="col-md-4">
         <div class="feature-box">
           <h3>Learning Hub</h3>
-          <p>Workshops, webinars, and resources to grow your retirement knowledge.</p>
+          <p>Access workshops, webinars, and financial literacy resources.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Gradient CTA Section -->
   <section class="gradient-section text-center">
     <div class="container">
       <h2 class="accent-text mb-3">Take Control of Your Financial Future</h2>
@@ -154,17 +99,36 @@
   <footer class="py-4 mt-5">
     <div class="container">
       <div class="row">
-        <div class="col-md-6">
-          <p style="font-family: 'Roboto'; font-size: 0.9rem;">© 2025 <span class="accent-text">PrimeTime Toolkit</span>. All rights reserved.</p>
+        <div class="col-md-4 mb-3">
+          <h5 class="fw-bold">About PrimeTime Toolkit</h5>
+          <p>The PrimeTime Toolkit helps Australians aged 47–65 plan smarter for retirement with clarity and confidence.</p>
         </div>
-        <div class="col-md-6 text-md-end">
-          <a href="#" class="text-dark text-decoration-none me-3">Privacy</a>
-          <a href="#" class="text-dark text-decoration-none">Contact</a>
+        <div class="col-md-4 mb-3">
+          <h5 class="fw-bold">Quick Links</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-decoration-none text-dark">Home</a></li>
+            <li><a href="#" class="text-decoration-none text-dark">Budget Planner</a></li>
+            <li><a href="#" class="text-decoration-none text-dark">Superannuation</a></li>
+            <li><a href="#" class="text-decoration-none text-dark">Investment Tools</a></li>
+          </ul>
         </div>
+        <div class="col-md-4 mb-3">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>
+            Email: <a href="mailto:support@primetimetoolkit.com.au" class="text-dark">support@primetimetoolkit.com.au</a><br>
+            Phone: 1300 000 111<br>
+            Address: 88 Retirement Ave, Brisbane, QLD
+          </p>
+        </div>
+      </div>
+      <hr>
+      <div class="text-center" style="font-size: 0.85rem;">
+        © 2025 <span class="accent-text">PrimeTime Toolkit</span>. All rights reserved.
       </div>
     </div>
   </footer>
 
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
