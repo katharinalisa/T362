@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrimeTime Toolkit</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&family=Roboto:wght@300;400;500&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm">
+    <div class="container">
+      <a class="navbar-brand" href="{{ url_for('views.home') }}">
+        <img src="{{ url_for('static', filename='img/primetime_logo.png') }}" alt="PrimeTime Toolkit" height="60">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('views.home') }}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Budget Planner</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Superannuation</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Investment Tools</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a></li>
+          <li class="nav-item ms-2"><a href="{{ url_for('auth.register') }}" class="btn btn-primary-custom">Sign Up</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <main class="container my-5">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-4 mt-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <h5 class="fw-bold">About PrimeTime Toolkit</h5>
+          <p>The PrimeTime Toolkit helps Australians aged 47–65 plan smarter for retirement with clarity and confidence.</p>
+        </div>
+        <div class="col-md-4 mb-3">
+          <h5 class="fw-bold">Quick Links</h5>
+          <ul class="list-unstyled">
+            <li><a href="{{ url_for('views.home') }}" class="text-decoration-none text-dark">Home</a></li>
+            <li><a href="#" class="text-decoration-none text-dark">Budget Planner</a></li>
+            <li><a href="#" class="text-decoration-none text-dark">Superannuation</a></li>
+            <li><a href="#" class="text-decoration-none text-dark">Investment Tools</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4 mb-3">
+          <h5 class="fw-bold">Contact Us</h5>
+          <p>
+            Email: <a href="mailto:support@primetimetoolkit.com.au" class="text-dark">support@primetimetoolkit.com.au</a><br>
+            Phone: 1300 000 111<br>
+            Address: 88 Retirement Ave, Brisbane, QLD
+          </p>
+        </div>
+      </div>
+      <hr>
+      <div class="text-center" style="font-size: 0.85rem;">
+        © 2025 <span class="accent-text">PrimeTime Toolkit</span>. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
