@@ -9,3 +9,4 @@ def home():
 @views.route('/budget')
 def budget():
     return render_template('budget.html')
+
