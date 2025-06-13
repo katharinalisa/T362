@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container py-5">
+  <h1 class="text-center mb-3" style="color: #9E2A2B; font-family: 'Playfair Display', serif;">Helpful tools and resources for planning your epic retirement</h1>
+  <h5 class="text-center mb-4 text-secondary">The Epic Retirement Budgeting Template</h5>
+
+  <div class="text-center mb-4">
+    <img src="{{ url_for('static', filename='img/budget.png') }}" class="img-fluid" alt="Budget Template Image">
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <p class="lead text-center">Use this budgeting template to estimate your income, expenses, assets, liabilities and net worth. It’s designed to give you clarity and confidence as you plan your next chapter.</p>
+      <div class="text-center mt-4">
+        <a href="#" class="btn btn-primary btn-lg">Download Excel Template</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
