@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Login - PrimeTime Toolkit</title>
-  <Link href="https://cdn.jsdelivr.net/npm/bootstarp@5.3.2/dist/css/boostrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstarp@5.3.2/dist/css/boostrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css')}}">
   </head>
   <body>
@@ -12,8 +12,8 @@
         <div class="col-md-5">
           <h2 class="text-center mb-4">Log In</h2>
 
-          {% with messages = get_flashed_messges(with_categories=true) %}
-            (% if message %)
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            (if messages)
               {% for category, message in messages %}
                 <div class="alert alert-{{ category}} text-center">
                   {{ message }}
@@ -25,23 +25,23 @@
             <form method="POST" action="{{ url_for('auth.login')}}">
               <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" name"email" class="from-control" id="email" placeholder="Enter email" required >
+                <input type="email" name="email" class="form-control" id="email" placeholder="Enter email" required >
               </div>
               <div class="mb-3">
                 <label for="password" class="form-label">PAssword</label>
                 <input type="password" name="password" class="form-control" id="password" placeholder="Enter password" required>
               </div>
-              <button type="sumbit" class="btn btn-primary w-100">Login</button>
+              <button type="submit" class="btn btn-primary w-100">Login</button>
             </form>
 
             <div class="text-center mt-3">
-              <p>New user? <a href="{{ url_for(auth.register') }}">Create an account</a></p>
+              <p>New user? <a href="{{ url_for('auth.register') }}">Create an account</a></p>
             </div>
           </div>
         </div>
       </div>
 
-      <script scr="https://cdn.jsdelivr.net/npm/bootstarp@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     </body>
     </html>
 
