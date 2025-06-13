@@ -22,7 +22,7 @@ def register():
         email = request.form['email']
         password = request.form['password']
         # In a real app, you'd store the user securely
-        flash('Account created successfully! You can now log in.', 'success')
+        flash('Account created successfully!','success')
         return redirect(url_for('auth.login'))
     return render_template('register.html')
 
