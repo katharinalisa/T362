@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block title %}Create Account - PrimeTime{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-center" style="min-height:100vh;">
+  <div class="col-md-5 login-container">
+    <h2 class="text-center mb-4">Create Account</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} text-center">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('auth.register') }}">
+      <div class="mb-3">
+        <label for="name" class="form-label">Full Name</label>
+        <input type="text" name="name" class="form-control" id="name" placeholder="Your full name" required>
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email Address</label>
+        <input type="email" name="email" class="form-control" id="email" placeholder="Your email" required>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Create Password</label>
+        <input type="password" name="password" class="form-control" id="password" placeholder="Create password" required>
+      </div>
+      <button type="submit" class="btn btn-login w-100 mt-2">Sign Up</button>
+    </form>
+
+    <div class="text-center mt-3">
+      <p>Already have an account? <a href="{{ url_for('auth.login') }}">Log In</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}
