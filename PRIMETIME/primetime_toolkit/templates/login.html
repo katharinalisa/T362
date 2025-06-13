@@ -19,7 +19,7 @@
                   {{ message }}
                 </div>
                {% endfor %}
-              {% endfor%}
+              {% endif %}
             {% endwith %}
             
             <form method="POST" action="{{ url_for('auth.login')}}">
