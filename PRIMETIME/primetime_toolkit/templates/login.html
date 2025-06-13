@@ -5,9 +5,9 @@
   <title>Login - PrimeTime Toolkit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&family=Roboto:wght@300;400;500&family=Playfair+Display;ital,wght@1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&family=Roboto:wght@300;400;500&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/boostrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
     body {
@@ -15,29 +15,36 @@
       font-family: 'Roboto', sans-serif;
     }
 
-    h2{
-      font-fammily: 'Poppins', sans-serif;
-      font-weight:600;
-      color: #156064
+    h2 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      color: #156064;
     }
 
     .login-container {
       background-color: white;
       border-radius: 10px;
-      padding:40px 30px;
+      padding: 40px 30px;
       box-shadow: 0 0 15px rgba(0,0,0,0.05);
     }
 
     .form-label {
-      font-weight:500;
+      font-weight: 500;
       color: #333;
     }
 
-    .btn-login:hover {
-      bacground-color:#0e4a4d;
+    .btn-login {
+      background-color: #156064;
+      color: white;
+      font-weight: 500;
+      border: none;
     }
 
-    a{
+    .btn-login:hover {
+      background-color: #0e4a4d;
+    }
+
+    a {
       color: #89A6FB;
       text-decoration: none;
     }
@@ -49,43 +56,37 @@
 </head>
 <body>
   <div class="d-flex align-items-center justify-content-center" style="min-height:100vh;">
-    <div class="col-md-5 log-container">
+    <div class="col-md-5 login-container">
       <h2 class="text-center mb-4">Log In</h2>
 
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           {% for category, message in messages %}
-            <div class="alert alert-{{ category}} text-center">
-               {{ message }}
+            <div class="alert alert-{{ category }} text-center">
+              {{ message }}
             </div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
-            
-         <form method="POST" action="{{ url_for('auth.login')}}">
-          <div class="mb-3">
-             <label for="email" class="form-label">Email</label>
-            <input type="email" name="email" class="form-control" id="email" placeholder="Enter email" required >
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">PAssword</label>
-            <input type="password" name="password" class="form-control" id="password" placeholder="Enter password" required>
-          </div>
-          <button type="submit" class="btn btn-primary w-100">Login</button>
-        </form>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
 
-        <div class="text-center mt-3">
-          <p>New user? <a href="{{ url_for('auth.register') }}">Create an account</a></p>
+      <form method="POST" action="{{ url_for('auth.login') }}">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" name="email" class="form-control" id="email" placeholder="Enter email" required>
         </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" id="password" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="btn btn-login w-100 mt-2">Login</button>
+      </form>
+
+      <div class="text-center mt-3">
+        <p>New user? <a href="{{ url_for('auth.register') }}">Create an account</a></p>
       </div>
     </div>
-   </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-    
-
-
-
