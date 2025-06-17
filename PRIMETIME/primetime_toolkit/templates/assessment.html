@@ -1,0 +1,93 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<style>
+  table td, table th {
+    text-align: left;
+    padding: 8px;
+  }
+</style>
+
+<div class="container py-5">
+  <h1 class="text-center mb-3" style="color: #9E2A2B; font-family: 'Playfair Display', serif;">Financial Preparedness</h1>
+  <p class="lead text-center">Are you financially ready for the lifestyle you want?<br>Explore your income, superannuation, and savings strategy.</p>
+
+  <div style="max-width: 900px; margin: 0 auto; padding: 20px;">
+    <br>
+    <table style="width: 100%">
+      <tr>
+        <th>Questions</th>
+        <th></th>
+        <th>Answer with Yes or No</th>
+      </tr>
+      <tr>
+        <td>1. Have you estimated how much income you will need each year in retirement?</td>
+        <td></td>
+        <td>
+          <input type="radio" name="q1" value="Yes"> Yes
+          <input type="radio" name="q1" value="No"> No
+        </td>
+      </tr>
+      <tr>
+        <td>2. Do you know your current superannuation balance?</td>
+        <td></td>
+        <td>
+          <input type="radio" name="q2" value="Yes"> Yes
+          <input type="radio" name="q2" value="No"> No</td>
+      </tr>
+      <tr>
+        <td>3. Are you aware of how your superannuation grows?</td>
+        <td></td>
+        <td>
+          <input type="radio" name="q3" value="Yes"> Yes
+          <input type="radio" name="q3" value="No"> No
+        </td>
+      </tr>
+      <tr>
+        <td>4. Do you track your annual/monthly spending?</td>
+        <td></td>
+        <td>
+          <input type="radio" name="q4" value="Yes"> Yes
+          <input type="radio" name="q4" value="No"> No
+        </td>
+      </tr>
+      <tr>
+        <td>5. Have you paid off or are planning to pay outstanding debts or mortages?</td>
+        <td></td>
+        <td>
+          <input type="radio" name="q5" value="Yes"> Yes
+          <input type="radio" name="q5" value="No"> No
+        </td>
+      </tr>
+      <tr>
+        <td>6. Do you know your current net worth (assets minus liabilities?)</td>
+        <td></td>
+        <td>
+          <input type="radio" name="q6" value="Yes"> Yes
+          <input type="radio" name="q6" value="No"> No
+        </td>
+      </tr>
+      <tr>
+        <td>7. Have you considered how inflation or emergencies might affect your savings?</td>
+        <td></td>
+        <td>
+          <input type="radio" name="q7" value="Yes"> Yes
+          <input type="radio" name="q7" value="No"> No
+        </td>
+      </tr>
+    </table>
+      <br>
+      <br>
+      <br>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <p class="lead text-center">Once you have completed all the questions, click on the “Submit” button and you will be redirected to the summary page.</p>
+      <div class="text-center mt-4">
+        <a href="/summary-page" class="btn btn-primary btn-lg">Submit</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

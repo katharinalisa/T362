@@ -10,3 +10,12 @@ def home():
 def budget():
     return render_template('budget.html')
 
+
+@views.route('/self-assessment')
+def assessment():
+    return render_template('assessment.html')
+
+
+@views.route('/summary-page')
+def summary():
+    return render_template('summary-page.html')
