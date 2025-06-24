@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+  <h2 class="text-center mt-4 text-danger">Where are you in your</h2>
+  <h1 class="text-center mt-4 text-danger">RETAIREMENT JOURNEY.</h1>
+  <h3>Select a category to explore questions and tool to guide your planning.</h3>
+  <div class="category-section">
+    <a href="{{ url_for('views.financial') }}"><img src="{{ url_for('static', filename='img/image001.png') }}" alt="Icon 1"></a>
+    <a href="{{ url_for('views.careertransition') }}"><img src="{{ url_for('static', filename='img/image003.png') }}" alt="Icon 2"></a>
+    <a href="page3.html"><img src="{{ url_for('static', filename='img/image005.png') }}" alt="Icon 3"></a>
+    <a href="page4.html"><img src="{{ url_for('static', filename='img/image007.png') }}" alt="Icon 4"></a>
+    <a href="page5.html"><img src="{{ url_for('static', filename='img/image009.png') }}" alt="Icon 5"></a>
+    <a href="page6.html"><img src="{{ url_for('static', filename='img/image011.png') }}" alt="Icon 6"></a>
+    <a href="page7.html"><img src="{{ url_for('static', filename='img/image013.png') }}" alt="Icon 7"></a>
+  </div>
+{% endblock %}
+
+
