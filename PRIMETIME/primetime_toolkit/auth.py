@@ -7,7 +7,7 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        if email == 'test@example.com' and password == 'password':  # dummy logic
+        if email == 'test@example.com' and password == 'password':
             session['user'] = {'email': email, 'name': 'Test User'}
             flash('Logged in successfully!', 'success')
             return redirect(url_for('views.home'))
@@ -21,7 +21,7 @@ def register():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-        # In a real app, you'd store the user securely
+        # TO-DO: Find a way to store user more securely
         flash('Account created successfully!','success')
         return redirect(url_for('auth.login'))
     return render_template('register.html')
