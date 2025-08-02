@@ -1,0 +1,101 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container py-5">
+  <h1 class="text-center mb-4" style="color: #9E2A2B;">Net Worth Tracker</h1>
+  <form method="POST" action="{{ url_for('views.submit_tracker') }}">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label>Year:</label>
+        <input type="number" name="year" class="form-control" required>
+      </div>
+      <div class="col-md-6">
+        <label>Month:</label>
+        <select name="month" class="form-control" required>
+          {% for m in ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'] %}
+          <option value="{{ m }}">{{ m }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <!-- Assets -->
+    <h5>Assets</h5>
+    <table class="table table-bordered">
+      <thead><tr><th>Item</th><th>Value</th></tr></thead>
+      <tbody>
+        {% for i in range(10) %}
+        <tr>
+          <td><input name="asset_name" class="form-control" /></td>
+          <td><input name="asset_value" class="form-control asset-input" type="number" step="0.01" /></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Liabilities -->
+    <h5>Liabilities</h5>
+    <table class="table table-bordered">
+      <thead><tr><th>Item</th><th>Value</th></tr></thead>
+      <tbody>
+        {% for i in range(10) %}
+        <tr>
+          <td><input name="liability_name" class="form-control" /></td>
+          <td><input name="liability_value" class="form-control liability-input" type="number" step="0.01" /></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Totals and Notes -->
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label>Total Assets:</label>
+        <input type="text" id="totalAssets" class="form-control" readonly>
+        <input type="hidden" name="total_assets" id="hiddenTotalAssets">
+      </div>
+      <div class="col-md-4">
+        <label>Total Liabilities:</label>
+        <input type="text" id="totalLiabilities" class="form-control" readonly>
+        <input type="hidden" name="total_liabilities" id="hiddenTotalLiabilities">
+      </div>
+      <div class="col-md-4">
+        <label>Net Worth:</label>
+        <input type="text" id="netWorth" class="form-control" readonly>
+        <input type="hidden" name="net_worth" id="hiddenNetWorth">
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label>Notes:</label>
+      <textarea name="notes" class="form-control" rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Tracker</button>
+  </form>
+</div>
+
+<script>
+  function updateTotals() {
+    const assetInputs = document.querySelectorAll(".asset-input");
+    const liabilityInputs = document.querySelectorAll(".liability-input");
+    let assetTotal = 0;
+    let liabilityTotal = 0;
+
+    assetInputs.forEach(input => assetTotal += parseFloat(input.value) || 0);
+    liabilityInputs.forEach(input => liabilityTotal += parseFloat(input.value) || 0);
+
+    document.getElementById("totalAssets").value = assetTotal.toFixed(2);
+    document.getElementById("totalLiabilities").value = liabilityTotal.toFixed(2);
+    document.getElementById("netWorth").value = (assetTotal - liabilityTotal).toFixed(2);
+
+    // Hidden values for backend
+    document.getElementById("hiddenTotalAssets").value = assetTotal;
+    document.getElementById("hiddenTotalLiabilities").value = liabilityTotal;
+    document.getElementById("hiddenNetWorth").value = assetTotal - liabilityTotal;
+  }
+
+  document.querySelectorAll(".asset-input, .liability-input").forEach(input => {
+    input.addEventListener("input", updateTotals);
+  });
+</script>
+{% endblock %}
