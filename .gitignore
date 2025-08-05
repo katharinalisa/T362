@@ -1,4 +1,4 @@
-*.py
+
 venv/lib/python3.12/site-packages/werkzeug/datastructures/__pycache__/accept.cpython-312.pyc
 *.pyc
 *.png
