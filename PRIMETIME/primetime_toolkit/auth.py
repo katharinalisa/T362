@@ -21,6 +21,10 @@ def register():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
+<<<<<<< HEAD
+=======
+        # TO-DO: Find a way to store user more securely
+>>>>>>> f5299313a038d289890686694e2a9375109334ad
         flash('Account created successfully!','success')
         return redirect(url_for('auth.login'))
     return render_template('register.html')
