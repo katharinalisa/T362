@@ -17,22 +17,18 @@ def budget():
 def category():
     return render_template('category.html')
 
-<<<<<<< HEAD
-@views.route('/category/financial')
-def financial():
-    return render_template('/diagnostic/financial.html')
-=======
 @views.route('/self-assessment' , methods=['GET'])
 def assessment():
     return render_template('assessment.html')
->>>>>>> f5299313a038d289890686694e2a9375109334ad
 
 @views.route('/category/careertransition')
 def financial():
     return render_template('/diagnostic/careertransition.html')
 
-<<<<<<< HEAD
-=======
+@views.route('/tracker')
+def tracker():
+    return render_template('tracker.html')
+
 @views.route('/submit-assessment', methods=['POST'])
 def submit_assessment():
     # q1, q2... etc. are the responses (yes/no) of users
@@ -65,4 +61,3 @@ def submit_assessment():
 @views.route('/summary-page')
 def summary():
     return "Form submitted!"
->>>>>>> f5299313a038d289890686694e2a9375109334ad
