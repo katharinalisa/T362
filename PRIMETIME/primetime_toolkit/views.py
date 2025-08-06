@@ -49,3 +49,6 @@ def submit_assessment():
     #After user submits the form, he will be redirected to views.py
     return redirect(url_for('views.summary'))
 
+@views.route('/summary-page')
+def summary():
+    return "Form submitted!"
