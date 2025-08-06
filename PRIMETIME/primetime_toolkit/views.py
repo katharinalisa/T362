@@ -1,6 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from .models import Assessment
 from . import db
+import os
+import json
 
 views = Blueprint('views', __name__)
 
@@ -50,3 +52,29 @@ def submit_assessment():
 @views.route('/summary-page')
 def summary():
     return "Form submitted!"
+
+
+@views.route('/tracker')
+def tracker():
+    return render_template('diagnostic/tracker.html')
+
+@views.route('/submit-tracker', methods=["POST"])
+def submit_tracker():
+    data = {
+        "year": request.form.get("year"),
+        "month": request.form.get("month"),
+        "total_assets": request.form.get("total_assets"),
+        "total_liabilities": request.form.get("total_liabilities"),
+        "net_worth": request.form.get("net_worth"),
+        "notes": request.form.get("notes")
+    }
+
+    save_path = os.path.join("primetime_toolkit", "data")
+    os.makedirs(save_path, exist_ok=True)
+
+    filename = f"{data['month']}_{data['year']}.json"
+    with open(os.path.join(save_path, filename), "w") as f:
+        json.dump(data, f, indent=2)
+
+    flash("Net Worth Tracker saved successfully!", "success")
+    return redirect(url_for("views.tracker"))
