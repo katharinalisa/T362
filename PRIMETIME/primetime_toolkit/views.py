@@ -1,6 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from .models import Assessment
 from . import db
+import os
+import json
 
 views = Blueprint('views', __name__)
 
@@ -47,6 +49,3 @@ def submit_assessment():
     #After user submits the form, he will be redirected to views.py
     return redirect(url_for('views.summary'))
 
-@views.route('/summary-page')
-def summary():
-    return render_template('summary-page.html')
