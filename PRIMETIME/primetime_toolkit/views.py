@@ -21,13 +21,13 @@ def assessment():
 @views.route('/submit-assessment', methods=['POST'])
 def submit_assessment():
     # q1, q2... etc. are the responses (yes/no) of users
-    q1 = request.form.get('q1')
-    q2 = request.form.get('q2')
-    q3 = request.form.get('q3')
-    q4 = request.form.get('q4')
-    q5 = request.form.get('q5')
-    q6 = request.form.get('q6')
-    q7 = request.form.get('q7')
+    q1 = int(request.form.get('q1'))
+    q2 = int(request.form.get('q2'))
+    q3 = int(request.form.get('q3'))
+    q4 = int(request.form.get('q4'))
+    q5 = int(request.form.get('q5'))
+    q6 = int(request.form.get('q6'))
+    q7 = int(request.form.get('q7'))
 
     # This creates a new row in the Assessments table for a new user
     new_response = Assessment(
@@ -49,4 +49,4 @@ def submit_assessment():
 
 @views.route('/summary-page')
 def summary():
-    return "Form submitted!"
+    return render_template('summary-page.html')
