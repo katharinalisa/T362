@@ -17,7 +17,8 @@ def budget():
 def assessment():
     return render_template('assessment.html')
 
-
+#---------------------------
+# start of one block
 @views.route('/submit-assessment', methods=['POST'])
 def submit_assessment():
     q1 = int(request.form.get('q1'))
@@ -57,7 +58,9 @@ def submit_assessment():
     result = get_result_description(total_score)
 
     return render_template('summary-page.html', score=total_score, result=result)
-
+# end of block
+#------------------------
+#------- add more blocks here
 
 @views.route('/summary-page')
 def summary():
