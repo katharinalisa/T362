@@ -2,12 +2,32 @@
 
 {% block content %}
 <div class="container py-5">
-  <h1 class="text-center mb-3" style="color: #9E2A2B; font-family: 'Playfair Display', serif;">Your Retirement Readiness Summary</h1>
-  <p class="lead text-center">Here is an overview of your responses and what to focus on</p>
+  <h1 class="text-center mb-3" style="color: #9E2A2B; font-family: 'Playfair Display', serif;">Your Retirement Readiness Results</h1>
+  <p class="lead text-center">Total score:</p>
+  <h2 class="text-center">{{ score }}</h2>
+  <p class="text-center">Your financial preparedness is: {{ result }}</p>
+  <p class="text-center">Based on your responses, here are some insights:</p>
+  <ul class="list-group">
+    <li class="list-group-item">You have a good understanding of your financial situation.</li>
+    <li class="list-group-item">Consider reviewing your superannuation and savings strategies.</li>
+    <li class="list-group-item">It's important to keep track of your spending and income needs.</li>
+    <li class="list-group-item">Planning for retirement is a continuous process.</li>
+    <li class="list-group-item">Consider consulting a financial advisor for personalized advice.</li>
+  </ul>
+  <br>
 
-  <div class="text-center mb-4">
-    
-  </div>
+
+{% if score is not none %}
+    <p class="text-center">
+        {% if score == 7 %}
+            Excellent! You're fully prepared.
+        {% elif score >= 4 %}
+            You're on the right track — keep improving.
+        {% else %}
+            You might need to focus on building your financial readiness.
+        {% endif %}
+    </p>
+{% endif %}
 
   <div class="row justify-content-center">
     <div class="col-lg-10">

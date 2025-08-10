@@ -44,9 +44,25 @@ def submit_assessment():
     db.session.add(new_response)
     db.session.commit()
 
-    #After user submits the form, he will be redirected to views.py
-    return redirect(url_for('views.summary'))
+    # Calculate the total score
+    total_score = q1 + q2 + q3 + q4 + q5 + q6 + q7
+
+    def get_result_description(score):
+        # Determine the result based on the total score
+        if score >= 30:
+            return "Excellent"
+        elif score >= 20:
+            return "Good"
+        elif total_score >= 10:
+            return "Needs Improvement"
+        else:
+            return "Poor"
+
+    result = get_result_description(total_score)
+
+    return render_template('summary-page.html', score=total_score, result=result)
+
 
 @views.route('/summary-page')
 def summary():
-    return "Form submitted!"
+    return render_template('summary-page.html')
