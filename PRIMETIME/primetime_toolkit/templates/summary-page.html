@@ -5,35 +5,31 @@
   <h1 class="text-center mb-3" style="color: #9E2A2B; font-family: 'Playfair Display', serif;">Your Retirement Readiness Results</h1>
   <p class="lead text-center">Total score:</p>
   <h2 class="text-center">{{ score }}</h2>
-  <p class="text-center">Your financial preparedness is: {{ result }}</p>
-  <p class="text-center">Based on your responses, here are some insights:</p>
+  <p class="text-center">{{ result }}</p>
   <ul class="list-group">
     {% if score >= 30 %}
-        <li class="list-group-item">You have a good understanding of your financial situation.</li>
-        <li class="list-group-item">Planning for retirement is a continuous process.</li>
+        <p class="text-center">Great job! You have demonstrated a high level of awareness and action across your finances. Your behaviours are likely aligned with your long-term goals, and you’re in a strong position to take the next steps.</p>
     {% elif score >= 15 %}
-        <li class="list-group-item">Consider reviewing your superannuation and savings strategies.</li>
-        <li class="list-group-item">It's important to keep track of your spending and income needs.</li>
+        <p class="text-center">You’ve made a good start and show signs of strong habits in some areas. However, there is still room to grow in planning, consistency, or follow-through. Some aspects of your financial life may feel unbalanced.</p>
     {% else %}
-        <li class="list-group-item">You might need to focus on building your financial readiness.</li>
-        <li class="list-group-item">Consider consulting a financial advisor for personalized advice.</li>
+         <p class="text-center">You are likely at the start of your financial journey or have not yet established strong financial foundations. Your current financial behaviours may not align with your life goals, and you may lack clarity or structure around budgeting, saving, and investing.</p>
     {% endif %}
   </ul>
   <br>
 
 
-{% if score is not none %}
-    <p class="text-center">
-        {% if score >= 30 %}
-            Excellent! You're fully prepared.
-        {% elif score >= 15 %}
-            You're on the right track — keep improving.
-        {% else %}
-            You might need to focus on building your financial readiness.
-        {% endif %}
-    </p>
-{% endif %}
-
+  {% if score is not none %}
+      <p class="text-center">
+          {% if score >= 30 %}
+              Excellent! You're fully prepared.
+          {% elif score >= 15 %}
+              You're on the right track — keep improving.
+          {% else %}
+              You might need to focus on building your financial readiness.
+          {% endif %}
+      </p>
+  {% endif %}
+  <br>
   <div class="row justify-content-center">
     <div class="col-lg-10">
       <p class="lead text-center">Would you like to download your summary in form of a user-friendly document containing simple instructions on how to approach retirement?</p>
