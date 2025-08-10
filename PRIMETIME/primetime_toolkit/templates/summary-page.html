@@ -8,20 +8,25 @@
   <p class="text-center">Your financial preparedness is: {{ result }}</p>
   <p class="text-center">Based on your responses, here are some insights:</p>
   <ul class="list-group">
-    <li class="list-group-item">You have a good understanding of your financial situation.</li>
-    <li class="list-group-item">Consider reviewing your superannuation and savings strategies.</li>
-    <li class="list-group-item">It's important to keep track of your spending and income needs.</li>
-    <li class="list-group-item">Planning for retirement is a continuous process.</li>
-    <li class="list-group-item">Consider consulting a financial advisor for personalized advice.</li>
+    {% if score >= 30 %}
+        <li class="list-group-item">You have a good understanding of your financial situation.</li>
+        <li class="list-group-item">Planning for retirement is a continuous process.</li>
+    {% elif score >= 15 %}
+        <li class="list-group-item">Consider reviewing your superannuation and savings strategies.</li>
+        <li class="list-group-item">It's important to keep track of your spending and income needs.</li>
+    {% else %}
+        <li class="list-group-item">You might need to focus on building your financial readiness.</li>
+        <li class="list-group-item">Consider consulting a financial advisor for personalized advice.</li>
+    {% endif %}
   </ul>
   <br>
 
 
 {% if score is not none %}
     <p class="text-center">
-        {% if score == 7 %}
+        {% if score >= 30 %}
             Excellent! You're fully prepared.
-        {% elif score >= 4 %}
+        {% elif score >= 15 %}
             You're on the right track — keep improving.
         {% else %}
             You might need to focus on building your financial readiness.
