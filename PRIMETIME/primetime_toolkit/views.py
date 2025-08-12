@@ -14,6 +14,10 @@ def home():
 def budget():
     return render_template('budget.html')
 
+@views.route('/superannuation')
+def superannuation():
+    return render_template('superannuation.html')
+
 
 @views.route('/assessment' , methods=['GET'])
 def assessment():

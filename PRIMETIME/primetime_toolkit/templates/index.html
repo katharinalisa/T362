@@ -31,7 +31,7 @@
         <ul class="navbar-nav align-items-center">
           <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('views.budget') }}">Budget Planner</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Superannuation</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('views.superannuation') }}">Superannuation</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Investment Tools</a></li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Learning Hub</a>
@@ -76,10 +76,12 @@
          </a>
       </div>
       <div class="col-md-4">
-        <div class="feature-box">
-          <h3>Superannuation Tools</h3>
-          <p>Estimate your retirement super balance and forecast growth.</p>
-        </div>
+        <a href="{{ url_for('views.superannuation') }}" class="text-decoration-none text-dark">
+          <div class="feature-box">
+            <h3>Superannuation Tools</h3>
+            <p>Estimate your retirement super balance and forecast growth.</p>
+          </div>
+        </a>
       </div>
       <div class="col-md-4">
         <div class="feature-box">
