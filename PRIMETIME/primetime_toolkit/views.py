@@ -77,3 +77,5 @@ def submit_tracker():
 
     flash("Net Worth Tracker saved successfully!", "success")
     return redirect(url_for("views.tracker"))
+
+
