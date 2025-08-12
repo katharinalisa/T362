@@ -1,4 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from werkzeug.security import check_password_hash
+from . import db
+from .models import User
 
 auth = Blueprint('auth', __name__)
 
@@ -7,8 +10,11 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        if email == 'test@example.com' and password == 'password':
-            session['user'] = {'email': email, 'name': 'Test User'}
+
+        user = User.query.filter_by(email=email).first()
+
+        if user and check_password_hash(user.pword, password):
+            session['user'] = {'email': user.email, 'name': user.name}
             flash('Logged in successfully!', 'success')
             return redirect(url_for('views.home'))
         else:
@@ -21,7 +27,16 @@ def register():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-        # TO-DO: Find a way to store user more securely
+        
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            flash('Email already registered!', 'error')
+            return redirect(url_for('auth.register'))
+
+        new_user = User(name=name, email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+
         flash('Account created successfully!','success')
         return redirect(url_for('auth.login'))
     return render_template('register.html')
