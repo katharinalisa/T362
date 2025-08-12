@@ -20,7 +20,7 @@
   <nav class="navbar navbar-expand-lg shadow-sm">
     <div class="container">
       <a class="navbar-brand" href="#">
-        <img src="{{ url_for('static', filename='img/primetime_logo.png') }}" alt="PrimeTime Toolkit">
+        <img src="{{ url_for('static', filename='img/primetime_image.png') }}" alt="PrimeTime Toolkit" class="logo-img">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
         aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,14 +58,14 @@
   <!-- Static Header -->
   <section class="hero-section text-center py-5">
     <div class="container">
-      <h1>Welcome to <span class="accent-text">PrimeTime Toolkit</span></h1>
+      <h1>Welcome to the Prime Time Toolkit</h1>
       <p class="mt-3">Helping Australians aged 47–65 plan smarter for retirement.</p>
       <a href="#" class="btn btn-primary-custom mt-3">Get Started</a>
     </div>
   </section>
 
   <!-- Static Content -->
-  <section class="container my-5">
+  <section class="container my-3">
     <div class="row text-center g-4">
       <div class="col-md-4">
         <a href="{{ url_for('views.budget') }}" class="text-decoration-none text-dark">
@@ -79,7 +79,7 @@
         <a href="{{ url_for('views.superannuation') }}" class="text-decoration-none text-dark">
           <div class="feature-box">
             <h3>Superannuation Tools</h3>
-            <p>Estimate your retirement super balance and forecast growth.</p>
+            <p>Find out how to maximize your superannuation savings.</p>
           </div>
         </a>
       </div>
@@ -87,7 +87,7 @@
        <a href="{{ url_for('views.learninghub') }}" class="text-decoration-none text-dark">
         <div class="feature-box">
           <h3>Learning Hub</h3>
-          <p>Access workshops, webinars, and financial literacy resources.</p>
+          <p>Visit Bec Wilson's Podcasts and Webinars for expert insights.</p>
         </div>
        </a>
       </div>
@@ -95,14 +95,14 @@
         <a href="{{ url_for('views.assessment') }}" class="text-decoration-none text-dark">
           <div class="feature-box">
             <h3>Self-Assessment</h3>
-            <p>Start your journey with resources designed to grow your financial knowledge and confidence.</p>
+            <p>Evaluate your current financial situation and identify areas for improvement.</p>
           </div>
         </a>
       </div>
        <div class="col-md-4">
           <div class="feature-box">
             <h3>Retirement Drawdown</h3>
-            <p>Explore ways to turn your savings into steady income throughout retirement.</p>
+            <p>Explore how retirement drawdown affects your savings and future income.</p>
           </div>
       </div>
       <div class="col-md-4">
@@ -113,10 +113,11 @@
       </div>
     </div>
   </section>
-
+ <br>
+ <br>
   <section class="gradient-section text-center">
     <div class="container">
-      <h2 class="accent-text mb-3">Take Control of Your Financial Future</h2>
+      <h2 class="accent-text mb-2">Take Control of Your Financial Future</h2>
       <p>Join thousands of Australians taking the first step toward confident retirement planning.</p>
       <a href="#" class="btn btn-light mt-3 px-4 py-2 rounded-pill">Create Your Plan Now</a>
     </div>

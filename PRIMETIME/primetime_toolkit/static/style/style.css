@@ -72,6 +72,11 @@ h1, h2, h3, h4, h5 {
   font-family: 'Roboto', sans-serif;
 }
 
+.logo-img {
+    max-height: 30px !important;
+    width: auto; 
+}
+
 /* Sections */
 .hero-section {
   padding: 4rem 0;
