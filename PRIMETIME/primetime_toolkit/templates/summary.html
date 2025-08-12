@@ -7,17 +7,17 @@
     <div class="card-body text-center">
       <h4 class="card-title" style="color: #2B2D42;">Your Retirement Readiness Result</h4>
       <p class="card-text lead mt-3">{{ result_message }}</p>
-      {% if result_message == "You are classified as Proactive." %}
+      {% if result_message == "You are classified as Confident." %}
         <p class="mt-3 text-success">
-          You're managing your finances well and making thoughtful decisions about your future. You’ve shown strong awareness of your superannuation, spending habits, and emergency planning. Keep reviewing your goals regularly and continue building your financial confidence.
+          You have demonstrated a strong understanding of your financial situation and have taken proactive steps towards securing your retirement. Your awareness of superannuation, budgeting, and emergency planning is commendable. Continue to monitor your progress regularly, adjust your goals as needed, and consider exploring advanced strategies to optimize your retirement outcomes.
         </p>
-      {% elif result_message == "You are classified as Reactive." %}
+      {% elif result_message == "You are classified as Progressing." %}
         <p class="mt-3 text-warning">
-          You're taking steps in the right direction but may be reacting to situations rather than planning ahead. You might know some key financial details, but there are still gaps to fill. Consider setting clearer goals, creating a budget, and reviewing your superannuation strategy to take more control.
+          You are making positive strides in managing your finances, though there are areas that require further attention. You have some knowledge of key financial concepts but may benefit from setting clearer goals, establishing a detailed budget, and reviewing your superannuation options more thoroughly. Taking these steps will help you gain greater control and confidence in your retirement planning journey.
         </p>
-      {% elif result_message == "You are classified as Inactive." %}
+      {% elif result_message == "You are classified as Beginner." %}
         <p class="mt-3 text-danger">
-          It seems like you haven’t yet started actively planning your financial future. That’s okay — awareness is the first step. Begin by tracking your expenses, learning about your superannuation, and thinking about how much money you’ll need later in life. Even small actions now can make a big difference.
+          You are at the early stages of your retirement planning and may not have fully engaged with important financial aspects yet. This is a crucial time to start tracking your expenses, learn about your superannuation, and consider how much income you will need in retirement. Taking small but consistent actions now will build a solid foundation for your financial future.
         </p>
       {% endif %}
     </div>
