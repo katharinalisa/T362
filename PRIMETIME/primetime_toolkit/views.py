@@ -22,49 +22,36 @@ def assessment():
 
 @views.route('/submit-assessment', methods=['POST'])
 def submit_assessment():
-    total_score = 0
-    answered = 0
+    """Process 20 Likert questions (1–5 each), produce 0–100 total,
+    and classify as Beginner / Progressing / Confident."""
+    TOTAL_QUESTIONS = 20  # set to 7 if only 7 questions are on the page for now
 
-    for i in range(1, 21):  # or 7 if we’re only using 7 now
+    total_score = 0
+    for i in range(1, TOTAL_QUESTIONS + 1):
         answer = request.form.get(f'q{i}')
         if answer:
-            total_score += int(answer)
-            answered += 1
+            try:
+                total_score += int(answer)
+            except ValueError:
+                # ignore bad input
+                pass
 
-    if answered == 0:
-        result_message = "No responses were submitted."
+    # Map total_score (0–100) to bands
+    if total_score <= 39:
+        band = "Beginner"
+    elif total_score <= 69:
+        band = "Progressing"
     else:
-        average = total_score / answered
-        if average >= 4:
-            result_message = "You are classified as Proactive."
-        elif average >= 2.5:
-            result_message = "You are classified as Reactive."
-        else:
-            result_message = "You are classified as Inactive."
+        band = "Confident"
 
-    return render_template("summary.html", result_message=result_message)
+    result_message = f"You are classified as {band}."
 
-    # # This creates a new row in the Assessments table for a new user
-    # new_response = Assessment(
-    #     q1=q1,
-    #     q2=q2,
-    #     q3=q3,
-    #     q4=q4,
-    #     q5=q5,
-    #     q6=q6,
-    #     q7=q7
-    # )
-
-    # Adding new changes to database
-    # db.session.add(new_response)
-    # db.session.commit()
-
-    #After user submits the form, he will be redirected to views.py
-    return redirect(url_for('views.summary'))
-
-@views.route('/summary-page')
-def summary():
-    return "Form submitted!"
+    return render_template(
+        'summary.html',
+        result_message=result_message,
+        band=band,
+        total_score=total_score,
+    )
 
 @views.route('/tracker')
 def tracker():
