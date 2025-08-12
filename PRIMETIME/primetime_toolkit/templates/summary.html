@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="text-center" style="color: #9E2A2B;">Assessment Summary</h2>
+  <div class="card shadow-sm mx-auto mt-4" style="max-width: 600px;">
+    <div class="card-body text-center">
+      <h4 class="card-title" style="color: #2B2D42;">Your Retirement Readiness Result</h4>
+      <p class="card-text lead mt-3">{{ result_message }}</p>
+      {% if result_message == "You are classified as Proactive." %}
+        <p class="mt-3 text-success">
+          You're managing your finances well and making thoughtful decisions about your future. You’ve shown strong awareness of your superannuation, spending habits, and emergency planning. Keep reviewing your goals regularly and continue building your financial confidence.
+        </p>
+      {% elif result_message == "You are classified as Reactive." %}
+        <p class="mt-3 text-warning">
+          You're taking steps in the right direction but may be reacting to situations rather than planning ahead. You might know some key financial details, but there are still gaps to fill. Consider setting clearer goals, creating a budget, and reviewing your superannuation strategy to take more control.
+        </p>
+      {% elif result_message == "You are classified as Inactive." %}
+        <p class="mt-3 text-danger">
+          It seems like you haven’t yet started actively planning your financial future. That’s okay — awareness is the first step. Begin by tracking your expenses, learning about your superannuation, and thinking about how much money you’ll need later in life. Even small actions now can make a big difference.
+        </p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
