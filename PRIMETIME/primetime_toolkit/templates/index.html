@@ -34,7 +34,7 @@
           <li class="nav-item"><a class="nav-link" href="{{ url_for('views.superannuation') }}">Superannuation</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Investment Tools</a></li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Learning Hub</a>
+            <a class="nav-link dropdown-toggle" href="{{ url_for('views.learninghub') }}" role="button" data-bs-toggle="dropdown">Learning Hub</a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="#">Workshops</a></li>
               <li><a class="dropdown-item" href="#">Webinars</a></li>
@@ -84,10 +84,12 @@
         </a>
       </div>
       <div class="col-md-4">
+       <a href="{{ url_for('views.learninghub') }}" class="text-decoration-none text-dark">
         <div class="feature-box">
           <h3>Learning Hub</h3>
           <p>Access workshops, webinars, and financial literacy resources.</p>
         </div>
+       </a>
       </div>
       <div class="col-md-4">
         <a href="{{ url_for('views.assessment') }}" class="text-decoration-none text-dark">

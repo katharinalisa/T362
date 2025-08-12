@@ -18,6 +18,9 @@ def budget():
 def superannuation():
     return render_template('superannuation.html')
 
+@views.route('/learninghub')
+def learninghub():
+    return render_template('learninghub.html')
 
 @views.route('/assessment' , methods=['GET'])
 def assessment():
