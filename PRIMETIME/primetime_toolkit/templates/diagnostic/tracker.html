@@ -1,44 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
-<nav class="tracker-subnav">
-  <ul>
-    <li class="dropdown">
-      <a href="#">Assets ▾</a>
-      <ul class="dropdown-menu">
-        <li><a href="#assets-list">View Assets</a></li>
-        <li><a href="#add-asset">Add Asset</a></li>
-      </ul>
-    </li>
-    <li class="dropdown">
-      <a href="#">Liabilities ▾</a>
-      <ul class="dropdown-menu">
-        <li><a href="#liabilities-list">View Liabilities</a></li>
-        <li><a href="#add-liability">Add Liability</a></li>
-      </ul>
-    </li>
-    <li class="dropdown">
-      <a href="#">Income ▾</a>
-      <ul class="dropdown-menu">
-        <li><a href="#income-list">View Income</a></li>
-        <li><a href="#add-income">Add Income</a></li>
-      </ul>
-    </li>
-    <li class="dropdown">
-      <a href="#">Expenses ▾</a>
-      <ul class="dropdown-menu">
-        <li><a href="#expenses-list">View Expenses</a></li>
-        <li><a href="#add-expense">Add Expense</a></li>
-      </ul>
-    </li>
-    <li class="dropdown">
-      <a href="#">Subscriptions ▾</a>
-      <ul class="dropdown-menu">
-        <li><a href="#subscriptions-list">View Subscriptions</a></li>
-        <li><a href="#add-subscription">Add Subscription</a></li>
-      </ul>
-    </li>
-  </ul>
-</nav>
+{% include 'diagnostic/subnav.html' %}
 <div class="container py-5">
   <h1 class="text-center mb-4" style="color: #9E2A2B; font-family: 'Playfair Display', serif;">Net Worth Tracker</h1>
   <p class="text-center text-muted mb-4">(Total Assets - Total Liabilities)</p>
@@ -204,3 +166,4 @@
     input.addEventListener("input", updateTotals);
   });
 </script>
+
