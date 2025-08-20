@@ -95,3 +95,20 @@ def submit_tracker():
     return redirect(url_for("views.tracker"))
 
 
+
+
+@views.route('/expenses')
+def expenses():
+    return render_template('diagnostic/expenses.html')
+
+@views.route('/income')
+def income():
+    return render_template('diagnostic/income.html')
+
+@views.route('/assets')
+def assets():
+    return render_template('diagnostic/assets.html')
+
+@views.route('/liabilities')
+def liabilities():
+    return render_template('diagnostic/liabilities.html')
