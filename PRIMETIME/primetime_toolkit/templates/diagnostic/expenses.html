@@ -1,0 +1,121 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% include 'diagnostic/subnav.html' %}
+
+
+<div class="container py-4">
+  <div class="mb-3">
+    <h1 class="text-center mb-4" style="color:#9E2A2B; font-family:'Playfair Display', serif;">Expenses Tracker</h1>
+  </div>
+    <div class="d-flex gap-2">
+      <button id="addRowBtn" class="btn btn-success">Add Row </button>
+      <button id="clearAllBtn" class="btn btn-outline-danger">Clear All</button>
+    </div>
+  </div>
+
+  <p class="small-note mb-3">
+    Itemise your spending across each category. Enter the <strong>Amount per period</strong> and select a <strong>Frequency</strong>.
+    <em>Annual</em> and <em>Weekly</em> totals calculate automatically.
+  </p>
+
+  <!-- Suggestions for Category -->
+  <datalist id="categoryOptions">
+    <option>Housing</option>
+    <option>Utilities</option>
+    <option>Fresh food</option>
+    <option>Internet &amp; phones</option>
+    <option>Household goods &amp; services</option>
+    <option>Clothing &amp; footwear</option>
+    <option>Transport</option>
+    <option>Personal health</option>
+    <option>Entertainment &amp; Leisure</option>
+    <option>Other insurances</option>
+    <option>Work related</option>
+    <option>Family &amp; friends</option>
+  </datalist>
+
+  <div class="table-responsive shadow-sm rounded">
+    <table id="expenseTable" class="table table-bordered mb-0 align-middle">
+      <thead>
+        <tr class="table-light">
+          <th style="width:36px;"></th>
+          <th class="category-cell">Category</th>
+          <th class="item-cell">Item</th>
+          <th style="width:160px;">Amount per period ($)</th>
+          <th class="freq-cell">Frequency</th>
+          <th style="width:160px;">Annual amount ($)</th>
+          <th style="width:160px;">Weekly amount ($)</th>
+          <th class="type-cell">Type</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row g-3 mt-4">
+    <div class="col-lg-6">
+      <div class="totals-box">
+        <div class="row">
+          <div class="col-7 fw-semibold">Total Essential</div>
+          <div class="col-5 text-end" id="totalEssential">$0</div>
+        </div>
+        <div class="row">
+          <div class="col-7 fw-semibold">Total Discretionary</div>
+          <div class="col-5 text-end" id="totalDiscretionary">$0</div>
+        </div>
+        <div class="row">
+          <div class="col-7 fw-semibold">Total One-off</div>
+          <div class="col-5 text-end" id="totalOneOff">$0</div>
+        </div>
+        <hr class="my-2" />
+        <div class="row">
+          <div class="col-7 fw-bold">Total Annual Expenses</div>
+          <div class="col-5 text-end fw-bold" id="totalAnnual">$0</div>
+        </div>
+      </div>
+      <div class="small-note mt-2">
+        Note: “One-off” total sums items whose <em>frequency</em> is One-off.
+      </div>
+    </div>
+  </div>
+</div>
+
+<template id="rowTemplate">
+  <tr>
+    <td class="text-center">
+      <button class="btn btn-outline-secondary btn-icon remove-row" title="Remove row" aria-label="Remove row">&times;</button>
+    </td>
+    <td>
+      <input class="form-control form-control-sm" list="categoryOptions" placeholder="e.g., Housing" />
+    </td>
+    <td>
+      <input class="form-control form-control-sm" placeholder="e.g., Building & contents insurance" />
+    </td>
+    <td>
+      <input type="number" min="0" step="0.01" class="form-control form-control-sm amount currency" placeholder="0.00" />
+    </td>
+    <td>
+      <select class="form-select form-select-sm frequency">
+        <option value="" disabled selected>Choose…</option>
+        <option>Weekly</option>
+        <option>Fortnightly</option>
+        <option>Monthly</option>
+        <option>Quarterly</option>
+        <option>Annually</option>
+        <option>One-off</option>
+      </select>
+    </td>
+    <td class="currency annual">$0</td>
+    <td class="currency weekly">$0</td>
+    <td>
+      <select class="form-select form-select-sm type">
+        <option>Essential</option>
+        <option>Discretionary</option>
+      </select>
+    </td>
+  </tr>
+</template>
+
+<script src="{{ url_for('static', filename='js/expenses.js') }}"></script>
+{% endblock %}
