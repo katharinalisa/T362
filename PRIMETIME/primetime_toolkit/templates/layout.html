@@ -16,7 +16,7 @@
 </head>
 
 <body>
-  Navbar
+  <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg shadow-sm">
     <div class="container">
       <a class="navbar-brand" href="{{ url_for('views.home') }}">
@@ -30,9 +30,16 @@
       <div class="collapse navbar-collapse justify-content-end" id="mainNav">
         <ul class="navbar-nav align-items-center">
           <li class="nav-item"><a class="nav-link" href="{{ url_for('views.home') }}">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Budget Planner</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Superannuation</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Investment Tools</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Money Management Tools</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('views.assessment') }}">Self-Assessment</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('views.budget') }}">Budget Planner</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('views.superannuation') }}">Superannuation</a></li>
+              <li><a class="dropdown-item" href="#">Investment Tools</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('views.learninghub') }}">Learning Hub</a></li>
 
           {% if session.get('user') %}
             <li class="nav-item">
@@ -112,6 +119,6 @@
   </footer>
 
   <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
