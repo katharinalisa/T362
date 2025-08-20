@@ -1,0 +1,104 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% include 'diagnostic/subnav.html' %}
+
+<div class="container py-4">
+  <!-- Header -->
+  <div class="mb-3">
+    <h1 class="text-center mb-0" style="color:#9E2A2B; font-family:'Playfair Display', serif;">Liability Tracker</h1>
+  </div>
+
+  <!-- Controls row (right-aligned like assets.html) -->
+  <div class="d-flex justify-content-front gap-2 mb-3">
+    <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
+    <button id="clearAllBtn" class="btn btn-outline-danger" type="button">Clear All</button>
+  </div>
+
+  <!-- Helper note -->
+  <p class="small-note mb-3">
+    List your liabilities and outstanding balances. Enter the <strong>Balance</strong> and choose a <strong>Type</strong>. You can also enter a <em>Monthly Payment</em> if relevant.
+  </p>
+
+  <!-- Datalist for quick category entry (mirrors assets pattern) -->
+  <datalist id="liabilityCategories">
+    <option value="Mortgage" />
+    <option value="Credit Card" />
+    <option value="Personal Loan" />
+    <option value="Car Loan" />
+    <option value="Student Loan" />
+    <option value="Tax Payable" />
+    <option value="Buy Now Pay Later" />
+    <option value="Other" />
+  </datalist>
+
+  <!-- Table -->
+  <div class="table-responsive shadow-sm rounded">
+    <table class="table table-bordered mb-0 align-middle" id="liabilityTable">
+      <thead>
+        <tr class="table-light">
+          <th style="width:36px;"></th>
+          <th class="category-cell">Category</th>
+          <th class="item-cell">Liability Name</th>
+          <th style="width:160px;">Balance ($)</th>
+          <th class="type-cell">Type</th>
+          <th style="width:180px;">Monthly Payment ($)</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic rows injected by liabilities.js -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Totals box -->
+  <div class="row g-3 mt-3">
+    <div class="col-lg-6">
+      <div class="totals-box p-3 border rounded bg-light">
+        <div class="row">
+          <div class="col-7 fw-bold">Total Liabilities</div>
+          <div class="col-5 text-end fw-bold" id="totalLiabilities">$0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row template (same pattern as assets) -->
+  <template id="liabilityRowTemplate">
+    <tr class="liability-row">
+      <td class="text-center">
+        <button class="btn btn-outline-danger btn-sm remove-row" type="button" aria-label="Remove row">&times;</button>
+      </td>
+      <td>
+        <input class="form-control form-control-sm category" list="liabilityCategories" placeholder="e.g., Credit Card" />
+      </td>
+      <td>
+        <input class="form-control form-control-sm item" placeholder="e.g., Visa Platinum" />
+      </td>
+      <td>
+        <input type="number" min="0" step="0.01" class="form-control form-control-sm amount currency" placeholder="0.00" />
+      </td>
+      <td>
+        <select class="form-select form-select-sm type">
+          <option>Mortgage</option>
+          <option>Credit Card</option>
+          <option>Personal Loan</option>
+          <option>Car Loan</option>
+          <option>Student Loan</option>
+          <option>Tax Payable</option>
+          <option>Other</option>
+        </select>
+      </td>
+      <td>
+        <input type="number" min="0" step="0.01" class="form-control form-control-sm monthly currency" placeholder="0.00" />
+      </td>
+      <td>
+        <input class="form-control form-control-sm notes" placeholder="Notes" />
+      </td>
+    </tr>
+  </template>
+</div>
+
+<script src="{{ url_for('static', filename='js/liabilities.js') }}"></script>
+
+{% endblock %}
