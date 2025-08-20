@@ -31,19 +31,12 @@
         <ul class="navbar-nav align-items-center">
           <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
           <li class="nav-item dropdown">
-<<<<<<< HEAD
             <a class="nav-link dropdown-toggle" href="{{ url_for('views.learninghub') }}" role="button" data-bs-toggle="dropdown">Money Management Tools</a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{{ url_for('views.assessment') }}">Self-Assessment</a></li>
               <li><a class="dropdown-item" href="{{ url_for('views.budget') }}">Budget Planner</a></li>
               <li><a class="dropdown-item" href="{{ url_for('views.superannuation') }}">Superannuation</a></li>
               <li><a class="dropdown-item" href="#">Investment Tools</a></li>
-=======
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Learning Hub</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{{ url_for('views.workshops') }}">Workshops</a></li>
-              <li><a class="dropdown-item" href="{{ url_for('views.webinars') }}">Webinars</a></li>
->>>>>>> f378828f125b805a6b93a2a7fdf5219e18a457ac
             </ul>
           </li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('views.learninghub') }}">Learning Hub</a></li>
@@ -129,7 +122,7 @@
         </a>
       </div>
       <div class="col-md-4">
-       <a href="{{ url_for('views.workshops') }}" class="text-decoration-none text-dark">
+       <a href="{{ url_for('views.learninghub') }}" class="text-decoration-none text-dark">
         <div class="feature-box">
           <h3>Learning Hub</h3>
           <p>Learn about the Prime Time by visiting Bec Wilson's Podcasts and Webinars.</p>
