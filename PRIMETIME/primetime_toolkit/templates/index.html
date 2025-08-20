@@ -36,8 +36,8 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="{{ url_for('views.learninghub') }}" role="button" data-bs-toggle="dropdown">Learning Hub</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Workshops</a></li>
-              <li><a class="dropdown-item" href="#">Webinars</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('views.workshops') }}">Workshops</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('views.webinars') }}">Webinars</a></li>
             </ul>
           </li>
           <li class="nav-item dropdown">
