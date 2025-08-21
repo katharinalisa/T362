@@ -167,16 +167,6 @@ input:checked + .slider:before {
   transform: translateX(24px);
 }
 
-/* === Subnav === */
-.subnav .nav-link {
-  padding: .45rem 0;
-  font-size: 1rem;
-}
-.subnav .dropdown-menu {
-  font-size: .95rem;
-  border-radius: .5rem;
-}
-
 /* === Slideshow === */
 .slideshow-container {
   max-width: 1000px;
@@ -228,61 +218,6 @@ input:checked + .slider:before {
 .fade { animation: fade 1.5s; }
 @keyframes fade { from {opacity: .4} to {opacity: 1} }
 
-/* === Tracker Subnav === */
-.tracker-subnav {
-  position: sticky;     
-  top: 0;
-  z-index: 1020;
-  background: #fff;
-  border-bottom: 1px solid #e6e6e6;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-}
-
-.tracker-subnav > ul {
-  margin: 0;
-  padding: 0 16px;
-  list-style: none;
-  display: flex;
-  justify-content: space-around;   
-  align-items: center;
-  width: 100%;                    
-}
-
-.tracker-subnav .nav-item { margin: 0; }
-
-.tracker-subnav .nav-link {
-  display: inline-flex;
-  align-items: center;
-  padding: 8px 12px;
-  border-radius: 10px;
-  text-decoration: none;
-  color: var(--text-color);
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  white-space: nowrap;
-  transition: background .16s ease, color .16s ease, box-shadow .16s ease;
-}
-
-.tracker-subnav .nav-link:hover,
-.tracker-subnav .nav-link:focus {
-  background: #f3f6f8;
-  color: var(--green);
-  box-shadow: inset 0 1px 0 rgba(0,0,0,0.02);
-  outline: none;
-}
-
-.tracker-subnav .nav-link.active,
-.tracker-subnav .nav-link[aria-current="page"] {
-  color: var(--green);
-  background: #eef7f5;
-  box-shadow: inset 0 0 0 1px #cde8e1;
-}
-
-@media (max-width: 768px) {
-  .tracker-subnav > ul { gap: 10px; padding: 10px 12px; }
-}
-
-
 /* === Tables & Totals === */
 .table thead th {
   position: sticky;
@@ -308,3 +243,142 @@ input:checked + .slider:before {
 .item-cell     { min-width:260px; }
 .freq-cell     { min-width:140px; }
 .type-cell     { min-width:140px; }
+
+
+
+
+/* budget summary pages*/
+.tabbar {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.tablink {
+  flex: 1;
+  max-width: 200px;
+  background-color: #555;
+  color: #fff;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(300px, 1fr)); 
+  gap: 24px;   /* space between cards */
+  margin: 20px 0;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08); /* subtle shadow */
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #9E2A2B; /* keep headings styled */
+}
+
+
+/* KPI header */
+.kpis{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(220px,1fr));
+  gap:18px;
+  margin:12px 0 22px;
+}
+.kpi{
+  background:#fff;
+  border:1px solid #e7e2dd;
+  border-radius:14px;
+  padding:14px 16px;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.kpi-label{
+  font-size:12px;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  opacity:.7;
+  margin-bottom:4px;
+}
+.kpi-value{
+  font-size:32px;
+  font-weight:800;
+  line-height:1.1;
+  margin:2px 0 6px;
+}
+.kpi-sub{
+  font-size:12px;
+  opacity:.7;
+}
+.kpi-value.placeholder{
+  opacity:.5;              /* nicer “—” look when empty */
+}
+
+/* mobile */
+@media (max-width: 900px){
+  .kpis{ grid-template-columns:1fr; }
+}
+.goto {
+  display: inline-block;
+  background: #198754;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.goto:hover {
+  opacity: 0.9;
+}
+
+
+
+/* Tab for budget */
+.tab {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tablinks {
+  padding: 12px 18px;
+  background: #555;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.tablinks:hover { background: #777; }
+
+.tabcontent {
+  display: none;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #f9f9f9;
+}
+
+.tabcontent:target {
+  display: block;
+}
+
+#Summary:target,
+body:not(:target) #Summary {
+  display: block;
+}
