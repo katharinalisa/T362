@@ -244,35 +244,11 @@ input:checked + .slider:before {
 .freq-cell     { min-width:140px; }
 .type-cell     { min-width:140px; }
 
-
-
-
-/* budget summary pages*/
-.tabbar {
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-.tablink {
-  flex: 1;
-  max-width: 200px;
-  background-color: #555;
-  color: #fff;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  font-size: 16px;
-  text-align: center;
-}
-
+/* === Budget Summary Grid === */
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(300px, 1fr)); 
-  gap: 24px;   /* space between cards */
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
   margin: 20px 0;
 }
 
@@ -281,52 +257,47 @@ input:checked + .slider:before {
   border: 1px solid #e5e5e5;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08); /* subtle shadow */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
-
 .card h3 {
   margin-top: 0;
   margin-bottom: 10px;
-  color: #9E2A2B; /* keep headings styled */
+  color: #9E2A2B;
 }
 
-
 /* KPI header */
-.kpis{
+.kpis {
   display:grid;
   grid-template-columns:repeat(3, minmax(220px,1fr));
   gap:18px;
   margin:12px 0 22px;
 }
-.kpi{
+.kpi {
   background:#fff;
   border:1px solid #e7e2dd;
   border-radius:14px;
   padding:14px 16px;
   box-shadow:0 1px 4px rgba(0,0,0,.05);
 }
-.kpi-label{
+.kpi-label {
   font-size:12px;
   letter-spacing:.04em;
   text-transform:uppercase;
   opacity:.7;
   margin-bottom:4px;
 }
-.kpi-value{
+.kpi-value {
   font-size:32px;
   font-weight:800;
   line-height:1.1;
   margin:2px 0 6px;
 }
-.kpi-sub{
+.kpi-sub {
   font-size:12px;
   opacity:.7;
 }
-.kpi-value.placeholder{
-  opacity:.5;              /* nicer “—” look when empty */
-}
+.kpi-value.placeholder { opacity:.5; }
 
-/* mobile */
 @media (max-width: 900px){
   .kpis{ grid-template-columns:1fr; }
 }
@@ -341,31 +312,63 @@ input:checked + .slider:before {
   font-weight: 600;
   cursor: pointer;
 }
-.goto:hover {
-  opacity: 0.9;
-}
+.goto:hover { opacity: 0.9; }
 
-
-
-/* Tab for budget */
+/* === Tab Navigation (Improved) === */
 .tab {
   display: flex;
+  flex-wrap: wrap;                 /* allow wrapping */
   justify-content: center;
-  gap: 8px;
+  column-gap: 8px;
+  row-gap: 10px;
   margin-bottom: 16px;
+  padding: 4px 0;
 }
 
 .tablinks {
-  padding: 12px 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  padding: 10px 12px;
+  min-height: 44px;
+  line-height: 1.2;
+  font-weight: 600;
+  font-size: clamp(12px, 1.2vw, 14px);
+
+  max-width: clamp(120px, 15vw, 180px);
+  flex: 0 1 auto;
+
   background: #555;
   color: #fff;
   text-decoration: none;
-  border-radius: 6px;
-  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  transition: background .2s ease, transform .06s ease;
+  white-space: normal; /* allow 2 lines */
 }
 
-.tablinks:hover { background: #777; }
+.tablinks:hover { background: #6a6a6a; }
+.tablinks:active { transform: translateY(1px); }
+.tablinks:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+.tablinks.active { background: var(--brand); }
 
+@media (max-width: 520px) {
+  .tab {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 6px;
+  }
+  .tablinks { scroll-snap-align: start; }
+}
+
+/* Tab content defaults */
 .tabcontent {
   display: none;
   padding: 20px;
@@ -373,12 +376,6 @@ input:checked + .slider:before {
   border-radius: 6px;
   background: #f9f9f9;
 }
-
-.tabcontent:target {
-  display: block;
-}
-
+.tabcontent:target { display: block; }
 #Summary:target,
-body:not(:target) #Summary {
-  display: block;
-}
+body:not(:target) #Summary { display: block; }
