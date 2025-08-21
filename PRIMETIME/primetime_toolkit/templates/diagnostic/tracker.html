@@ -1,169 +1,90 @@
 {% extends 'layout.html' %}
 {% block content %}
-{% include 'diagnostic/subnav.html' %}
-<div class="container py-5">
-  <h1 class="text-center mb-4" style="color: #9E2A2B; font-family: 'Playfair Display', serif;">Net Worth Tracker</h1>
-  <p class="text-center text-muted mb-4">(Total Assets - Total Liabilities)</p>
+<!-- === SUMMARY TAB (what each function does) === -->
+<div id="Summary" class="tabcontent">
+  <h2>Budget Summary & How Each Section Works</h2>
 
-  <form method="POST" action="{{ url_for('views.submit_tracker') }}">
-    <div class="bg-light p-3 rounded shadow-sm mb-4">
-      <div class="row g-3">
-        <div class="col-md-6"> 
-          <label class="form-label fw-bold">Select Month</label>
-          <select name="month" class="form-select" required>
-            {% for m in ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'] %}
-              <option value="{{ m }}">{{ m }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-6">
-          <label class="form-label fw-bold">Year</label>
-          <input type="number" name="year" class="form-control" required>
-        </div>
-      </div>
+<!-- Better KPI header -->
+<div class="kpis">
+  <div class="kpi">
+    <div class="kpi-label">Net Worth</div>
+    <div class="kpi-value {{ 'placeholder' if not (total_assets is defined and total_liabilities is defined) }}">
+      {% if total_assets is defined and total_liabilities is defined %}
+        {{ '{:,.0f}'.format(total_assets - total_liabilities) }}
+      {% else %}—{% endif %}
     </div>
+    <div class="kpi-sub">Assets − Liabilities</div>
+  </div>
 
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card shadow-sm mb-4">
-          <div class="card-header bg-success text-white fw-bold">Assets</div>
-          <div class="card-body">
-            {% for i in range(10) %}
-            <div class="row mb-2">
-              <div class="col-6"><input name="asset_name" class="form-control" placeholder="Asset Name" /></div>
-              <div class="col-6">
-                <div class="input-group">
-                  <span class="input-group-text">$</span>
-                  <input name="asset_value" class="form-control asset-input" type="number" step="0.01" />
-                </div>
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="card shadow-sm mb-4">
-          <div class="card-header bg-danger text-white fw-bold">Liabilities</div>
-          <div class="card-body">
-            {% for i in range(10) %}
-            <div class="row mb-2">
-              <div class="col-6"><input name="liability_name" class="form-control" placeholder="Liability Name" /></div>
-              <div class="col-6">
-                <div class="input-group">
-                  <span class="input-group-text">$</span>
-                  <input name="liability_value" class="form-control liability-input" type="number" step="0.01" />
-                </div>
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
+  <div class="kpi">
+    <div class="kpi-label">Monthly Savings</div>
+    <div class="kpi-value {{ 'placeholder' if not (monthly_income is defined and monthly_expenses is defined) }}">
+      {% if monthly_income is defined and monthly_expenses is defined %}
+        {{ '{:,.0f}'.format(monthly_income - monthly_expenses) }}
+      {% else %}—{% endif %}
     </div>
+    <div class="kpi-sub">Income − Expenses</div>
+  </div>
 
-    <div class="row g-4 mt-4">
-      <div class="col-md-4">
-        <label class="form-label fw-bold">Total Assets</label>
-        <div class="input-group">
-          <span class="input-group-text">$</span>
-          <input type="text" id="totalAssets" class="form-control" readonly>
-        </div>
-        <input type="hidden" name="total_assets" id="hiddenTotalAssets">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label fw-bold">Total Liabilities</label>
-        <div class="input-group">
-          <span class="input-group-text">$</span>
-          <input type="text" id="totalLiabilities" class="form-control" readonly>
-        </div>
-        <input type="hidden" name="total_liabilities" id="hiddenTotalLiabilities">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label fw-bold">Net Worth</label>
-        <div class="input-group">
-          <span class="input-group-text">$</span>
-          <input type="text" id="netWorth" class="form-control" readonly>
-        </div>
-        <input type="hidden" name="net_worth" id="hiddenNetWorth">
-      </div>
+  <div class="kpi">
+    <div class="kpi-label">Savings Rate</div>
+    <div class="kpi-value {{ 'placeholder' if not (monthly_income is defined and monthly_expenses is defined and monthly_income) }}">
+      {% if monthly_income is defined and monthly_expenses is defined and monthly_income %}
+        {{ (((monthly_income - monthly_expenses) / monthly_income) * 100) | round(1) }}%
+      {% else %}—{% endif %}
     </div>
-
-    <div class="mt-4 mb-3">
-      <label class="form-label fw-bold">Notes</label>
-      <textarea name="notes" class="form-control" rows="4" placeholder="Add any relevant notes..."></textarea>
-    </div>
-
-    <div class="text-center">
-      <button type="submit" class="btn btn-primary btn-lg">Save Tracker</button>
-    </div>
-    <div class="text-center mt-4">
-      <button type="button" class="btn btn-outline-info" onclick="generateChart()">Generate Diagram</button>
-    </div>
-
-  </form>
+    <div class="kpi-sub">Savings ÷ Income</div>
+  </div>
 </div>
 
-<!-- Add this just before {% endblock %} -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  let netWorthChart;
+  <div class="summary-grid">
+    <div class="card">
+      <h3>Assets</h3>
+      <p>What you own (cash, bank accounts, investments, car, property, etc.). Helps build your <strong>Net Worth</strong>.</p>
+      <p class="formula"><strong>Used in:</strong> Net Worth = Assets − Liabilities</p>
+      <a href="{{ url_for('views.assets') }}" class="goto">Go to Assets →</a>
+    </div>
 
-  function updateTotals() {
-    const assetInputs = document.querySelectorAll(".asset-input");
-    const liabilityInputs = document.querySelectorAll(".liability-input");
-    let assetTotal = 0;
-    let liabilityTotal = 0;
 
-    assetInputs.forEach(input => assetTotal += parseFloat(input.value) || 0);
-    liabilityInputs.forEach(input => liabilityTotal += parseFloat(input.value) || 0);
+  <div class="card">
+    <h3>Liabilities</h3>
+    <p>What you owe (credit cards, loans, HECS/HELP, mortgage). Reducing liabilities increases <strong>Net Worth</strong>.</p>
+    <p class="formula"><strong>Used in:</strong> Net Worth = Assets − Liabilities</p>
+    <a href="{{ url_for('views.liabilities') }}" class="goto">Go to Liabilities →</a>
+  </div>
 
-    document.getElementById("totalAssets").value = assetTotal.toFixed(2);
-    document.getElementById("totalLiabilities").value = liabilityTotal.toFixed(2);
-    document.getElementById("netWorth").value = (assetTotal - liabilityTotal).toFixed(2);
+      
+  <div class="card">
+    <h3>Income</h3>
+    <p>Money coming in (salary, scholarship, side gigs). Drives your <strong>cash flow</strong> for budgeting.</p>
+    <p class="formula"><strong>Used in:</strong> Monthly Savings = Income − Expenses</p>
+    <a href="{{ url_for('views.income') }}" class="goto">Go to Income →</a>
+  </div>
 
-    document.getElementById("hiddenTotalAssets").value = assetTotal;
-    document.getElementById("hiddenTotalLiabilities").value = liabilityTotal;
-    document.getElementById("hiddenNetWorth").value = assetTotal - liabilityTotal;
-  }
+  <div class="card">
+    <h3>Expenses</h3>
+    <p>Money going out (rent, groceries, transport, subscriptions). Controlling expenses improves <strong>cash flow</strong>.</p>
+    <p class="formula"><strong>Used in:</strong> Monthly Savings = Income − Expenses</p>
+    <a href="{{ url_for('views.expenses') }}" class="goto">Go to Expenses →</a>
+  </div>
 
-  function generateChart() {
-    updateTotals(); // Ensure latest data
 
-    const asset = parseFloat(document.getElementById("hiddenTotalAssets").value) || 0;
-    const liability = parseFloat(document.getElementById("hiddenTotalLiabilities").value) || 0;
-    const net = asset - liability;
+<div class="card">
+  <h3>Net Worth</h3>
+  <p>Your overall financial position at a point in time. Tracks long-term progress—not month-to-month swings.</p>
+  <p class="formula"><strong>Formula:</strong> Net Worth = Assets − Liabilities</p>
+  <a href="#" class="goto">Go to Net Worth →</a>
+</div>
 
-    const ctx = document.getElementById('netWorthChart').getContext('2d');
-    
-    if (netWorthChart) {
-      netWorthChart.destroy();
-    }
+<div class="tips">
+  <h4>Quick Budget Tips</h4>
+  <ul>
+    <li>Target a positive <strong>Monthly Savings</strong> and a rising <strong>Net Worth</strong>.</li>
+    <li>Automate transfers to savings/investments right after payday.</li>
+    <li>Review subscriptions quarterly; renegotiate bills yearly.</li>
+    <li>Use categories in Expenses to find quick wins (e.g., food, transport).</li>
+  </ul>
+</div>
+</div>
 
-    netWorthChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Assets', 'Liabilities', 'Net Worth'],
-        datasets: [{
-          label: 'AUD ($)',
-          data: [asset, liability, net],
-          backgroundColor: ['#4bc0c0', '#ff6384', '#9966ff'],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-  }
-
-  document.querySelectorAll(".asset-input, .liability-input").forEach(input => {
-    input.addEventListener("input", updateTotals);
-  });
-</script>
-
+{% endblock %}
