@@ -41,6 +41,13 @@ def register():
         return redirect(url_for('auth.login'))
     return render_template('register.html')
 
+@auth.route('/profile')
+def profile():
+    if 'user' not in session:
+        flash('Please log in first.', 'warning')
+        return redirect(url_for('auth.login'))
+    return render_template('profile.html', user=session['user'])
+
 @auth.route('/logout')
 def logout():
     session.pop('user', None)
