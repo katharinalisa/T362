@@ -1,5 +1,5 @@
 from primetime_toolkit import create_app, db
-from primetime_toolkit.models import Assessment
+from primetime_toolkit.models import Assessment,User
 
 app = create_app()
 

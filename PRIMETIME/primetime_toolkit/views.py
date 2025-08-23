@@ -35,7 +35,12 @@ def webinars():
 def assessment():
     return render_template('assessment.html')
 
+@views.route("/eligibility-setup")
+def eligibility_setup():
+    return render_template("eligibility_setup.html")
 
+#---------------------------
+# start of one block
 @views.route('/submit-assessment', methods=['POST'])
 def submit_assessment():
     """Process 20 Likert questions (1–5 each), produce 0–100 total,
