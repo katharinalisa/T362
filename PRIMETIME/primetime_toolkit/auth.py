@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from werkzeug.security import check_password_hash
 from . import db
 from .models import User
+from flask_login import login_user, current_user, logout_user
 
 auth = Blueprint('auth', __name__)
 
@@ -14,7 +15,7 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.pword, password):
-            session['user'] = {'email': user.email, 'name': user.name}
+            login_user(user) 
             flash('Logged in successfully!', 'success')
             return redirect(url_for('views.home'))
         else:
@@ -43,13 +44,10 @@ def register():
 
 @auth.route('/profile')
 def profile():
-    if 'user' not in session:
-        flash('Please log in first.', 'warning')
-        return redirect(url_for('auth.login'))
-    return render_template('profile.html', user=session['user'])
+    return render_template('profile.html', user=current_user)
 
 @auth.route('/logout')
 def logout():
-    session.pop('user', None)
+    logout_user()
     flash('You have been logged out.', 'info')
     return redirect(url_for('views.home'))

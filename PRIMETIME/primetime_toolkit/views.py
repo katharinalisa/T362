@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-#from .models import Assessment
-from . import db
+from .models import User
+from . import mail
+from flask_mail import Mail, Message
+from flask_login import login_required, current_user
 import os
 import json
 
@@ -18,7 +20,6 @@ def budget():
 def superannuation():
     return render_template('superannuation.html')
 
-# Learning Hub
 @views.route('/learning-hub')
 def learninghub():
     return render_template('learninghub.html')
@@ -39,13 +40,15 @@ def assessment():
 def eligibility_setup():
     return render_template("eligibility_setup.html")
 
-#---------------------------
-# start of one block
+
+#---------------------------------------
+# start of submit assignment block
+
 @views.route('/submit-assessment', methods=['POST'])
 def submit_assessment():
     """Process 20 Likert questions (1–5 each), produce 0–100 total,
     and classify as Beginner / Progressing / Confident."""
-    TOTAL_QUESTIONS = 20  # set to 7 if only 7 questions are on the page for now
+    TOTAL_QUESTIONS = 20
 
     total_score = 0
     for i in range(1, TOTAL_QUESTIONS + 1):
@@ -54,16 +57,15 @@ def submit_assessment():
             try:
                 total_score += int(answer)
             except ValueError:
-                # ignore bad input
                 pass
 
     # Map total_score (0–100) to bands
     if total_score <= 39:
-        band = "Beginner"
+        band = "Inactive"
     elif total_score <= 69:
-        band = "Progressing"
+        band = "Reactive"
     else:
-        band = "Confident"
+        band = "Proactive"
 
     result_message = f"You are classified as {band}."
 
@@ -73,6 +75,9 @@ def submit_assessment():
         band=band,
         total_score=total_score,
     )
+
+#-------------------------------------------
+
 
 @views.route('/tracker')
 def tracker():
@@ -100,6 +105,38 @@ def submit_tracker():
     return redirect(url_for("views.tracker"))
 
 
+#---------------------------------------------
+# send email block
+
+@views.route('/send-email', methods=['POST'])
+@login_required
+def send_email():
+    user_email = getattr(current_user, 'email', None)
+    user_name = getattr(current_user, 'name', 'there')
+
+    if not user_email:
+        flash("No email address found for the current user.", "error")
+        return redirect(url_for('views.home'))
+
+    msg = Message('Your PDF summary is ready! - PrimeTime Toolkit',
+                  sender='ka.gremer@gmail.com',
+                  recipients=[user_email])
+    msg.body = (
+        f"Hi {user_name}!\n\nThis is an automated email. "
+        "We are currently working on the process of generating automatic PDF summaries to be sent over email.\n\n"
+        "Warm regards,\nThe Prime Time Customer Service"
+    )
+
+    try:
+        mail.send(msg)
+        flash(f"Email sent to {user_email}!", "success")
+    except Exception as e:
+        flash(f"Failed to send email: {str(e)}", "error")
+
+    return redirect(url_for('views.home'))
+
+
+#---------------------------------------------------
 
 
 @views.route('/expenses')

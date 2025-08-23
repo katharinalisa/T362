@@ -1,5 +1,7 @@
 from . import db
 from werkzeug.security import generate_password_hash
+from flask_login import UserMixin
+
 
 class Assessment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -21,7 +23,7 @@ class Assessment(db.Model):
         self.q6 = q6
         self.q7 = q7
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(150), nullable=False)
     email = db.Column(db.String(150), nullable=False, unique=True)
