@@ -32,11 +32,53 @@
         </div>
     </div>
     <br>
-    <br>
-    <h3 class="mt-4" style="color: #335C67;">Visit Bec Wilson's Webinars</h3>
+    <h3 class="mt-4" style="color: #335C67;">Visit Bec Wilson's Webinars for more videos like this!</h3>
     <ul>
         <li><a href="https://www.becwilson.net/podcast" target="_blank" style="color: #9E2A2B;">Bec Wilson: Upcoming Events & Webinars</a></li>
         <li><a href="https://www.youtube.com/@BecWilson-EpicRetirement" target="_blank" style="color: #9E2A2B;">Bec Wilson: Prime Time YouTube Channel</a></li>
         <li><a href="https://www.linkedin.com/in/rebeccawilson/?originalSubdomain=au" target="_blank" style="color: #9E2A2B;">Bec Wilson on LinkedIn (Webinar Announcements)</a></li>
     </ul>
+    <br>
+  <table class="table table-bordered mt-4">
+  <thead style="background-color: #f2f2f2;">
+    <tr>
+      <th style="color: #335C67;">Topic</th>
+      <th style="color: #335C67;">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>How does Superannuation work?</strong></td>
+      <td>
+        Superannuation is a way of saving for retirement in Australia. It involves making regular contributions to a super fund, which is then invested to grow over time. The goal is to accumulate enough savings to provide an income in retirement. Superannuation is typically compulsory for employees, with employers required to contribute a percentage of an employee's salary to their super fund.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>What is Retirement Drawdown?</strong></td>
+      <td>
+        Retirement drawdown refers to the process of withdrawing funds from your retirement savings to cover living expenses during retirement. It involves strategically managing your assets to ensure a sustainable income stream while minimizing the risk of depleting your savings too quickly.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>What is Super Growth about?</strong></td>
+      <td>
+        Super growth refers to the strategies and approaches aimed at maximizing the growth potential of your superannuation savings over time. This can include investment choices, contribution strategies, and understanding the impact of fees and taxes on your superannuation balance.
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+  <section class="container my-3">
+    <h3 class="mt-4" style="color: #335C67;">What tools can I use?</h3>
+    <div class="row text-center g-4">
+    <div class="col-md-4">
+        <a href="{{ url_for('views.superannuation') }}" class="text-decoration-none text-dark">
+          <div class="feature-box">
+            <h3>Superannuation Tools</h3>
+            <p>Click here to find out more.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
 {% endblock %}
