@@ -93,15 +93,15 @@ def subscribe():
                   recipients=[email])
     msg.body = (
         f"Hi {name},\n\nThanks for subscribing to Bec Wilson's Newsletter! "
-        "You will receive updates on new webinars, events and Bec's journals.\n\n"
-        "Warm regards,\nThe Prime Time Customer Service"
+        "You will now receive updates on new events, webinars and information about Bec's recently published work.\n\n"
+        "Kind regards,\nThe Prime Time Customer Service"
     )
 
     try:
         mail.send(msg)
         flash(f"Hooray! {email} has been subscribed to our Newsletter!", "success")
     except Exception as e:
-        flash(f"Subscription saved, but failed to send email: {str(e)}", "error")
+        flash(f"Subscription failed: {str(e)}", "error")
 
     return redirect(url_for('views.home'))
 
