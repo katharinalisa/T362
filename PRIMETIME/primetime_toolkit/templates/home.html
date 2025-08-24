@@ -1,12 +1,16 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<section class="hero-section text-center py-3">
+    <div class="container">
+      <h1>Welcome to the Prime Time Toolkit</h1>
+      <p>We are helping Australians aged 47–65 plan smarter for retirement. Take Control of Your Financial Future <br>and join thousands of Australians taking the first step toward confident retirement planning.</p>
+      <a href="#" class="btn btn-primary-custom mt-3">Create Your Plan Now</a>
+    </div>
+  </section>
   <div class="slideshow-container">
 
-    <div class="mySlides fade">
-      <div class="numbertext">1 / 3</div>
-      <img src="{{ url_for('static', filename='img/slide1.png') }}" style="width:100%" alt="Slide 1">
-    </div>
+    <!-- put a picture here about same size as others -->
 
     <div class="mySlides fade">
       <div class="numbertext">2 / 3</div>
@@ -32,15 +36,11 @@
   </div>
 
   <!-- Static Header -->
-  <section class="hero-section text-center py-5">
+  <section class="hero-section text-center py-3">
     <div class="container">
-      <h1>Welcome to the Prime Time Toolkit</h1>
-      <p>We are helping Australians aged 47–65 plan smarter for retirement.</p>
-      <p>Take Control of Your Financial Future and join thousands of Australians taking the first step toward confident retirement planning.</p>
-      <a href="#" class="btn btn-primary-custom mt-3">Create Your Plan Now</a>
+      <h1>Check out our tools</h1>
+      <p>Explore our range of tools designed to help you plan for a confident retirement. <br>We offer an Excel based budget planner, where you can simply enter your income, expenses, assets, liabilities and more to estimate your budget.<br>We also provide a self-assessment tool to help you evaluate your current financial situation and identify areas for improvement. Or simply learn about <br>important terms in the Prime Time by visiting our new Learning Hub!</p>
     </div>
-    <br>
-    <p>Or have a look at our Budget Planner, Self-Assessment, and Learning Hub.</p>
   </section>
   <!-- Static Content -->
   <section class="container my-3">
@@ -49,7 +49,7 @@
         <a href="{{ url_for('views.budget') }}" class="text-decoration-none text-dark">
           <div class="feature-box">
             <h3>Budget Planner</h3>
-            <p>Track income, expenses, and savings goals in one place.</p>
+            <p>Track income, expenses, assets and more in our interactive Excel spreadsheet.</p>
           </div>
          </a>
       </div>
@@ -57,7 +57,7 @@
         <a href="{{ url_for('views.assessment') }}" class="text-decoration-none text-dark">
           <div class="feature-box">
             <h3>Self-Assessment</h3>
-            <p>Evaluate your current financial situation and identify areas for improvement.</p>
+            <p>Answer a range of questions to find out your current financial situation.</p>
           </div>
         </a>
       </div>
@@ -65,7 +65,7 @@
        <a href="{{ url_for('views.learninghub') }}" class="text-decoration-none text-dark">
         <div class="feature-box">
           <h3>Learning Hub</h3>
-          <p>Learn about the Prime Time by visiting Bec Wilson's Podcasts and Webinars.</p>
+          <p>Learn about the Prime Time by getting to know common terms or visiting Bec Wilson's Podcasts and Webinars.</p>
         </div>
        </a>
       </div>
