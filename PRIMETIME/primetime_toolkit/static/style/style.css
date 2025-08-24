@@ -8,7 +8,7 @@
   --green: #156064;
   --blue: #89A6FB;
   --brand: #9E2A2B;
-  --soft-bg: #F0E6DC
+  --soft-bg: #F7EFE7
 }
 
 /* === Base Typography === */
@@ -28,10 +28,24 @@ p {
   font-size: 0.95rem;
 }
 
+
 .container, main {
   padding-left: 3rem;
   padding-right: 3rem;
 }
+
+
+/* === Assessment table === */
+
+.grooved-cell {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.assessment-body th {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
 
 .accent-text {
   font-family: 'Playfair Display', serif;

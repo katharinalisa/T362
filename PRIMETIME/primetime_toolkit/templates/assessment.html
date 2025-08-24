@@ -7,223 +7,224 @@
     padding: 8px;
   }
 </style>
-<section class="hero-section text-center py-4">
+<section class="hero-section text-center py-2">
     <div class="container">
-      <h1>Financial Preparedness</h1>
+      <h1>Self-Assessment Tool</h1>
     </div>
 </section>
-  <p class="lead text-center">Are you financially ready for the lifestyle you want?<br>Explore your income, superannuation, and savings strategy.</p>
-  <div style="max-width: 900px; margin: 0 auto; padding: 20px;">
+  <p class="text-center">Find below a set of questions and answer them as accurately as possible. These questions are categorised to facilitate your understanding. If you are between two numbers, choose the lower number. Once you finish this self-assessment, you will receive personalized feedback on your financial readiness and get access to our Excel spreadsheet tool. <br></p>
+  <p class="text-center" style="font-size: 0.9rem; font-style: italic;">
+            1 = Not at all, 2 = Not so likely, 3 = Moderate, 4 = Likely, 5 = Very likely
+          </p>
+  <div style="max-width: 900px;">
     <br>
     <form method="POST" action="/submit-assessment">
-      <table style="width: 100%">
+      <table style="width: 100%;">
+        <thead>
         <tr>
           <th>Questions</th>
-          <th colspan="5">Answer (1–5 Likert scale)</th>
+          <th colspan="5">Answer (1–5 likert scale)</th>
         </tr>
-        <tr>
-          <td></td>
-          <td colspan="5" style="font-size: 0.9rem; font-style: italic;">
-            1 = Not at all likely, 2 = Not so likely, 3 = Moderate, 4 = Likely, 5 = Very likely
-          </td>
-        </tr>
-
-        <!-- Step 1: Purpose -->
+        </thead>
+        <tbody class="assessment-body" style="background-color: #F0ECE8">
         <tr><td colspan="6" style="font-weight:600; background:#f7f7f7;">Step 1: Purpose</td></tr>
-        <tr>
+        <tr class="grooved-cell">
           <td>1. I make financial decisions based on my life values and long-term goals.</td>
-          <td><input type="radio" name="q1" value="1"> 1</td>
-          <td><input type="radio" name="q1" value="2"> 2</td>
-          <td><input type="radio" name="q1" value="3"> 3</td>
-          <td><input type="radio" name="q1" value="4"> 4</td>
-          <td><input type="radio" name="q1" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q1" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q1" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q1" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q1" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q1" value="5"> 5</td>
         </tr>
         <tr>
           <td>2. I feel a sense of direction and purpose when thinking about my financial future.</td>
-          <td><input type="radio" name="q2" value="1"> 1</td>
-          <td><input type="radio" name="q2" value="2"> 2</td>
-          <td><input type="radio" name="q2" value="3"> 3</td>
-          <td><input type="radio" name="q2" value="4"> 4</td>
-          <td><input type="radio" name="q2" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q2" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q2" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q2" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q2" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q2" value="5"> 5</td>
         </tr>
 
         <!-- Step 2: Spending -->
         <tr><td colspan="6" style="font-weight:600; background:#f7f7f7;">Step 2: Spending</td></tr>
-        <tr>
+        <tr class="grooved-cell">
           <td>3. I know exactly how much I’ve spent and where, over the past 3 months.</td>
-          <td><input type="radio" name="q3" value="1"> 1</td>
-          <td><input type="radio" name="q3" value="2"> 2</td>
-          <td><input type="radio" name="q3" value="3"> 3</td>
-          <td><input type="radio" name="q3" value="4"> 4</td>
-          <td><input type="radio" name="q3" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q3" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q3" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q3" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q3" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q3" value="5"> 5</td>
         </tr>
         <tr>
           <td>4. I actively try to reduce or avoid unnecessary spending.</td>
-          <td><input type="radio" name="q4" value="1"> 1</td>
-          <td><input type="radio" name="q4" value="2"> 2</td>
-          <td><input type="radio" name="q4" value="3"> 3</td>
-          <td><input type="radio" name="q4" value="4"> 4</td>
-          <td><input type="radio" name="q4" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q4" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q4" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q4" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q4" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q4" value="5"> 5</td>
         </tr>
 
         <!-- Step 3: Saving -->
         <tr><td colspan="6" style="font-weight:600; background:#f7f7f7;">Step 3: Saving</td></tr>
-        <tr>
+        <tr class="grooved-cell">
           <td>5. I have an emergency fund that could cover 3 months or more of expenses.</td>
-          <td><input type="radio" name="q5" value="1"> 1</td>
-          <td><input type="radio" name="q5" value="2"> 2</td>
-          <td><input type="radio" name="q5" value="3"> 3</td>
-          <td><input type="radio" name="q5" value="4"> 4</td>
-          <td><input type="radio" name="q5" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q5" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q5" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q5" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q5" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q5" value="5"> 5</td>
         </tr>
         <tr>
           <td>6. I automatically or regularly set aside part of my income into savings.</td>
-          <td><input type="radio" name="q6" value="1"> 1</td>
-          <td><input type="radio" name="q6" value="2"> 2</td>
-          <td><input type="radio" name="q6" value="3"> 3</td>
-          <td><input type="radio" name="q6" value="4"> 4</td>
-          <td><input type="radio" name="q6" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q6" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q6" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q6" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q6" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q6" value="5"> 5</td>
         </tr>
 
         <!-- Step 4: Debt -->
         <tr><td colspan="6" style="font-weight:600; background:#f7f7f7;">Step 4: Debt</td></tr>
-        <tr>
+        <tr class="grooved-cell">
           <td>7. I am managing my credit card or personal debt well and without stress.</td>
-          <td><input type="radio" name="q7" value="1"> 1</td>
-          <td><input type="radio" name="q7" value="2"> 2</td>
-          <td><input type="radio" name="q7" value="3"> 3</td>
-          <td><input type="radio" name="q7" value="4"> 4</td>
-          <td><input type="radio" name="q7" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q7" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q7" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q7" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q7" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q7" value="5"> 5</td>
         </tr>
         <tr>
           <td>8. I have a clear debt repayment plan and I stick to it.</td>
-          <td><input type="radio" name="q8" value="1"> 1</td>
-          <td><input type="radio" name="q8" value="2"> 2</td>
-          <td><input type="radio" name="q8" value="3"> 3</td>
-          <td><input type="radio" name="q8" value="4"> 4</td>
-          <td><input type="radio" name="q8" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q8" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q8" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q8" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q8" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q8" value="5"> 5</td>
         </tr>
 
         <!-- Step 5: Investing -->
         <tr><td colspan="6" style="font-weight:600; background:#f7f7f7;">Step 5: Investing</td></tr>
-        <tr>
+        <tr class="grooved-cell">
           <td>9. I understand the basics of investing and feel confident managing investments.</td>
-          <td><input type="radio" name="q9" value="1"> 1</td>
-          <td><input type="radio" name="q9" value="2"> 2</td>
-          <td><input type="radio" name="q9" value="3"> 3</td>
-          <td><input type="radio" name="q9" value="4"> 4</td>
-          <td><input type="radio" name="q9" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q9" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q9" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q9" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q9" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q9" value="5"> 5</td>
         </tr>
         <tr>
           <td>10. My investment choices are connected to my future financial goals.</td>
-          <td><input type="radio" name="q10" value="1"> 1</td>
-          <td><input type="radio" name="q10" value="2"> 2</td>
-          <td><input type="radio" name="q10" value="3"> 3</td>
-          <td><input type="radio" name="q10" value="4"> 4</td>
-          <td><input type="radio" name="q10" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q10" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q10" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q10" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q10" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q10" value="5"> 5</td>
         </tr>
 
         <!-- Step 6: Superannuation -->
         <tr><td colspan="6" style="font-weight:600; background:#f7f7f7;">Step 6: Superannuation</td></tr>
-        <tr>
+        <tr class="grooved-cell">
           <td>11. I regularly review my superannuation account and its performance.</td>
-          <td><input type="radio" name="q11" value="1"> 1</td>
-          <td><input type="radio" name="q11" value="2"> 2</td>
-          <td><input type="radio" name="q11" value="3"> 3</td>
-          <td><input type="radio" name="q11" value="4"> 4</td>
-          <td><input type="radio" name="q11" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q11" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q11" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q11" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q11" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q11" value="5"> 5</td>
         </tr>
         <tr>
           <td>12. I’ve made voluntary contributions to my super to boost my retirement savings.</td>
-          <td><input type="radio" name="q12" value="1"> 1</td>
-          <td><input type="radio" name="q12" value="2"> 2</td>
-          <td><input type="radio" name="q12" value="3"> 3</td>
-          <td><input type="radio" name="q12" value="4"> 4</td>
-          <td><input type="radio" name="q12" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q12" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q12" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q12" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q12" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q12" value="5"> 5</td>
         </tr>
 
         <!-- Step 7: Protecting -->
         <tr><td colspan="6" style="font-weight:600; background:#f7f7f7;">Step 7: Protecting</td></tr>
-        <tr>
+        <tr class="grooved-cell">
           <td>13. I have insurance (e.g., health, income, life) to protect against major risks.</td>
-          <td><input type="radio" name="q13" value="1"> 1</td>
-          <td><input type="radio" name="q13" value="2"> 2</td>
-          <td><input type="radio" name="q13" value="3"> 3</td>
-          <td><input type="radio" name="q13" value="4"> 4</td>
-          <td><input type="radio" name="q13" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q13" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q13" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q13" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q13" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q13" value="5"> 5</td>
         </tr>
         <tr>
           <td>14. I’ve prepared legal documents like a will or power of attorney.</td>
-          <td><input type="radio" name="q14" value="1"> 1</td>
-          <td><input type="radio" name="q14" value="2"> 2</td>
-          <td><input type="radio" name="q14" value="3"> 3</td>
-          <td><input type="radio" name="q14" value="4"> 4</td>
-          <td><input type="radio" name="q14" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q14" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q14" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q14" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q14" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q14" value="5"> 5</td>
         </tr>
 
         <!-- Life Triggers & Readiness -->
         <tr><td colspan="6" style="font-weight:600; background:#f7f7f7;">Life Triggers &amp; Readiness</td></tr>
-        <tr>
+        <tr class="grooved-cell">
           <td>15. I’ve recently experienced a major life change (e.g., retirement, divorce, job loss).</td>
-          <td><input type="radio" name="q15" value="1"> 1</td>
-          <td><input type="radio" name="q15" value="2"> 2</td>
-          <td><input type="radio" name="q15" value="3"> 3</td>
-          <td><input type="radio" name="q15" value="4"> 4</td>
-          <td><input type="radio" name="q15" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q15" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q15" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q15" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q15" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q15" value="5"> 5</td>
         </tr>
         <tr>
           <td>16. I feel financially prepared to deal with unexpected life events.</td>
-          <td><input type="radio" name="q16" value="1"> 1</td>
-          <td><input type="radio" name="q16" value="2"> 2</td>
-          <td><input type="radio" name="q16" value="3"> 3</td>
-          <td><input type="radio" name="q16" value="4"> 4</td>
-          <td><input type="radio" name="q16" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q16" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q16" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q16" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q16" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q16" value="5"> 5</td>
         </tr>
 
         <!-- Behavioural Readiness -->
         <tr><td colspan="6" style="font-weight:600; background:#f7f7f7;">Behavioural Readiness</td></tr>
-        <tr>
+        <tr class="grooved-cell">
           <td>17. I take regular time to check in on my financial health and progress.</td>
-          <td><input type="radio" name="q17" value="1"> 1</td>
-          <td><input type="radio" name="q17" value="2"> 2</td>
-          <td><input type="radio" name="q17" value="3"> 3</td>
-          <td><input type="radio" name="q17" value="4"> 4</td>
-          <td><input type="radio" name="q17" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q17" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q17" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q17" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q17" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q17" value="5"> 5</td>
         </tr>
         <tr>
           <td>18. I talk openly about money with my partner or trusted people in my life.</td>
-          <td><input type="radio" name="q18" value="1"> 1</td>
-          <td><input type="radio" name="q18" value="2"> 2</td>
-          <td><input type="radio" name="q18" value="3"> 3</td>
-          <td><input type="radio" name="q18" value="4"> 4</td>
-          <td><input type="radio" name="q18" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q18" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q18" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q18" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q18" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q18" value="5"> 5</td>
         </tr>
 
         <!-- Prime Time Readiness -->
         <tr><td colspan="6" style="font-weight:600; background:#f7f7f7;">Prime Time Readiness</td></tr>
-        <tr>
+        <tr class="grooved-cell">
           <td>19. I feel confident that my financial habits match the life I want in the next 5–10 years.</td>
-          <td><input type="radio" name="q19" value="1"> 1</td>
-          <td><input type="radio" name="q19" value="2"> 2</td>
-          <td><input type="radio" name="q19" value="3"> 3</td>
-          <td><input type="radio" name="q19" value="4"> 4</td>
-          <td><input type="radio" name="q19" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q19" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q19" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q19" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q19" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q19" value="5"> 5</td>
         </tr>
         <tr>
           <td>20. I am ready to take the next step in my financial journey with support or guidance.</td>
-          <td><input type="radio" name="q20" value="1"> 1</td>
-          <td><input type="radio" name="q20" value="2"> 2</td>
-          <td><input type="radio" name="q20" value="3"> 3</td>
-          <td><input type="radio" name="q20" value="4"> 4</td>
-          <td><input type="radio" name="q20" value="5"> 5</td>
+          <td style="text-align: center;"><input type="radio" name="q20" value="1"> 1</td>
+          <td style="text-align: center;"><input type="radio" name="q20" value="2"> 2</td>
+          <td style="text-align: center;"><input type="radio" name="q20" value="3"> 3</td>
+          <td style="text-align: center;"><input type="radio" name="q20" value="4"> 4</td>
+          <td style="text-align: center;"><input type="radio" name="q20" value="5"> 5</td>
         </tr>
+        </tbody>
       </table>
-
+    <br>
     <div class="row justify-content-center">
       <div class="col-lg-10">
-        <p class="lead text-center">Once you have completed all the questions, click on the “Submit” button and you will be redirected to the summary page.</p>
+        <p class="lead text-center">That's all for the Self-Assessment!</p>
+        <p class ="text-center">Have you answered all questions? Simply click on the <em>Submit</em> button when you are ready.</p>
         <div class="text-center mt-4">
           <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+          <br><br>
         </div>
       </div>
     </div>
