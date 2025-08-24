@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from .models import User
 from . import mail
+from flask import current_app
 from flask_mail import Mail, Message
 from flask_login import login_required, current_user
+from werkzeug.utils import secure_filename
 import os
 import json
 
@@ -41,7 +42,71 @@ def eligibility_setup():
     return render_template("eligibility_setup.html")
 
 
-#---------------------------------------
+#--------------------------------------------------------------------------
+# Upload Excel spreadsheet
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@views.route('/upload-excel', methods=['POST'])
+def upload_excel():
+    if 'budget_file' not in request.files:
+        flash("No file part", "error")
+        return redirect(request.url)
+
+    file = request.files['budget_file']
+    if file.filename == '':
+        flash("No selected file", "error")
+        return redirect(request.url)
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        upload_folder = current_app.config['UPLOAD_FOLDER']
+        os.makedirs(upload_folder, exist_ok=True) 
+        file.save(os.path.join(upload_folder, filename))
+        flash("File uploaded successfully", "success")
+        return redirect(url_for('views.budget'))
+
+    flash("Invalid file format", "error")
+    return redirect(request.url)
+
+
+# ---------------------------------------------------------------------
+# Subscribe to newsletter block 
+
+@views.route('/subscribe', methods=['POST'])
+def subscribe():
+    if current_user.is_authenticated:
+        email = getattr(current_user, 'email', None)
+        name = getattr(current_user, 'name', 'there')
+    else:
+        email = request.form.get('email')
+        name = 'there'
+
+    if not email:
+        flash("No email address provided.", "error")
+        return redirect(url_for('views.home'))
+
+    msg = Message("Welcome to Bec Wilson's Newsletter!",
+                  sender='ka.gremer@gmail.com',
+                  recipients=[email])
+    msg.body = (
+        f"Hi {name},\n\nThanks for subscribing to Bec Wilson's Newsletter! "
+        "You will receive updates on new webinars, events and Bec's journals.\n\n"
+        "Warm regards,\nThe Prime Time Customer Service"
+    )
+
+    try:
+        mail.send(msg)
+        flash(f"Hooray! {email} has been subscribed to our Newsletter!", "success")
+    except Exception as e:
+        flash(f"Subscription saved, but failed to send email: {str(e)}", "error")
+
+    return redirect(url_for('views.home'))
+
+
+#--------------------------------------------------------
 # start of submit assignment block
 
 @views.route('/submit-assessment', methods=['POST'])

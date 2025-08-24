@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from .extension import db, mail, login_manager
 
@@ -7,6 +8,7 @@ def create_app():
     app.config['SECRET_KEY'] = 'our-secret'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///primetime.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['UPLOAD_FOLDER'] = os.path.join(app.static_folder, 'files')
 
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 587

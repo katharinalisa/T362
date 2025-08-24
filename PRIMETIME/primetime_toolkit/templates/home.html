@@ -1,17 +1,44 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<section class="hero-section text-center py-2">
-    <div class="container">
-      <h1>Welcome to the Prime Time Toolkit</h1>
-      <p>This Page is based on Bec Wilson's book <em>The Prime Time: 27 Lessons for the new midlife.</em> We are helping Australians aged 47–65 plan smarter for retirement. Take Control of Your Financial Future and join thousands of Australians taking the first step toward confident retirement planning.</p>
-      <a href="{{ url_for('views.assessment') }}" class="btn btn-primary-custom mt-3">Start with Self-Assessment</a>
-      <br><br>
-      <p>Or browse through our webpage and explore our other interactive tools. We offer a range of resources to assist you in your retirement planning journey. Find below our featured tools and test them out today!</p>
+<section class="hero-section" style="margin-bottom: -1rem; ">
+ <div class="overlay"></div>
+  <div class="container">
+    <div class="row align-items-start">
+      
+      <!-- Left Column -->
+      <div class="col-md-6 text-start pe-md-5">
+        <h1>Welcome to The Prime Time Toolkit by Bec Wilson</h1>
+        This Website is based on Bec Wilson's book 
+        <strong><em class="colorful-title">The Prime Time: 27 Lessons for the new midlife</em></strong>. 
+        We are helping Australians aged 47–65 plan smarter for retirement. Take Control of Your Financial Future and join thousands of Australians taking the first step toward confident retirement planning.</p>
+        <p>☝ We prepared a step-by-step approach you can follow to simplify your pre-retirement journey. <strong>Let's get you started!</strong>
+        </p>
+      </div>
+    
+      <!-- Right Column -->
+      <div class="col-md-6 text-start ps-md-5">
+        <h3>Step 1</h3>
+        <p>Start with filling out a set of questions in our Self-Assessment tool. Simply click the below link <em>Self-Assessment</em>.</p>
+        <a href="{{ url_for('views.assessment') }}">>> Go to Self-Assessment</a>
+        <br><br>
+        <h3>Step 2</h3>
+        <p>After you submitted the Self-Assessment, you will receive personalized feedback on your financial readiness and get access to our <em>Excel spreadsheet tool</em> via email.</p>
+        
+        <h3>Step 3</h3>
+        <p>After you have received our email, simply upload your completed Excel spreadsheet by clicking the below link. This will provide you with a comprehensible overview.</p>
+        <a href="{{ url_for('views.budget') }}">>> Go to Dashboards</a>
+      </div>
     </div>
+  </div>
   </section>
-  <hr>
-  <div class="slideshow-container">
+  <section class="gradient-section-darker text-center my-2">
+    <h2>Stay Updated!</h2>
+  </section>
+
+
+  <div style="background-color: #fdfbf7; width: 100vw; margin-left: calc(-50vw + 50%); margin-bottom: -2rem; margin-top: -1rem;">
+    <div class="slideshow-container" style="width: 100vw; max-width: 100%; position: relative; margin: auto;">
 
     <!-- put a picture here about same size as others -->
 
@@ -36,13 +63,44 @@
     <span class="dot" onclick="currentSlide(2)"></span>
     <span class="dot" onclick="currentSlide(3)"></span>
   </div>
+  <section class="gradient-section2 text-center my-2">
+  <div class="container">
+    <br>
+    <h2>Don't miss out on <strong>Bec Wilson's Newsletters</strong></h2>
 
+    <button id="subscribeBtn" class="btn-login">Subscribe Now</button>
+
+    <form id="subscribeForm" action="{{ url_for('views.subscribe') }}" method="POST" style="display: none; margin-top: 1rem;">
+      {% if current_user.is_authenticated %}
+        <input type="hidden" name="email" value="{{ current_user.email }}">
+      {% else %}
+        <input type="email" name="email" placeholder="Enter your email" required class="form-control mb-2" style="max-width: 400px; margin: 0 auto;">
+      {% endif %}
+      <button type="submit" class="btn-login">Confirm Subscription</button>
+    </form>
+  </div>
+</section>
+
+{% if current_user.is_authenticated %}
+<script>
+  document.getElementById('subscribeBtn').addEventListener('click', function () {
+    document.getElementById('subscribeForm').submit();
+  });
+</script>
+{% else %}
+<script>
+  document.getElementById('subscribeBtn').addEventListener('click', function () {
+    document.getElementById('subscribeForm').style.display = 'block';
+    this.style.display = 'none';
+  });
+</script>
+{% endif %}
   <!-- Static Header -->
-  <section class="hero-section text-center py-3">
-    <div class="container">
-      <h1>Check out our tools</h1>
+  <div class="container">
+    <section class="hero-section text-center py-3">
+      <h1>Check out our (other?) tools</h1>
       <p>Explore our range of tools designed to help you plan for a confident retirement. <br>We offer an Excel based budget planner, where you can simply enter your income, expenses, assets, liabilities and more to estimate your budget.<br>We also provide a self-assessment tool to help you evaluate your current financial situation and identify areas for improvement. Or simply learn about <br>important terms in the Prime Time by visiting our new Learning Hub!</p>
-    </div>
+  </div>
   </section>
   <!-- Static Content -->
   <section class="container my-3">
@@ -73,6 +131,8 @@
       </div>
     </div>
   </section>
+  <br>
+  </div>
  <script>
   let slideIndex = 0;
   let slideTimer;
