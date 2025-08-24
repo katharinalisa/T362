@@ -8,20 +8,29 @@
   --green: #156064;
   --blue: #89A6FB;
   --brand: #9E2A2B;
-  --soft-bg: #FDF6ED;
+  --soft-bg: #F0E6DC
 }
 
 /* === Base Typography === */
 body {
   background-color: var(--soft-bg);
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Inter', sans-serif;
   color: var(--text-color);
 }
 
 h1, h2, h3, h4, h5 {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
   color: var(--brand);
+}
+
+p {
+  font-size: 0.95rem;
+}
+
+.container, main {
+  padding-left: 3rem;
+  padding-right: 3rem;
 }
 
 .accent-text {
@@ -67,19 +76,27 @@ h1, h2, h3, h4, h5 {
 /* === Navbar === */
 .navbar {
   background-color: var(--bg-color);
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
 }
 .navbar-brand img {
   height: 60px;
 }
 .logo-img {
-  max-height: 30px !important;
+  max-height: 35px !important;
   width: auto; 
 }
 .nav-link {
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
+  font-size: 0.9rem;
   color: var(--text-color);
 }
+
+.navbar-nav {
+  gap: 1rem;
+}
+
 .nav-link:hover,
 .dropdown-item:hover {
   color: var(--green);
@@ -89,7 +106,8 @@ h1, h2, h3, h4, h5 {
   border: 1px solid var(--jade);
 }
 .dropdown-item {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
 }
 
 /* === Sections === */
