@@ -76,12 +76,13 @@
     color:#fff;
     padding: 96px 0;
     overflow: hidden;
+    isolation:isolate; /* ensure pseudo background stays within this section */
   }
   .cta-book::before{
     content:"";
     position:absolute; inset:0;
-    background:
-      linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.6)),
+    z-indes:0;
+    background:linear- gradient(135deg, #0b5bd3 0%, #18b5e6 100),
       url("{{ url_for('static', filename='img/prime-time-bg.jpg') }}") center/cover no-repeat;
   }
   .cta-inner{ position:relative; z-index:1; max-width:1100px; margin:0 auto; }
@@ -262,9 +263,8 @@
       </div>
 
       <div class="book-wrap">
-        <img class="book" src="{{ url_for('static', filename='img/prime-time-book.png') }}"
+        <img class="book" src="{{ url_for('static', filename='img/primetime_book.png') }}"
              alt="Prime Time book by Bec Wilson" loading="lazy">
-        ## put prime-time-book.png put in /static/img later##
       </div>
     </div>
   </div>
