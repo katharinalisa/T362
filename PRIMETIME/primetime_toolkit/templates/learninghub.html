@@ -1,84 +1,351 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<section class="hero-section text-center py-4">
-    <div class="container">
-      <h1>The Prime Time Learning Hub</h1>
-    </div>
+<style>
+  :root{
+    --ink:#0E2A3B;
+    --muted:#51697A;
+    --brand:#9E2A2B;
+    --cream:#F6F3EE;
+    --paper:#FFFFFF;
+    --hero-deep-1:#0F1C2E;
+    --hero-deep-2:#173451;
+  }
+  .full-bleed{ margin-inline: calc(50% - 50vw); width:100vw; }
+  .slice.white-bg{ background:#FFFFFF; }
+  .white-bg.full-bleed{ background:#FFFFFF; border-radius:0 !important; box-shadow:none !important; }
+
+  .hero-dark{
+    background: linear-gradient(135deg,var(--hero-deep-1) 0%, var(--hero-deep-2) 70%);
+    color:#fff;
+    padding: 88px 0;
+  }
+  .hero-wrap{ max-width: 1100px; margin: 0 auto; }
+  .hero-title{
+    font-size: clamp(38px,5.4vw,64px);
+    line-height: 1.15;
+    font-weight: 800;
+    margin: 0 0 12px 0;
+    text-shadow: 0 2px 6px rgba(0,0,0,.35);
+  }
+  /* ensure hero text stays white even if global h1 styles exist */
+  .hero-dark .hero-title{ color:#fff !important; }
+  .hero-dark .hero-sub{ color:#E6EEF8 !important; }
+  .hero-sub{
+    color:#E6EEF8;
+    font-size: clamp(14px,2.2vw,18px);
+    margin: 0 0 24px 0;
+  }
+  .btn-cta{
+    background:#E11D48;
+    border:none;
+    font-weight:600;
+    border-radius:.75rem;
+    padding:.95rem 1.25rem;
+    color:#fff;
+  }
+  .btn-cta:hover{ filter:brightness(.95); color:#fff; }
+
+  .slice{ padding: 72px 0; }
+  .slice-alt{ padding: 72px 0; background: var(--cream); }
+  .white-bg { background: #FFFFFF; }
+  .container-narrow{ max-width: 980px; margin: 0 auto; }
+  .content-wide {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .section-title{
+    color: var(--ink);
+    font-weight: 800;
+    font-size: clamp(28px,3.4vw,40px); /* 더 크게 */
+    letter-spacing: -.01em;
+    margin-bottom: 16px;
+  }
+  .lead-p{
+    color: var(--muted);
+    font-size: 18px;
+  }
+
+  .card-soft{ border:1px solid #EEE; border-radius:.9rem; background:#fff; }
+  .card-soft:hover{ box-shadow:0 .6rem 1.2rem rgba(0,0,0,.07); }
+
+  .cta-book{
+    position: relative;
+    color:#fff;
+    padding: 96px 0;
+    overflow: hidden;
+  }
+  .cta-book::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.6)),
+      url("{{ url_for('static', filename='img/prime-time-bg.jpg') }}") center/cover no-repeat;
+    /* prime-time-bg.jpg 를 /static/img 에 넣어주세요 */
+  }
+  .cta-inner{ position:relative; z-index:1; max-width:1100px; margin:0 auto; }
+  .cta-grid{ display:grid; grid-template-columns: 1.15fr .85fr; gap: 32px; align-items: center; }
+  @media (max-width: 960px){ .cta-grid{ grid-template-columns: 1fr; } }
+  .cta-title{ font-size: clamp(32px,4.6vw,56px); font-weight:800; line-height:1.12; margin:0 0 16px; }
+  .cta-text{ font-size:18px; opacity:.95; }
+  .cta-book .btn-cta{ background:#E11D48; margin-top:20px; }
+
+  .book-wrap{ display:flex; justify-content:center; }
+  .book{
+    width:min(340px,42vw);
+    filter: drop-shadow(0 12px 36px rgba(0,0,0,.45));
+  }
+  /* static image: prime-time-book.png */
+
+  .link-list { list-style:none; padding:0; margin:0; }
+  .link-list li { margin-bottom:12px; }
+  .link-list a { font-weight:600; color:var(--brand); text-decoration:none; }
+  /* prettier "More from Bec Wilson" cards */
+  .eyebrow{ text-transform:uppercase; letter-spacing:.08em; font-weight:700; color:var(--brand); font-size:12px; }
+  .more-grid{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:20px; }
+  .more-card{ background:#fff; border:1px solid #eee; border-radius:14px; padding:20px; height:100%; display:flex; flex-direction:column; }
+  .more-card .title{ font-weight:800; color:var(--ink); margin:8px 0 6px; font-size:18px; }
+  .more-card p{ color:var(--muted); font-size:14px; margin:0 0 10px; }
+  .more-card a.btn-link{ margin-top:auto; font-weight:700; color:var(--brand); text-decoration:none; }
+  .more-card a.btn-link:hover{ text-decoration:underline; }
+  .more-icon{ width:40px; height:40px; border-radius:10px; background:#F6F3EE; display:grid; place-items:center; font-size:20px; }
+  @media (max-width: 900px){ .more-grid{ grid-template-columns:1fr; } }
+</style>
+
+<!-- HERO -->
+<section class="hero-dark full-bleed">
+  <div class="hero-wrap">
+    <h1 class="hero-title">The Prime Time Learning Hub</h1>
+    <p class="hero-sub">Practical guidance and tools for Australians aged 47–65.</p>
+    <a href="{{ url_for('views.superannuation') }}" class="btn btn-cta">Explore Superannuation Tools</a>
+  </div>
 </section>
-  <h3 class="mt-4" style="color: #335C67;">What is Prime Time?</h3>
-    <p>Prime Time refers to the period in life, typically between ages 47 and 65, when individuals experience significant transitions in career, family, health, and personal aspirations. During this stage, people often focus on planning for retirement, maintaining wellbeing, 
-    and exploring new interests, while navigating changes in work, supporting adult children, caring for ageing parents, and reassessing financial priorities. Embracing Prime Time means recognising the value of experience and using it to make informed decisions about the next phase of life, building resilience, strengthening relationships, and pursuing personal growth for a fulfilling journey into retirement and beyond (Wilson, 2025).</p>
-    <br>
-    <h3 class="mt-4" style="color: #335C67;">What is the Prime Time Toolkit?</h3>
 
-    <p>The Prime Time Toolkit is a comprehensive resource designed to help Australians aged 47–65 navigate the complexities of retirement planning. It offers a range of tools, resources, and expert insights to empower individuals to take control of their financial future.</p>
-    <p>By using the Prime Time Toolkit, you can:</p>
-    <ul>
-        <li>Assess your current financial situation and set realistic retirement goals.</li>
-        <li>Use interactive tools to estimate your retirement savings and future income.</li>
-        <li>View calculations showing the impact of superannuation and investments.</li>
-        <li>See how retirement drawdown affects your income and savings over time.</li>
-        <li>Get a clear overview of your assets and liabilities to understand your net worth.</li>
-        <li>Review your regular expenses and see how they influence your retirement budget.</li>
-        <li>Track upcoming bills and payments to help you stay organised and avoid missing deadlines.</li>
+<!-- Section 1: What is Prime Time?-->
+<section class="slice">
+  <div class="container-narrow">
+    <h2 class="section-title">What is Prime Time?</h2>
+    <p class="lead-p">
+      Prime Time refers to the period in life, typically between ages 47 and 65, when individuals experience significant transitions
+      in career, family, health, and personal aspirations. During this stage, people often focus on planning for retirement,
+      maintaining wellbeing, and exploring new interests, while navigating changes in work, supporting adult children, caring for
+      ageing parents, and reassessing financial priorities. Embracing Prime Time means recognising the value of experience and using it
+      to make informed decisions about the next phase of life, building resilience, strengthening relationships, and pursuing personal
+      growth for a fulfilling journey into retirement and beyond (Wilson, 2025).
+    </p>
+  </div>
+</section>
+
+<!-- Section 2: Toolkit -->
+<section class="slice white-bg full-bleed">
+  <div class="content-wide">
+    <h2 class="section-title">What is the Prime Time Toolkit?</h2>
+    <p class="lead-p">
+      The Prime Time Toolkit is a comprehensive resource designed to help Australians aged 47–65 navigate the complexities of retirement
+      planning. It offers a range of tools, resources, and expert insights to empower individuals to take control of their financial future.
+    </p>
+    <p class="mb-2 fw-semibold">By using the Prime Time Toolkit, you can:</p>
+    <ul class="mb-0">
+      <li>Assess your current financial situation and set realistic retirement goals.</li>
+      <li>Use interactive tools to estimate your retirement savings and future income.</li>
+      <li>View calculations showing the impact of superannuation and investments.</li>
+      <li>See how retirement drawdown affects your income and savings over time.</li>
+      <li>Get a clear overview of your assets and liabilities to understand your net worth.</li>
+      <li>Review your regular expenses and see how they influence your retirement budget.</li>
+      <li>Track upcoming bills and payments to help you stay organised and avoid missing deadlines.</li>
     </ul>
-    <br>
+  </div>
+</section>
 
-    <div class="mt-4">
-        <h4 style="color: #335C67;">Watch: 27 Lessons for the New Midlife</h4>
-        <div class="ratio ratio-16x9">
-            <iframe src="https://www.youtube.com/embed/sRL-zpUxYek" title="Prime Time Video" allowfullscreen></iframe>
-        </div>
+<!-- Section 3: Video-->
+<section class="slice">
+  <div class="container-narrow">
+    <h3 class="section-title">Watch: 27 Lessons for the New Midlife</h3>
+    <div class="ratio ratio-16x9">
+      <iframe src="https://www.youtube.com/embed/sRL-zpUxYek" title="Prime Time Video" allowfullscreen></iframe>
     </div>
-    <br>
-    <h3 class="mt-4" style="color: #335C67;">Visit Bec Wilson's Webinars for more videos like this!</h3>
-    <ul>
-        <li><a href="https://www.becwilson.net/podcast" target="_blank" style="color: #9E2A2B;">Bec Wilson: Upcoming Events & Webinars</a></li>
-        <li><a href="https://www.youtube.com/@BecWilson-EpicRetirement" target="_blank" style="color: #9E2A2B;">Bec Wilson: Prime Time YouTube Channel</a></li>
-        <li><a href="https://www.linkedin.com/in/rebeccawilson/?originalSubdomain=au" target="_blank" style="color: #9E2A2B;">Bec Wilson on LinkedIn (Webinar Announcements)</a></li>
-    </ul>
-    <br>
-  <table class="table table-bordered mt-4">
-  <thead style="background-color: #f2f2f2;">
-    <tr>
-      <th style="color: #335C67;">Topic</th>
-      <th style="color: #335C67;">Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>How does Superannuation work?</strong></td>
-      <td>
-        Superannuation is a way of saving for retirement in Australia. It involves making regular contributions to a super fund, which is then invested to grow over time. The goal is to accumulate enough savings to provide an income in retirement. Superannuation is typically compulsory for employees, with employers required to contribute a percentage of an employee's salary to their super fund.
-      </td>
-    </tr>
-    <tr>
-      <td><strong>What is Retirement Drawdown?</strong></td>
-      <td>
-        Retirement drawdown refers to the process of withdrawing funds from your retirement savings to cover living expenses during retirement. It involves strategically managing your assets to ensure a sustainable income stream while minimizing the risk of depleting your savings too quickly.
-      </td>
-    </tr>
-    <tr>
-      <td><strong>What is Super Growth about?</strong></td>
-      <td>
-        Super growth refers to the strategies and approaches aimed at maximizing the growth potential of your superannuation savings over time. This can include investment choices, contribution strategies, and understanding the impact of fees and taxes on your superannuation balance.
-      </td>
-    </tr>
-  </tbody>
-</table>
-<br>
-  <section class="container my-3">
-    <h3 class="mt-4" style="color: #335C67;">What tools can I use?</h3>
-    <div class="row text-center g-4">
-    <div class="col-md-4">
-        <a href="{{ url_for('views.superannuation') }}" class="text-decoration-none text-dark">
-          <div class="feature-box">
-            <h3>Superannuation Tools</h3>
-            <p>Click here to find out more.</p>
+  </div>
+</section>
+
+<!-- Section 4: Links-->
+<section class="slice white-bg full-bleed">
+  <div class="content-wide">
+    <span class="eyebrow">Resources</span>
+    <h2 class="section-title">More from Bec Wilson</h2>
+    <div class="more-grid">
+      <!-- Card 1: Events & Webinars -->
+      <article class="more-card">
+        <div class="more-icon" aria-hidden="true"></div>
+        <h3 class="title">Upcoming Events &amp; Webinars</h3>
+        <p>Talks, workshops and live sessions focused on Prime Time and retirement readiness.</p>
+        <a class="btn-link" href="https://www.becwilson.net/podcast" target="_blank" rel="noopener">Explore events →</a>
+      </article>
+
+      <!-- Card 2: YouTube Channel -->
+      <article class="more-card">
+        <div class="more-icon" aria-hidden="true"></div>
+        <h3 class="title">Prime Time YouTube</h3>
+        <p>Short, practical videos on money, super and planning for a great retirement.</p>
+        <a class="btn-link" href="https://www.youtube.com/@BecWilson-EpicRetirement" target="_blank" rel="noopener">Watch videos →</a>
+      </article>
+
+      <!-- Card 3: LinkedIn -->
+      <article class="more-card">
+        <div class="more-icon" aria-hidden="true"></div>
+        <h3 class="title">Connect on LinkedIn</h3>
+        <p>Follow Bec for updates, articles and ongoing conversation about the new midlife.</p>
+        <a class="btn-link" href="https://www.linkedin.com/in/rebeccawilson/" target="_blank" rel="noopener">Follow Bec →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Section 5: Explore by Topic -->
+<section class="slice">
+  <div class="container-narrow">
+    <div class="card-soft p-4">
+      <h2 class="section-title mb-3">Explore by Topic</h2>
+      <div class="accordion" id="topicsAcc">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="t1h">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#t1">How does Superannuation work?</button>
+          </h2>
+          <div id="t1" class="accordion-collapse collapse show" data-bs-parent="#topicsAcc">
+            <div class="accordion-body">
+              Superannuation is a way of saving for retirement in Australia. It involves making regular contributions to a super fund,
+              which is then invested to grow over time. The goal is to accumulate enough savings to provide an income in retirement.
+              Superannuation is typically compulsory for employees, with employers required to contribute a percentage of an employee's salary
+              to their super fund.
+            </div>
           </div>
-        </a>
+        </div>
+        <div class="accordion-item mt-2">
+          <h2 class="accordion-header" id="t2h">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#t2">What is Retirement Drawdown?</button>
+          </h2>
+          <div id="t2" class="accordion-collapse collapse" data-bs-parent="#topicsAcc">
+            <div class="accordion-body">
+              Retirement drawdown refers to the process of withdrawing funds from your retirement savings to cover living expenses during retirement.
+              It involves strategically managing your assets to ensure a sustainable income stream while minimizing the risk of depleting your savings too quickly.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item mt-2">
+          <h2 class="accordion-header" id="t3h">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#t3">What is Super Growth about?</button>
+          </h2>
+          <div id="t3" class="accordion-collapse collapse" data-bs-parent="#topicsAcc">
+            <div class="accordion-body">
+              Super growth refers to the strategies and approaches aimed at maximizing the growth potential of your superannuation savings over time.
+              This can include investment choices, contribution strategies, and understanding the impact of fees and taxes on your superannuation balance.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
+<section class="cta-book full-bleed">
+  <div class="cta-inner">
+    <div class="cta-grid">
+      <div>
+        <h2 class="cta-title">Where else can you learn about the Tick?</h2>
+        <p class="cta-text">
+          You can explore more about the Epic Retirement Tick in <em>Prime Time: 27 Lessons for the New Midlife</em> and the upcoming
+          December 2025 release of <em>How to Have an Epic Retirement</em>. It’s also regularly featured in the Epic Retirement newsletter,
+          on the Prime Time podcast, and in ongoing media conversations.
+        </p>
+        <p class="cta-text">
+          The Tick gives us a clear framework for defining what ‘good’ looks like for everyday people who use super—so conversations can
+          lead to real action from both consumers and funds, rather than just adding to the noise about what’s wrong with super and retirement.
+        </p>
+        <a class="btn btn-cta" href="https://epicretirement.com.au/" target="_blank">Explore Prime Time</a>
+      </div>
+
+      <div class="book-wrap">
+        <img class="book" src="{{ url_for('static', filename='img/prime-time-book.png') }}"
+             alt="Prime Time book by Bec Wilson" loading="lazy">
+        ## put prime-time-book.png put in /static/img later##
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slice-alt">
+  <div class="container-narrow">
+    <h2 class="section-title">Frequently Asked Questions</h2>
+
+    <div class="accordion" id="faqAcc">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="fq1h">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#fq1">What is the Epic Retirement Tick?</button>
+        </h2>
+        <div id="fq1" class="accordion-collapse collapse show" data-bs-parent="#faqAcc">
+          <div class="accordion-body">
+            The Epic Retirement Tick is a clear benchmark developed with Chant West that shows whether a super fund is truly set up to support members in the run up to and throughout retirement. Funds must meet a high standard across 18 key criteria.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item mt-2">
+        <h2 class="accordion-header" id="fq2h">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fq2">Does the Tick mean a fund is the best in Australia?</button>
+        </h2>
+        <div id="fq2" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+          <div class="accordion-body">
+            No. It isn’t a ranking or award. It shows the fund performs strongly across most of the measures that matter for people aged 47–65, both before and during retirement.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item mt-2">
+        <h2 class="accordion-header" id="fq3h">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fq3">How can I use the Prime Time Toolkit?</button>
+        </h2>
+        <div id="fq3" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+          <div class="accordion-body">
+            Use the Toolkit to assess your situation, set goals, explore superannuation options, understand retirement drawdown, and plan spending and saving so you can make confident decisions.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item mt-2">
+        <h2 class="accordion-header" id="fq4h">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fq4">Is this personal financial advice?</button>
+        </h2>
+        <div id="fq4" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+          <div class="accordion-body">
+            No. The Toolkit and Tick provide education and a framework for better decisions. Consider your circumstances and seek licensed advice if you need it.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item mt-2">
+        <h2 class="accordion-header" id="fq5h">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fq5">Where can I learn more about Prime Time?</button>
+        </h2>
+        <div id="fq5" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+          <div class="accordion-body">
+            Check out <em>Prime Time: 27 Lessons for the New Midlife</em>, the Prime Time podcast, and Epic Retirement newsletters for deeper guidance tailored to ages 47–65.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item mt-2">
+        <h2 class="accordion-header" id="fq6h">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fq6">What are the 18 key criteria?</button>
+        </h2>
+        <div id="fq6" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+          <div class="accordion-body">
+            They cover investment performance, income options, fees, advice, education, tools, service and more—focused on what matters most in the lead-up to and during retirement.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 {% endblock %}
