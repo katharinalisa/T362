@@ -1,0 +1,101 @@
+{% extends 'layout.html' %}
+{% block content %}
+  {% include 'diagnostic/subnav.html' %}
+
+  <div class="container py-4">
+    <h1 class="text-center mb-4" style="color:#9E2A2B; font-family:'Playfair Display', serif;">
+      Epic Retirement & One-Off Experiences
+    </h1>
+
+    <p class="small-note mb-3">
+      List each major one-off cost or epic experience. Choose how often it occurs and whether to include it.
+      Totals use the rule: Once only = 1×, Every year = <em>Years in period</em>, Every second year = ⌊Years/2⌋.
+    </p>
+
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
+      <button id="clearAllBtn" class="btn btn-outline-danger" type="button">Clear All</button>
+      <button id="loadBtn" class="btn btn-outline-secondary ms-auto" type="button">Load</button>
+      <button id="saveBtn" class="btn btn-primary" type="button">Save</button>
+    </div>
+
+    <div class="row g-3 align-items-end mb-3">
+      <div class="col-sm-4 col-md-3">
+        <label class="form-label fw-semibold">Years in period</label>
+        <input id="yearsPeriod" type="number" min="1" step="1" class="form-control" value="10" />
+        <div class="small-note">Used for annual/biennial totals.</div>
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <datalist id="epicItems">
+      <option value="3-month sabbatical" />
+      <option value="Caravan trip around Australia" />
+      <option value="Renovate kitchen" />
+      <option value="Round-the-world cruise" />
+      <option value="Family reunion overseas" />
+      <option value="New car purchase" />
+      <option value="Home renovations" />
+      <option value="Major medical expenses" />
+      <option value="Pay off outstanding debts" />
+      <option value="Epic holiday/travel" />
+    </datalist>
+
+    <div class="table-responsive shadow-sm rounded">
+      <table id="epicTable" class="table table-bordered mb-0 align-middle">
+        <thead>
+          <tr class="table-light">
+            <th style="width:36px;"></th>
+            <th class="item-cell">Item</th>
+            <th style="width:160px;">Estimated cost ($)</th>
+            <th style="width:180px;">Frequency</th>
+            <th style="width:120px;">Include?</th>
+            <th style="width:160px;">Total cost ($)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="row g-3 mt-3">
+      <div class="col-lg-6">
+        <div class="totals-box p-3 border rounded bg-light">
+          <div class="row">
+            <div class="col-7 fw-bold">TOTAL Epic &amp; One-off</div>
+            <div class="col-5 text-end fw-bold" id="grandTotal">$0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row template -->
+  <template id="epicRowTemplate">
+    <tr class="epic-row">
+      <td class="text-center">
+        <button class="btn btn-outline-danger btn-sm remove-row" type="button" aria-label="Remove row">&times;</button>
+      </td>
+      <td>
+        <input class="form-control form-control-sm item" list="epicItems" placeholder="e.g., Round-the-world cruise" />
+      </td>
+      <td>
+        <input type="number" min="0" step="0.01" class="form-control form-control-sm amount" placeholder="0.00" />
+      </td>
+      <td>
+        <select class="form-select form-select-sm freq">
+          <option>Once only</option>
+          <option>Every year</option>
+          <option>Every second year</option>
+        </select>
+      </td>
+      <td class="text-center">
+        <div class="form-check form-switch d-inline-flex">
+          <input class="form-check-input include" type="checkbox" checked />
+        </div>
+      </td>
+      <td class="currency total">$0</td>
+    </tr>
+  </template>
+
+    <script src="{{ url_for('static', filename='js/epic.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'layout.html' %}
+{% block content %}
+  {% include 'diagnostic/subnav.html' %}
+
+  <div class="container py-4">
+    <div class="mb-3">
+      <h1 class="text-center mb-4" style="color:#9E2A2B; font-family:'Playfair Display', serif;">
+        Life Expectancy
+      </h1>
+    </div>
+
+    <p class="small-note mb-3">
+      Use this to estimate your expected lifespan based on percentiles for men, women and couples.
+      Choose your gender, percentile and enter your current age.
+    </p>
+
+    <!-- Form card -->
+    <div class="feature-box mb-4">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Gender</label>
+          <select id="leGender" class="form-select">
+            <option value="" selected disabled>Choose…</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Couple</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Percentile</label>
+          <select id="lePercentile" class="form-select">
+            <option value="" selected disabled>Choose…</option>
+            <option>25th percentile</option>
+            <option>50th percentile</option>
+            <option>75th percentile</option>
+            <option>90th percentile</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Current age</label>
+          <input id="leAge" type="number" min="0" step="1" class="form-control" placeholder="e.g., 52" />
+        </div>
+      </div>
+
+      <hr class="my-4" />
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="kpi">
+            <div class="kpi-label">Expected lifespan</div>
+            <div id="leExpected" class="kpi-value placeholder">—</div>
+            <div class="kpi-sub">years</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="kpi">
+            <div class="kpi-label">Years remaining</div>
+            <div id="leRemaining" class="kpi-value placeholder">—</div>
+            <div class="kpi-sub">expected − current age</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="kpi">
+            <div class="kpi-label">Estimated year of death</div>
+            <div id="leYear" class="kpi-value placeholder">—</div>
+            <div class="kpi-sub">current year + remaining</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3 d-flex gap-2">
+        <button id="leReset" class="btn btn-outline-secondary" type="button">Reset</button>
+      </div>
+    </div>
+
+    <!-- Reference table (matches your sheet) -->
+    <div class="table-responsive shadow-sm rounded">
+      <table class="table table-bordered mb-0 align-middle">
+        <thead>
+          <tr class="table-light">
+            <th style="width:220px;">Percentile</th>
+            <th>Male</th>
+            <th>Female</th>
+            <th>Couple</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>25th percentile</td><td>85</td><td>87</td><td>92</td></tr>
+          <tr><td>50th percentile</td><td>89</td><td>91</td><td>95</td></tr>
+          <tr><td>75th percentile</td><td>95</td><td>97</td><td>98</td></tr>
+          <tr><td>90th percentile</td><td>98</td><td>100</td><td>101</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="small-note mt-2">
+      These figures mirror the percentiles shown in your workbook. Results are indicative only.
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/life_expectancy.js') }}"></script>
+{% endblock %}
