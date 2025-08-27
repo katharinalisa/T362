@@ -11,3 +11,7 @@ venv/lib/python3.12/site-packages/werkzeug-3.1.3.dist-info/RECORD
 *.fish
 /venv
 *.pyc
+.venv/bin/activate
+*.csh
+*.ps1
+/.venv

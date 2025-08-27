@@ -1,0 +1,84 @@
+{% extends 'layout.html' %}
+{% block content %}
+  {% include 'diagnostic/subnav.html' %}
+
+  <div class="container py-4">
+    <h1 class="text-center mb-4" style="color:#9E2A2B; font-family:'Playfair Display', serif;">
+      Future Budget
+    </h1>
+
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
+      <button id="clearAllBtn" class="btn btn-outline-danger" type="button">Clear All</button>
+      <button id="loadBtn" class="btn btn-outline-secondary ms-auto" type="button">Load</button>
+      <button id="saveBtn" class="btn btn-primary" type="button">Save</button>
+    </div>
+
+    <p class="small-note mb-3">
+      For each phase, enter your baseline cost of living, any one-off costs per year, and epic experiences per year,
+      along with how many years you expect to spend in that phase. The table calculates the <em>Total annual budget</em>.
+    </p>
+
+    <datalist id="phaseOptions">
+      <option value="Set-up" />
+      <option value="Lifestyling" />
+      <option value="Part-timing" />
+      <option value="Epic retirement" />
+      <option value="Passive retirement/ageing" />
+      <option value="Frailty" />
+    </datalist>
+
+    <div class="table-responsive shadow-sm rounded">
+      <table id="futureBudgetTable" class="table table-bordered mb-0 align-middle">
+        <thead>
+          <tr class="table-light">
+            <th style="width:36px;"></th>
+            <th class="category-cell">Phase</th>
+            <th style="width:140px;">Age range</th>
+            <th style="width:140px;">Years in phase</th>
+            <th style="width:160px;">Baseline cost ($)</th>
+            <th style="width:180px;">One-off costs per annum ($)</th>
+            <th style="width:200px;">Epic experiences per annum ($)</th>
+            <th style="width:180px;">Total annual budget ($)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="row g-3 mt-3">
+      <div class="col-lg-6">
+        <div class="totals-box p-3 border rounded bg-light">
+          <div class="row">
+            <div class="col-7 fw-bold">Total planned years</div>
+            <div class="col-5 text-end fw-bold" id="totalYears">0</div>
+          </div>
+          <div class="row">
+            <div class="col-7">Lifetime budget estimate</div>
+            <div class="col-5 text-end" id="lifetimeTotal">$0</div>
+          </div>
+        </div>
+        <div class="small-note mt-2">
+          Lifetime estimate = Σ(annual budget × years in that phase).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <template id="futureRowTemplate">
+    <tr class="future-row">
+      <td class="text-center">
+        <button class="btn btn-outline-danger btn-sm remove-row" type="button" aria-label="Remove row">&times;</button>
+      </td>
+      <td><input class="form-control form-control-sm phase" list="phaseOptions" placeholder="e.g., Set-up" /></td>
+      <td><input class="form-control form-control-sm age-range" placeholder="e.g., 45–50" readonly /></td>
+      <td><input type="number" min="0" step="1"    class="form-control form-control-sm years"    placeholder="0" /></td>
+      <td><input type="number" min="0" step="0.01" class="form-control form-control-sm baseline" placeholder="0.00" /></td>
+      <td><input type="number" min="0" step="0.01" class="form-control form-control-sm oneoff"   placeholder="0.00" /></td>
+      <td><input type="number" min="0" step="0.01" class="form-control form-control-sm epic"     placeholder="0.00" /></td>
+      <td class="currency annual">$0</td>
+    </tr>
+  </template>
+
+  <script src="{{ url_for('static', filename='js/future_budget.js') }}"></script>
+{% endblock %}

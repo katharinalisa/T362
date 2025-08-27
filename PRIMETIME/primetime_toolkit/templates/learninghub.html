@@ -76,13 +76,16 @@
     color:#fff;
     padding: 96px 0;
     overflow: hidden;
+    isolation:isolate; /* ensure pseudo background stays within this section */
   }
-  .cta-book::before{
+  .cta-book::before {
     content:"";
     position:absolute; inset:0;
-    background:
-      linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.6)),
-      url("{{ url_for('static', filename='img/prime-time-bg.jpg') }}") center/cover no-repeat;
+    z-index:0;
+    background: linear-gradient(to bottom, #0050A8 0%, #CFF8F2 100%);
+  }
+  .cta-book .cta-title, .cta-book .cta-text {
+    color: white;
   }
   .cta-inner{ position:relative; z-index:1; max-width:1100px; margin:0 auto; }
   .cta-grid{ display:grid; grid-template-columns: 1.15fr .85fr; gap: 32px; align-items: center; }
@@ -258,13 +261,12 @@
           The Tick gives us a clear framework for defining what ‘good’ looks like for everyday people who use super—so conversations can
           lead to real action from both consumers and funds, rather than just adding to the noise about what’s wrong with super and retirement.
         </p>
-        <a class="btn btn-cta" href="https://epicretirement.com.au/" target="_blank">Explore Prime Time</a>
+        <a class="btn btn-cta" href="https://www.primetimers.net/" target="_blank">Explore Prime Time</a>
       </div>
 
       <div class="book-wrap">
-        <img class="book" src="{{ url_for('static', filename='img/prime-time-book.png') }}"
+        <img class="book" src="{{ url_for('static', filename='img/primetime_book.png') }}"
              alt="Prime Time book by Bec Wilson" loading="lazy">
-        ## put prime-time-book.png put in /static/img later##
       </div>
     </div>
   </div>

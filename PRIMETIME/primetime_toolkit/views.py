@@ -204,6 +204,7 @@ def send_email():
 #---------------------------------------------------
 
 
+
 @views.route('/expenses')
 def expenses():
     return render_template('diagnostic/expenses.html')
@@ -219,3 +220,20 @@ def assets():
 @views.route('/liabilities')
 def liabilities():
     return render_template('diagnostic/liabilities.html')
+
+@views.route('/life')
+def life():
+    return render_template('diagnostic/life_expectancy.html')
+
+@views.route('/future_budget')
+def future_budget():
+    return render_template('diagnostic/future_budget.html')
+
+@views.route('/calculator')                
+def calculator():                           
+    return render_template('diagnostic/calculator.html')
+
+
+@views.route('/epic')                  
+def epic():
+    return render_template('diagnostic/epic.html')
