@@ -1,11 +1,9 @@
-*.py
+
 venv/lib/python3.12/site-packages/werkzeug/datastructures/__pycache__/accept.cpython-312.pyc
 *.pyc
-*.png
 *.md
 venv/lib/python3.12/site-packages/werkzeug-3.1.3.dist-info/WHEEL
 venv/lib/python3.12/site-packages/werkzeug-3.1.3.dist-info/RECORD
-*.js
 *.txt
 *.cfg
 *.pyc
