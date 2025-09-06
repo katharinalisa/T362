@@ -107,7 +107,7 @@ def subscribe():
 
 
 #--------------------------------------------------------
-# start of submit assignment block
+# submit self assessment block
 
 @views.route('/submit-assessment', methods=['POST'])
 def submit_assessment():
@@ -174,14 +174,9 @@ def submit_tracker():
 # send email block
 
 @views.route('/send-email', methods=['POST'])
-@login_required
 def send_email():
-    user_email = getattr(current_user, 'email', None)
+    user_email = request.form.get('email')
     user_name = getattr(current_user, 'name', 'there')
-
-    if not user_email:
-        flash("No email address found for the current user.", "error")
-        return redirect(url_for('views.home'))
 
     msg = Message('Your PDF summary is ready! - PrimeTime Toolkit',
                   sender='ka.gremer@gmail.com',

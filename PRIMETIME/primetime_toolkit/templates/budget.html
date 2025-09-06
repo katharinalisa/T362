@@ -1,9 +1,6 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<div class="text-end mt-3">
-        <a href="{{ url_for('views.tracker') }}" class="btn btn-outline-secondary btn-lg">Go to Net Worth Tracker</a>
-</div>
 <section class="hero-section text-center py-4">
   <div class="container">
     <h2>Upload your completed Excel Spreadsheet here</h2>
@@ -16,18 +13,20 @@
   <!-- ....................................................-->
 
 
-  <div class="text-center">
-  <form id="excel-upload-form" action="{{ url_for('views.upload_excel') }}" method="post" enctype="multipart/form-data">
-    <div id="drop-area" class="mb-3 p-5 border border-primary rounded bg-light" style="max-width:400px;margin:auto;cursor:pointer;">
-      <p class="mb-2"><strong>Drag & drop your Excel file here</strong></p>
-      <input type="file" id="budget-file-input" class="form-control form-control-lg" name="budget_file" accept=".xlsx,.xls" required style="display:none;">
-      <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('budget-file-input').click();">Browse</button>
-      <div id="file-name" class="mt-2 text-secondary"></div>
+  <section class="upload-section text-center py-5">
+  <div class="container">
+    <div class="card mx-auto shadow-sm border-0 rounded-4 p-4" style="max-width: 500px;">
+      <div class="card-body text-center">
+        <span class="fs-1 text-primary mb-2"><i class="bi bi-upload"></i></span>
+        <h6><strong>Upload Completed Spreadsheet</strong></h6><br>
+        <form action="{{ url_for('views.upload_excel') }}" method="POST" enctype="multipart/form-data">
+          <input type="file" name="budget_file" class="form-control mb-2 rounded-pill" accept=".xlsx,.xls" required>
+          <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Upload Spreadsheet</button>
+        </form>
+      </div>
     </div>
-    <p class="text-muted">Accepted file formats: .xlsx, .xls</p>
-      <button type="submit" class="btn btn-primary mt-3">Upload</button>
-  </form>
-</div>
+  </div>
+</section>
 <script>
   const dropArea = document.getElementById('drop-area');
   const fileInput = document.getElementById('budget-file-input');

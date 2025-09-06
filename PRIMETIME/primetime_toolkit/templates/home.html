@@ -1,85 +1,86 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<section class="hero-section" style="margin-bottom: -1rem; ">
- <div class="overlay"></div>
-  <div class="container">
-    <div class="row align-items-start">
-      
-      <!-- Left Column -->
-      <div class="col-md-6 text-start pe-md-5">
-        <h1>Welcome to The Prime Time Toolkit by Bec Wilson</h1>
-        This Website is based on Bec Wilson's book 
-        <strong><em class="colorful-title">The Prime Time: 27 Lessons for the new midlife</em></strong>. 
-        We are helping Australians aged 47–65 plan smarter for retirement. Take Control of Your Financial Future and join thousands of Australians taking the first step toward confident retirement planning.</p>
-        <p>☝ We prepared a step-by-step approach you can follow to simplify your pre-retirement journey. <strong>Let's get you started!</strong>
+
+<section class="cta-book full-bleed" style="background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%); padding-top: 40px; padding-bottom: 0px; margin-top: -26px">
+  <div class="cta-inner"><br><br>
+    <div class="cta-grid align-items-center" style="min-height: 340px;">
+      <div>
+      <h1 class="display-1 section-title mb-2" style="font-size:3rem; font-weight:800;">
+        Welcome to The Prime Time Toolkit
+      </h1>
+        <p class="cta-text mb-4" style="color:#18191a">
+          This website is based on Bec Wilson's book <strong>The Prime Time: 27 Lessons for the new midlife</strong>.<br>
+          We are helping Australians aged 47–65 plan smarter for retirement.<br>
+          Take control of your financial future and join thousands of Australians taking the first step toward confident retirement planning.
         </p>
+        <a href="{{ url_for('views.assessment') }}" class="btn btn-cta btn-lg rounded-pill shadow" style="background: linear-gradient(90deg, #1a7f8c 0%, #3bb3c3 100%); color: #fff; font-weight:600; letter-spacing:0.5px; border: none;">
+          Start with a Self-Assessment
+        </a>
       </div>
-    
-      <!-- Right Column -->
-      <div class="col-md-6 text-start ps-md-5">
-        <h3>Step 1</h3>
-        <p>Start with filling out a set of questions in our Self-Assessment tool. Simply click the below link <em>Self-Assessment</em>.</p>
-        <a href="{{ url_for('views.assessment') }}">>> Go to Self-Assessment</a>
-        <br><br>
-        <h3>Step 2</h3>
-        <p>After you submitted the Self-Assessment, you will receive personalized feedback on your financial readiness and get access to our <em>Excel spreadsheet tool</em> via email.</p>
-        
-        <h3>Step 3</h3>
-        <p>After you have received our email, simply upload your completed Excel spreadsheet by clicking the below link. This will provide you with a comprehensible overview.</p>
-        <a href="{{ url_for('views.budget') }}">>> Go to Dashboards</a>
+      <div class="book-wrap d-none d-md-block">
+        <img class="book" src="{{ url_for('static', filename='img/primetime_book.png') }}"
+             alt="Prime Time book by Bec Wilson" loading="lazy"
+             style="max-width:350px; filter: drop-shadow(0 8px 32px rgba(34,60,80,0.18)); border-radius: 12px;">
       </div>
     </div>
-  </div>
-  </section>
-  <section class="gradient-section-darker text-center my-2">
-    <h2>Stay Updated!</h2>
-  </section>
+  </div><br><br>
+</section>
 
 
-  <div style="background-color: #fdfbf7; width: 100vw; margin-left: calc(-50vw + 50%); margin-bottom: -2rem; margin-top: -1rem;">
-    <div class="slideshow-container" style="width: 100vw; max-width: 100%; position: relative; margin: auto;">
-
-    <!-- put a picture here about same size as others -->
-
-    <div class="mySlides fade">
-      <div class="numbertext">2 / 3</div>
-      <img src="{{ url_for('static', filename='img/slide2.png') }}" style="width:100%" alt="Slide 2">
+<section class="slice full-bleed">
+  <div class="content-wide">
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-6">
+        <div class="card-soft p-4 text-center h-100">
+          <span class="fs-1 text-primary mb-3"><i class="bi bi-file-earmark-arrow-down"></i></span>
+          <h3>Get Spreadsheet by Email</h3>
+          <p class="lead-p mb-3">Receive our Excel tool via email, fill it out offline, and return to upload it for instant analysis.</p>
+          <form action="{{ url_for('views.send_email') }}" method="POST" class="mb-2">
+            <input type="email" name="email" class="form-control mb-2 rounded-pill" placeholder="Your email" required>
+            <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Send Spreadsheet</button>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card-soft p-4 text-center h-100">
+          <span class="fs-1 text-success mb-3"><i class="bi bi-calculator"></i></span>
+          <h3>Use Web Calculators</h3>
+          <p class="lead-p mb-3">Enter your financial details online using our calculators for instant results.</p><br>
+          <a href="{{ url_for('views.tracker') }}" class="btn btn-outline-primary rounded-pill px-4 text-decoration-none" style="margin-top:19.5px">Start Web Calculators</a>
+        </div>
+      </div>
     </div>
+  </div>
+</section>
 
-    <div class="mySlides fade">
-      <div class="numbertext">3 / 3</div>
-      <img src="{{ url_for('static', filename='img/slide3.png') }}" style="width:100%" alt="Slide 3">
+<!-- Upload Spreadsheet Section -->
+<section style="background-color:#f0fdff; width: 100vw; margin-left: calc(-50vw + 50%);"><br><br>
+  <div>
+    <div class="text-center">
+      <h5>Upload Your Completed Excel Spreadsheet on the Next Page</h5>
+      <p class="lead-p mb-3">Go to Dashboards to upload your spreadsheet and view your results.</p>
+      <a href="{{ url_for('views.budget') }}"  class="btn btn-cta btn-lg rounded-pill shadow" style="background: linear-gradient(90deg, #1a7f8c 0%, #3bb3c3 100%); color: #fff; font-weight:600; letter-spacing:0.5px; border: none;">Go to Dashboards</a>
     </div>
+  </div><br><br>
+</section><br><br><br>
 
-    <!-- Next and previous buttons -->
-    <a class="prev" href="javascript:void(0)" onclick="plusSlides(-1)">&#10094;</a>
-    <a class="next" href="javascript:void(0)" onclick="plusSlides(1)">&#10095;</a>
-  </div>
-  <br>
-  <!-- The dots/circles -->
-  <div class="text-center">
-    <span class="dot" onclick="currentSlide(1)"></span>
-    <span class="dot" onclick="currentSlide(2)"></span>
-    <span class="dot" onclick="currentSlide(3)"></span>
-  </div>
-  <section class="gradient-section2 text-center my-2">
+<!-- Newsletter Subscription Section -->
+<section class="gradient-section2 text-center py-5" style="border-radius:30px;">
   <div class="container">
-    <br>
-    <h2>Don't miss out on <strong>Bec Wilson's Newsletters</strong></h2>
-
-    <button id="subscribeBtn" class="btn-login">Subscribe Now</button>
-
+    <h2 class="fw-bold mb-2" style="color:#ebe7e4;">Don't miss out on Bec Wilson's Newsletters</h2>
+    <h4 class="fw-bold mb-2" style="color:#ebe7e4;">Get the latest News straight from Bec's Desk</h4><br>
+    <button id="subscribeBtn" class="btn btn-light btn-lg rounded-pill shadow-sm">Subscribe Now</button>
     <form id="subscribeForm" action="{{ url_for('views.subscribe') }}" method="POST" style="display: none; margin-top: 1rem;">
       {% if current_user.is_authenticated %}
         <input type="hidden" name="email" value="{{ current_user.email }}">
       {% else %}
         <input type="email" name="email" placeholder="Enter your email" required class="form-control mb-2" style="max-width: 400px; margin: 0 auto;">
       {% endif %}
-      <button type="submit" class="btn-login">Confirm Subscription</button>
+      <button type="submit" class="btn btn-light btn-lg rounded-pill shadow-sm">Confirm Subscription</button>
     </form>
   </div>
-</section>
+</section><br><br><br>
 
 {% if current_user.is_authenticated %}
 <script>
@@ -95,76 +96,17 @@
   });
 </script>
 {% endif %}
-  <!-- Static Header -->
-  <div class="container">
-    <section class="hero-section text-center py-3">
-      <h1>Check out our (other?) tools</h1>
-      <p>Explore our range of tools designed to help you plan for a confident retirement. <br>We offer an Excel based budget planner, where you can simply enter your income, expenses, assets, liabilities and more to estimate your budget.<br>We also provide a self-assessment tool to help you evaluate your current financial situation and identify areas for improvement. Or simply learn about <br>important terms in the Prime Time by visiting our new Learning Hub!</p>
+
+<!-- Learning Hub Section -->
+<section class="slice white-bg full-bleed" style="background-color:#f0fdff; width: 100vw; margin-left: calc(-50vw + 50%);">
+  <div class="content-wide text-center">
+    <h2 class="section-title mb-3">The New Prime Time Learning Hub Is Here!</h2>
+    <p class="lead-p mb-4">Explore articles, podcasts, and webinars from Bec Wilson to enhance your financial knowledge and retirement planning.</p>
+    <a href="{{ url_for('views.learninghub') }}"
+        class="btn btn-info btn-lg px-5 rounded-pill shadow"
+        style="font-size:1.15rem; font-weight:600; letter-spacing:0.5px;">
+      <i class="bi bi-arrow-right-circle me-2"></i>Visit Learning Hub
+    </a>
   </div>
-  </section>
-  <!-- Static Content -->
-  <section class="container my-3">
-    <div class="row text-center g-4">
-      <div class="col-md-4">
-        <a href="{{ url_for('views.budget') }}" class="text-decoration-none text-dark">
-          <div class="feature-box">
-            <h3>Budget Planner</h3>
-            <p>Track income, expenses, assets and more in our interactive Excel spreadsheet.</p>
-          </div>
-         </a>
-      </div>
-      <div class="col-md-4">
-        <a href="{{ url_for('views.assessment') }}" class="text-decoration-none text-dark">
-          <div class="feature-box">
-            <h3>Self-Assessment</h3>
-            <p>Answer a range of questions to find out your current financial situation.</p>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-4">
-       <a href="{{ url_for('views.learninghub') }}" class="text-decoration-none text-dark">
-        <div class="feature-box">
-          <h3>Learning Hub</h3>
-          <p>Learn about the Prime Time by getting to know common terms or visiting Bec Wilson's Podcasts and Webinars.</p>
-        </div>
-       </a>
-      </div>
-    </div>
-  </section>
-  <br>
-  </div>
- <script>
-  let slideIndex = 0;
-  let slideTimer;
-
-  function showSlides() {
-    const slides = document.getElementsByClassName("mySlides");
-    const dots = document.getElementsByClassName("dot");
-
-    for (let i = 0; i < slides.length; i++) {
-      slides[i].classList.remove("show");
-    }
-
-    for (let i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
-    }
-
-    slideIndex++;
-    if (slideIndex > slides.length) { slideIndex = 1; }
-
-    slides[slideIndex - 1].classList.add("show");
-    if (dots[slideIndex - 1]) {
-      dots[slideIndex - 1].className += " active";
-    }
-  }
-
-  function autoSlide() {
-    showSlides();
-    slideTimer = setInterval(showSlides, 5000); // 5 seconds
-  }
-
-  document.addEventListener('DOMContentLoaded', autoSlide);
-</script>
-
-
+</section>
 {% endblock %}
