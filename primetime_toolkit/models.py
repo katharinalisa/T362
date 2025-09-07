@@ -51,3 +51,15 @@ class Asset(db.Model):
     amount = db.Column(db.Float)
     owner = db.Column(db.String(64))
     include = db.Column(db.Boolean, default=True)
+
+
+
+class Liability(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    category = db.Column(db.String(64))
+    item = db.Column(db.String(128))
+    amount = db.Column(db.Float)
+    type = db.Column(db.String(64))
+    monthly = db.Column(db.Float)
+    notes = db.Column(db.String(128))

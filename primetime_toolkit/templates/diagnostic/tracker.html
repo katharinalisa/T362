@@ -1,161 +1,155 @@
 {% extends 'layout.html' %}
 {% block content %}
 <!-- === SUMMARY TAB (what each function does) === -->
-<div id="Summary" class="tabcontent">
-  <h2>Budget Summary & How Each Section Works</h2>
+<br>
+<div id="Summary" class="tabcontent" style="display: flex; flex-direction: column; align-items: center;"><br>
+  <h2>Budget Summary & How Each Section Works</h2><br>
 
-<!-- Better KPI header -->
-<div class="kpis">
-  <div class="kpi">
-    <div class="kpi-label">Net Worth</div>
-    <div class="kpi-value {{ 'placeholder' if not (total_assets is defined and total_liabilities is defined) }}">
-      {% if total_assets is defined and total_liabilities is defined %}
-        {{ '{:,.0f}'.format(total_assets - total_liabilities) }}
-      {% else %}—{% endif %}
-    </div>
-    <div class="kpi-sub">Assets − Liabilities</div>
-  </div>
-
-  <div class="kpi">
-    <div class="kpi-label">Monthly Savings</div>
-    <div class="kpi-value {{ 'placeholder' if not (monthly_income is defined and monthly_expenses is defined) }}">
-      {% if monthly_income is defined and monthly_expenses is defined %}
-        {{ '{:,.0f}'.format(monthly_income - monthly_expenses) }}
-      {% else %}—{% endif %}
-    </div>
-    <div class="kpi-sub">Income − Expenses</div>
-  </div>
-
-  <div class="kpi">
-    <div class="kpi-label">Savings Rate</div>
-    <div class="kpi-value {{ 'placeholder' if not (monthly_income is defined and monthly_expenses is defined and monthly_income) }}">
-      {% if monthly_income is defined and monthly_expenses is defined and monthly_income %}
-        {{ (((monthly_income - monthly_expenses) / monthly_income) * 100) | round(1) }}%
-      {% else %}—{% endif %}
-    </div>
-    <div class="kpi-sub">Savings ÷ Income</div>
-  </div>
-</div>
-
-
-  <div class="summary-grid">
-
-    <div class="card">
-      <h3>Step 1: Life Expectancy</h3>
-      <p>Estimate your expected lifespan using age & gender to inform long-term planning.</p>
-      <p class="formula"><strong>Used in:</strong> Planning horizon for all later steps</p>
+  <div class="summary-grid" style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: center;">
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 1: Life Expectancy</h3>
+        <p>Estimate your expected lifespan using age & gender to inform long-term planning.</p>
+        <p class="formula"><strong>Used in:</strong> Planning horizon for all later steps</p>
+      </div>
       <a href="#" class="goto">Open →</a>
     </div>
 
-    <div class="card">
-      <h3>Step 2: Assets</h3>
-      <p>What you own (cash, bank accounts, investments, car, property, etc.). Helps build your <strong>Net Worth</strong>.</p>
-      <p class="formula"><strong>Used in:</strong> Net Worth = Assets − Liabilities</p>
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 2: Assets</h3>
+        <p>What you own (cash, bank accounts, investments, car, property, etc.). Helps build your <strong>Net Worth</strong>.</p>
+        <p class="formula"><strong>Used in:</strong> Net Worth = Assets − Liabilities</p>
+      </div>
       <a href="{{ url_for('views.assets') }}" class="goto">Go to Assets →</a>
     </div>
 
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 3: Liabilities & Savings</h3>
+        <p>What you owe (credit cards, loans, HECS/HELP, mortgage). Reducing liabilities increases <strong>Net Worth</strong>.</p>
+        <p class="formula"><strong>Used in:</strong> Net Worth = Assets − Liabilities</p>
+      </div>
+      <a href="{{ url_for('views.liabilities') }}" class="goto">Go to Liabilities →</a>
+    </div>
 
-  <div class="card">
-    <h3>Step 3: Liabilities & Savings</h3>
-    <p>What you owe (credit cards, loans, HECS/HELP, mortgage). Reducing liabilities increases <strong>Net Worth</strong>.</p>
-    <p class="formula"><strong>Used in:</strong> Net Worth = Assets − Liabilities</p>
-    <a href="{{ url_for('views.liabilities') }}" class="goto">Go to Liabilities →</a>
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 4: Current Income</h3>
+        <p>Enter all take-home income and how often it’s paid to feed the budget maths.</p>
+        <p class="formula"><strong>Used in:</strong> Monthly Savings = Income − Expenses</p>
+      </div>
+      <a href="{{ url_for('views.income') }}" class="goto">Go to Income →</a>
+    </div>
+
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 5: Current Expenses</h3>
+        <p>Itemise spending by category & frequency; auto-converts to weekly and annual totals.</p>
+        <p class="formula"><strong>Used in:</strong> Monthly Savings = Income − Expenses</p>
+      </div>
+      <a href="{{ url_for('views.expenses') }}" class="goto">Go to Expenses →</a>
+    </div>
+
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 6: Subscriptions</h3>
+        <p>Track recurring services/direct debits. Enter amount & frequency; annual totals calculated.</p>
+        <p class="formula"><strong>Used in:</strong> Part of Current Expenses totals</p>
+      </div>
+      <a href="#" class="goto">Open →</a>
+    </div>
+
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 7: Future Budget</h3>
+        <p>Plan cost of living for each life phase, including annual/one-off and epic experiences.</p>
+        <p class="formula"><strong>Used in:</strong> Long-term planning & Enough Calculator</p>
+      </div>
+      <a href="#" class="goto">Open →</a>
+    </div>
+
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 8: Epic & One-off</h3>
+        <p>List major one-time costs & epic experiences; the sheet scales them to multi-year totals.</p>
+        <p class="formula"><strong>Used in:</strong> Future Budget & Enough Calculator</p>
+      </div>
+      <a href="#" class="goto">Open →</a>
+    </div>
+
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 9: Income Layers</h3>
+        <p>Model how income sources change over time (employment, super, investments, pension, rent).</p>
+        <p class="formula"><strong>Used in:</strong> Long-term income projections</p>
+      </div>
+      <a href="#" class="goto">Open →</a>
+    </div>
+
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 10: Spending Allocation</h3>
+        <p>Allocate spending by category for each phase and compare to your future budget.</p>
+        <p class="formula"><strong>Used in:</strong> Budget optimisation & tracking</p>
+      </div>
+      <a href="#" class="goto">Open →</a>
+    </div>
+
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 11: Summary</h3>
+        <p>See the big picture: assets, liabilities, net worth, income, expenses and surplus/deficit.</p>
+        <p class="formula"><strong>Used in:</strong> Dashboard overview</p>
+      </div>
+      <a href="#" class="goto">Open →</a>
+    </div>
+
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 12: Super Projection</h3>
+        <p>Forecast super growth over time using contributions, returns and years until retirement.</p>
+        <p class="formula"><strong>Used in:</strong> Long-term retirement planning</p>
+      </div>
+      <a href="#" class="goto">Open →</a>
+    </div>
+
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 13: Debt Paydown</h3>
+        <p>Estimate time to repay debts using principal, rate and payment (NPER-based schedule).</p>
+        <p class="formula"><strong>Used in:</strong> Debt reduction planning</p>
+      </div>
+      <a href="#" class="goto">Open →</a>
+    </div>
+
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 14: Enough Calculator</h3>
+        <p>Estimate the lump sum needed to fund retirement using spending needs and return/pension assumptions.</p>
+        <p class="formula"><strong>Used in:</strong> Retirement readiness</p>
+      </div>
+      <a href="#" class="goto">Open →</a>
+    </div>
+
+    <div class="card" style="flex: 1 1 300px; min-width: 300px; max-width: 300px; height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h3>Step 15: Net Worth</h3>
+        <p>Your overall position at a point in time.</p>
+        <p class="formula"><strong>Formula:</strong> Net Worth = Assets − Liabilities</p>
+      </div>
+      <a href="#" class="goto">Go to Net Worth →</a>
+    </div>
+
+    <div class="tips" style="width: 100%;">
+      <h4>Quick Budget Tips</h4>
+      <ul>
+        <li>Target a positive <strong>Monthly Savings</strong> and a rising <strong>Net Worth</strong>.</li>
+        <li>Automate transfers to savings/investments right after payday.</li>
+        <li>Review subscriptions quarterly; renegotiate bills yearly.</li>
+        <li>Use categories in Expenses to find quick wins (e.g., food, transport).</li>
+      </ul>
+    </div>
   </div>
-
-      
-  <div class="card">
-    <h3>Step 4: Current Income</h3>
-    <p>Enter all take-home income and how often it’s paid to feed the budget maths.</p>
-    <p class="formula"><strong>Used in:</strong> Monthly Savings = Income − Expenses</p>
-    <a href="{{ url_for('views.income') }}" class="goto">Go to Income →</a>
-  </div>
-
-  <div class="card">
-    <h3>Step 5: Current Expenses</h3>
-    <p>Itemise spending by category & frequency; auto-converts to weekly and annual totals.</p>
-    <p class="formula"><strong>Used in:</strong> Monthly Savings = Income − Expenses</p>
-    <a href="{{ url_for('views.expenses') }}" class="goto">Go to Expenses →</a>
-  </div>
-    <div class="card">
-      <h3>Step 6: Subscriptions</h3>
-      <p>Track recurring services/direct debits. Enter amount & frequency; annual totals calculated.</p>
-      <p class="formula"><strong>Used in:</strong> Part of Current Expenses totals</p>
-      <a href="#" class="goto">Open →</a>
-    </div>
-
-    <div class="card">
-      <h3>Step 7: Future Budget</h3>
-      <p>Plan cost of living for each life phase, including annual/one-off and epic experiences.</p>
-      <p class="formula"><strong>Used in:</strong> Long-term planning & Enough Calculator</p>
-      <a href="#" class="goto">Open →</a>
-    </div>
-
-    <div class="card">
-      <h3>Step 8: Epic & One-off</h3>
-      <p>List major one-time costs & epic experiences; the sheet scales them to multi-year totals.</p>
-      <p class="formula"><strong>Used in:</strong> Future Budget & Enough Calculator</p>
-      <a href="#" class="goto">Open →</a>
-    </div>
-
-    <div class="card">
-      <h3>Step 9: Income Layers</h3>
-      <p>Model how income sources change over time (employment, super, investments, pension, rent).</p>
-      <p class="formula"><strong>Used in:</strong> Long-term income projections</p>
-      <a href="#" class="goto">Open →</a>
-    </div>
-
-    <div class="card">
-      <h3>Step 10: Spending Allocation</h3>
-      <p>Allocate spending by category for each phase and compare to your future budget.</p>
-      <p class="formula"><strong>Used in:</strong> Budget optimisation & tracking</p>
-      <a href="#" class="goto">Open →</a>
-    </div>
-
-    <div class="card">
-      <h3>Step 11: Summary</h3>
-      <p>See the big picture: assets, liabilities, net worth, income, expenses and surplus/deficit.</p>
-      <p class="formula"><strong>Used in:</strong> Dashboard overview</p>
-      <a href="#" class="goto">Open →</a>
-    </div>
-
-    <div class="card">
-      <h3>Step 12: Super Projection</h3>
-      <p>Forecast super growth over time using contributions, returns and years until retirement.</p>
-      <p class="formula"><strong>Used in:</strong> Long-term retirement planning</p>
-      <a href="#" class="goto">Open →</a>
-    </div>
-
-    <div class="card">
-      <h3>Step 13: Debt Paydown</h3>
-      <p>Estimate time to repay debts using principal, rate and payment (NPER-based schedule).</p>
-      <p class="formula"><strong>Used in:</strong> Debt reduction planning</p>
-      <a href="#" class="goto">Open →</a>
-    </div>
-
-    <div class="card">
-      <h3>Step 14: Enough Calculator</h3>
-      <p>Estimate the lump sum needed to fund retirement using spending needs and return/pension assumptions.</p>
-      <p class="formula"><strong>Used in:</strong> Retirement readiness</p>
-      <a href="#" class="goto">Open →</a>
-    </div>
-
-<div class="card">
-  <h3>Step 15: Net Worth</h3>
-  <p>Your overall position at a point in time.</p>
-  <p class="formula"><strong>Formula:</strong> Net Worth = Assets − Liabilities</p>
-  <a href="#" class="goto">Go to Net Worth →</a>
 </div>
-
-
-<div class="tips">
-  <h4>Quick Budget Tips</h4>
-  <ul>
-    <li>Target a positive <strong>Monthly Savings</strong> and a rising <strong>Net Worth</strong>.</li>
-    <li>Automate transfers to savings/investments right after payday.</li>
-    <li>Review subscriptions quarterly; renegotiate bills yearly.</li>
-    <li>Use categories in Expenses to find quick wins (e.g., food, transport).</li>
-  </ul>
-</div>
-</div>
-
 {% endblock %}

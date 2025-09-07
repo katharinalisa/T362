@@ -104,7 +104,9 @@
     }));
   }
 
-  saveBtn?.addEventListener('click', () => {
+  const saveAndNextBtn = document.getElementById('saveAndNextBtn');
+
+  saveAndNextBtn?.addEventListener('click', () => {
     const assets = getAssetRows();
     fetch('/save-assets', {
       method: 'POST',
@@ -113,13 +115,17 @@
     })
     .then(res => {
       if (res.status === 401) {
+        alert('Please log in to save your assets.');
         window.location.href = '/login';
         return;
       }
       return res.json();
     })
     .then(data => {
-      if (data?.redirect) window.location.href = data.redirect;
+      if (data?.redirect) {
+        // Redirect to the next calculator page, e.g., liabilities
+        window.location.href = '/liabilities';
+      }
     })
     .catch(() => alert('Error saving assets.'));
   });
@@ -161,7 +167,11 @@
   tbody.addEventListener('blur', onTbodyBlur, true);
 
   // ====== Init ======
-  // Start with one blank row for convenience
-  if (tbody.children.length === 0) addRow();
+  tbody.innerHTML = '';
+  if (window.assetsPrefill && Array.isArray(window.assetsPrefill) && window.assetsPrefill.length > 0) {
+    window.assetsPrefill.forEach(row => addRow(row));
+  } else {
+    addRow();
+  }
   recalcTotals();
 })();

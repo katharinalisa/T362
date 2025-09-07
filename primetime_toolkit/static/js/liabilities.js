@@ -37,11 +37,15 @@
     tbody.appendChild(frag);
   }
 
-  function clearAll() {
-    tbody.innerHTML = '';
-    addRow();            // keep a single blank row after clearing
-    recalcTotals();
+// --- INIT: prefill from database if available ---
+  tbody.innerHTML = '';
+  if (window.liabilitiesPrefill && Array.isArray(window.liabilitiesPrefill) && window.liabilitiesPrefill.length > 0) {
+    window.liabilitiesPrefill.forEach(row => addRow(row));
+  } else {
+    addRow();
   }
+  recalcTotals();
+
 
   function recalcTotals() {
     let totalLiabilities = 0;
@@ -60,7 +64,7 @@
     });
 
     setCurrency(elTotalLiabilities, totalLiabilities);
-    setCurrency(elTotalAnnualOutgoings, totalAnnualOutgoings);
+    //setCurrency(elTotalAnnualOutgoings, totalAnnualOutgoings);
   }
 
   function handleTbodyChange(e) {
@@ -81,15 +85,15 @@
       recalcTotals();
     }
   }
-
+  function clearAll() {
+    tbody.innerHTML = '';
+    addRow();
+    recalcTotals();
+  }
   addRowBtn?.addEventListener('click', () => { addRow(); recalcTotals(); });
   clearAllBtn?.addEventListener('click', clearAll);
   tbody.addEventListener('input', handleTbodyChange);
   tbody.addEventListener('change', handleTbodyChange);
   tbody.addEventListener('click', handleTbodyClick);
 
-  // --- INIT: start with exactly ONE blank row (no prefilled rows) ---
-  tbody.innerHTML = '';
-  addRow();
-  recalcTotals();
 })();

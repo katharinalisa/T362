@@ -1,5 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
+
+
   {% include 'diagnostic/subnav.html' %}
 
   <div class="container py-4">
@@ -17,6 +19,7 @@
       Use the <em>Include in totals?</em> switch to toggle.
     </p>
 
+    
     <!-- Suggestions for Category (match workbook) -->
     <datalist id="assetCategories">
       <option value="Home" />
@@ -76,7 +79,7 @@
       </div>
     </div>
   </div>
-
+  <p>{{ assets_data }}</p>
   <!-- Template for a new asset row -->
   <template id="assetRowTemplate">
     <tr class="asset-row">
@@ -102,7 +105,12 @@
       </td>
     </tr>
   </template>
-  <button id="saveAssetsBtn" class="btn btn-success">Save Assets</button>
+  <button id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>
   <br><br>
+<script>
+window.assetsPrefill = {{ assets_data|tojson | default('[]', true) }};
+</script>
+
   <script src="{{ url_for('static', filename='js/assets.js') }}"></script>
+  
 {% endblock %}

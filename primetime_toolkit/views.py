@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
 import json
-from primetime_toolkit.models import db, Subscriber, Asset
+from primetime_toolkit.models import db, Subscriber, Asset, Liability
 
 
 views = Blueprint('views', __name__)
@@ -266,9 +266,22 @@ def income():
 #------------------------------------------------------
 # Assets block
 
+# views.py
 @views.route('/assets')
+@login_required
 def assets():
-    return render_template('diagnostic/assets.html')
+    user_assets = Asset.query.filter_by(user_id=current_user.id).all()
+    assets_data = [
+        {
+            "category": a.category,
+            "description": a.description,
+            "amount": a.amount,
+            "owner": a.owner,
+            "include": a.include
+        }
+        for a in user_assets
+    ]
+    return render_template('diagnostic/assets.html', assets_data=assets_data)
 
 
 @views.route('/save-assets', methods=['POST'])
@@ -292,9 +305,48 @@ def save_assets():
     flash("Assets saved successfully!", "success")
     return jsonify({'redirect': url_for('views.assets')})
 
+
+#-------------------------------------------------------
+# Liabilities block
+
 @views.route('/liabilities')
+@login_required
 def liabilities():
-    return render_template('diagnostic/liabilities.html')
+    user_liabilities = Liability.query.filter_by(user_id=current_user.id).all()
+    liabilities_data = [
+        {
+            "category": l.category,
+            "item": l.item,
+            "amount": l.amount,
+            "type": l.type,
+            "monthly": l.monthly,
+            "notes": l.notes
+        }
+        for l in user_liabilities
+    ]
+    return render_template('diagnostic/liabilities.html', liabilities_data=liabilities_data)
+
+
+@views.route('/save-liabilities', methods=['POST'])
+@login_required
+def save_liabilities():
+    data = request.get_json()
+    liabilities = data.get('liabilities', [])
+    Liability.query.filter_by(user_id=current_user.id).delete()
+    for l in liabilities:
+        liability = Liability(
+            user_id=current_user.id,
+            category=l['category'],
+            item=l['item'],
+            amount=l['amount'],
+            type=l['type'],
+            monthly=l['monthly'],
+            notes=l['notes']
+        )
+        db.session.add(liability)
+    db.session.commit()
+    return jsonify({'message': 'Liabilities saved successfully!'})
+
 
 @views.route('/life')
 def life():
