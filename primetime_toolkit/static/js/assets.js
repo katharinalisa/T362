@@ -91,6 +91,41 @@
     }
   }
 
+
+  const saveBtn = document.getElementById('saveAssetsBtn');
+
+  function getAssetRows() {
+    return Array.from(tbody.querySelectorAll('tr.asset-row')).map(row => ({
+      category: row.querySelector('.category')?.value || '',
+      description: row.querySelector('.description')?.value || '',
+      amount: parseAmount(row.querySelector('.amount')?.value),
+      owner: row.querySelector('.owner')?.value || '',
+      include: row.querySelector('.include-toggle')?.checked || false
+    }));
+  }
+
+  saveBtn?.addEventListener('click', () => {
+    const assets = getAssetRows();
+    fetch('/save-assets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ assets })
+    })
+    .then(res => {
+      if (res.status === 401) {
+        window.location.href = '/login';
+        return;
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (data?.redirect) window.location.href = data.redirect;
+    })
+    .catch(() => alert('Error saving assets.'));
+  });
+
+
+
   function onTbodyClick(e) {
     const btn = e.target.closest('.remove-row');
     if (btn) {

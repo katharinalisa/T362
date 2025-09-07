@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from . import mail
 from flask import current_app
 from flask_mail import Mail, Message
@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
 import json
-from primetime_toolkit.models import db, Subscriber
+from primetime_toolkit.models import db, Subscriber, Asset
 
 
 views = Blueprint('views', __name__)
@@ -262,9 +262,35 @@ def expenses():
 def income():
     return render_template('diagnostic/income.html')
 
+
+#------------------------------------------------------
+# Assets block
+
 @views.route('/assets')
 def assets():
     return render_template('diagnostic/assets.html')
+
+
+@views.route('/save-assets', methods=['POST'])
+@login_required
+def save_assets():
+    data = request.get_json()
+    assets = data.get('assets', [])
+    # Delete old assets for this user first
+    Asset.query.filter_by(user_id=current_user.id).delete()
+    for a in assets:
+        asset = Asset(
+            user_id=current_user.id,
+            category=a['category'],
+            description=a['description'],
+            amount=a['amount'],
+            owner=a['owner'],
+            include=a['include']
+        )
+        db.session.add(asset)
+    db.session.commit()
+    flash("Assets saved successfully!", "success")
+    return jsonify({'redirect': url_for('views.assets')})
 
 @views.route('/liabilities')
 def liabilities():
