@@ -6,6 +6,8 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
 import json
+from primetime_toolkit.models import db, Subscriber
+
 
 views = Blueprint('views', __name__)
 
@@ -87,15 +89,51 @@ def subscribe():
     if not email:
         flash("No email address provided.", "error")
         return redirect(url_for('views.home'))
+    
+    if not Subscriber.query.filter_by(email=email).first():
+        new_subscriber = Subscriber(email=email, name=name)
+        db.session.add(new_subscriber)
+        db.session.commit()
 
-    msg = Message("Welcome to Bec Wilson's Newsletter!",
-                  sender='ka.gremer@gmail.com',
-                  recipients=[email])
-    msg.body = (
-        f"Hi {name},\n\nThanks for subscribing to Bec Wilson's Newsletter! "
-        "You will now receive updates on new events, webinars and information about Bec's recently published work.\n\n"
-        "Kind regards,\nThe Prime Time Customer Service"
+    msg = Message(
+        "Welcome to Bec Wilson's Newsletter!",
+        sender='ka.gremer@gmail.com',
+        recipients=[email]
     )
+
+    # Plain text fallback
+    msg.body = (
+        f"Hi {name},\n\n"
+        "Thanks for subscribing to Bec Wilson's Newsletter!\n"
+        "You'll receive updates on new events, webinars, and information about Bec's work.\n\n"
+        "Explore more:\n"
+        "Learning Hub: https://yourdomain.com/learning-hub\n"
+        "Prime Time Toolkit: https://yourdomain.com/\n\n"
+        "Best regards,\nThe Prime Time Toolkit Service"
+    )
+
+    # HTML version
+    msg.html = f"""
+    <div style="font-family:'Poppins',Arial,sans-serif; background:#f7fafc; padding:32px;">
+      <h2 style="color:#1a7f8c;">Welcome to Bec Wilson's Newsletter!</h2>
+      <p>Hi {name},</p>
+      <p>
+        <strong>Thank you for subscribing!</strong> We're excited to have you join our community of Australians planning smarter for retirement.
+      </p>
+      <ul style="margin:18px 0 18px 0; padding-left:18px;">
+        <li>Get updates on new events, webinars, and exclusive articles.</li>
+        <li>Receive practical tips and tools for your financial journey.</li>
+        <li>Be the first to know about new releases from Bec Wilson.</li>
+      </ul>
+      <p>
+        <a href="https://yourdomain.com/learning-hub" style="color:#1a7f8c; text-decoration:underline;">Visit the Learning Hub</a> for articles, podcasts, and more.<br>
+        <a href="https://yourdomain.com/" style="color:#1a7f8c; text-decoration:underline;">Explore the Prime Time Toolkit</a> to get started.
+      </p>
+      <hr style="margin:24px 0;">
+      <p style="color:#555;">Warm regards,<br>
+      The Prime Time Toolkit Service</p>
+    </div>
+    """
 
     try:
         mail.send(msg)
@@ -178,16 +216,32 @@ def send_email():
     user_email = request.form.get('email')
     user_name = getattr(current_user, 'name', 'there')
 
-    msg = Message('Your PDF summary is ready! - PrimeTime Toolkit',
-                  sender='ka.gremer@gmail.com',
-                  recipients=[user_email])
+    msg = Message(
+        'You have received our Excel spreadsheet! - PrimeTime Toolkit',
+        sender='ka.gremer@gmail.com',
+        recipients=[user_email]
+    )
     msg.body = (
-        f"Hi {user_name}!\n\nThis is an automated email. "
-        "We are currently working on the process of generating automatic PDF summaries to be sent over email.\n\n"
-        "Warm regards,\nThe Prime Time Customer Service"
+        f"Hi {user_name}!\n\n"
+        "Thank you for using our service! Please find attached our Prime Time Toolkit spreadsheet.\n\n"
+        "Best regards,\nThe Prime Time Toolkit Service"
+    )
+
+    # Path to the spreadsheet file
+    file_path = os.path.join(
+        current_app.root_path,
+        'static',
+        'files',
+        'Prime_Time_Big_Financial_Picture_T362_QUT.xlsx'
     )
 
     try:
+        with open(file_path, 'rb') as fp:
+            msg.attach(
+                "Prime_Time_Big_Financial_Picture_T362_QUT.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                fp.read()
+            )
         mail.send(msg)
         flash(f"Email sent to {user_email}!", "success")
     except Exception as e:

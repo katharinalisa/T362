@@ -37,12 +37,26 @@
           <span class="fs-1 text-primary mb-3"><i class="bi bi-file-earmark-arrow-down"></i></span>
           <h3>Get Spreadsheet by Email</h3>
           <p class="lead-p mb-3">Receive our Excel tool via email, fill it out offline, and return to upload it for instant analysis.</p>
-          <form action="{{ url_for('views.send_email') }}" method="POST" class="mb-2">
+          <form id="spreadsheetForm" action="{{ url_for('views.send_email') }}" method="POST" class="mb-2">
             <input type="email" name="email" class="form-control mb-2 rounded-pill" placeholder="Your email" required>
             <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Send Spreadsheet</button>
+            <div id="loadingSpinner" style="display:none; margin-top:10px;">
+              <div class="spinner-border text-info" role="status">
+                <span class="visually-hidden">Sending...</span>
+              </div>
+              <span style="margin-left:8px;">Sending...</span>
+            </div>
           </form>
+
+          <script>
+          document.getElementById('spreadsheetForm').addEventListener('submit', function() {
+            document.getElementById('loadingSpinner').style.display = 'inline-block';
+          });
+          </script>
+          
         </div>
       </div>
+      
       <div class="col-md-6">
         <div class="card-soft p-4 text-center h-100" style="box-shadow: 0 8px 32px rgba(34,60,80,0.12); border: 1.5px solid #eaf1fe; border-radius: 18px;">
           <span class="fs-1 text-success mb-3"><i class="bi bi-calculator"></i></span>
