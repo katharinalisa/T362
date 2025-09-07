@@ -3,7 +3,7 @@
 :root {
   --primary-color: #000000;
   --accent-color: #be9200;
-  --nav-color: #faf8e9; 
+  --nav-color: #fafffe; 
   --text-color: #131313;
   --jade: #ecf6f7; 
   --green: #e6f5f3;
@@ -66,7 +66,7 @@
   z-index: 3;
 }
 
-/* C:\Users\kagre\OneDrive - Queensland University of Technology\Desktop\T362\PRIMETIME\primetime_toolkit\static\img\image.jpg */
+/* C:\Users\kagre\OneDrive - Queensland University of Technology\Desktop\T362\primetime_toolkit\static\img\image.jpg */
 
 /* === Base Typography === */
 body {
@@ -673,7 +673,7 @@ body:not(:target) #Summary { display: block; }
   .btn-cta:hover{ filter:brightness(.95); color:#fff; }
 
   .slice{ padding: 72px 0; }
-  .slice-alt{ padding: 72px 0; background: var(--cream); }
+  .slice-alt{ padding: 72px 0; }
   .white-bg { background: #FFFFFF; }
   .container-narrow{ max-width: 980px; margin: 0 auto; }
   .content-wide {

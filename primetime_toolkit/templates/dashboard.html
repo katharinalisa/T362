@@ -1,0 +1,216 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<section class="hero-section text-center py-4" style="background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%);">
+  <div class="container">
+    <h1 class="display-1 section-title mb-2" style="font-size:3rem; font-weight:800; letter-spacing:1px;">
+      Your Financial Dashboard
+    </h1>
+    <p class="lead-p mb-4" style="font-size:1.2rem; color:#2d3e50;">
+      View your financial overview, charts, and insights after uploading your spreadsheet.
+    </p>
+  </div>
+</section><br>
+
+<!-- Upload Spreadsheet Section (reduce space below) -->
+<div class="container" style="margin-bottom: 0.5rem;">
+  <div class="card mx-auto shadow-lg border-0 rounded-4 p-4 mb-2" style="max-width: 400px; border: 2.5px solid #1a7f8c; background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%);">
+    <div class="card-body text-center">
+      <span class="fs-1 text-primary mb-2"><i class="bi bi-upload"></i></span>
+      <h6><strong>Upload Completed Spreadsheet</strong></h6><br>
+      <form action="{{ url_for('views.upload_excel') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="budget_file" class="form-control mb-2 rounded-pill" accept=".xlsx,.xls" required>
+        <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Upload Spreadsheet</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid py-4">
+  <div class="row g-4">
+    <div class="col-12">
+      <div class="card shadow-lg border-0 rounded-4 p-4 mb-4" style="border: 2.5px solid #1a7f8c; background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%);">
+        <div class="card-body">
+          <h3 class="fw-bold mb-3">Overview Charts</h3>
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="dashboard-chart card-soft p-3 text-center" style="height:320px; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: 0 8px 32px rgba(34,60,80,0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+                <h5 class="mb-2">Current Net Worth</h5>
+                <canvas id="netWorthChart" style="max-width:100%; max-height:220px;"></canvas>
+                <span class="text-muted mt-2">No data yet</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="dashboard-chart card-soft p-3 text-center" style="height:320px; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: 0 8px 32px rgba(34,60,80,0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+                <h5 class="mb-2">Assets vs Liabilities</h5>
+                <canvas id="assetsLiabilitiesChart" style="max-width:100%; max-height:220px;"></canvas>
+                <span class="text-muted mt-2">No data yet</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="dashboard-chart card-soft p-3 text-center" style="height:320px; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: 0 8px 32px rgba(34,60,80,0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+                <h5 class="mb-2">Monthly Savings</h5>
+                <canvas id="monthlySavingsChart" style="max-width:100%; max-height:220px;"></canvas>
+                <span class="text-muted mt-2">No data yet</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="dashboard-chart card-soft p-3 text-center" style="height:320px; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: 0 8px 32px rgba(34,60,80,0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+                <h5 class="mb-2">Subscription Amount ($)</h5>
+                <canvas id="debtPaydownChart" style="max-width:100%; max-height:220px;"></canvas>
+                <span class="text-muted mt-2">No data yet</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="dashboard-chart card-soft p-3 text-center" style="height:320px; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: 0 8px 32px rgba(34,60,80,0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+                <h5 class="mb-2">Superannuation Growth</h5>
+                <canvas id="superGrowthChart" style="max-width:100%; max-height:220px;"></canvas>
+                <span class="text-muted mt-2">No data yet</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="dashboard-chart card-soft p-3 text-center" style="height:320px; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: 0 8px 32px rgba(34,60,80,0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+                <h5 class="mb-2">Monthly Expenses</h5>
+                <canvas id="drawdownChart" style="max-width:100%; max-height:220px;"></canvas>
+                <span class="text-muted mt-2">No data yet</span>
+              </div>
+            </div>
+            <!-- Additional meaningful charts -->
+            
+              <div class="col-md-4">
+              <div class="dashboard-chart card-soft p-3 text-center" style="height:320px; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: 0 8px 32px rgba(34,60,80,0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+                <h5 class="mb-2">Savings Over Time</h5>
+                <canvas id="investmentAllocationChart" style="max-width:100%; max-height:220px;"></canvas>
+                <span class="text-muted mt-2">No data yet</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="dashboard-chart card-soft p-3 text-center" style="height:320px; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: 0 8px 32px rgba(34,60,80,0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+                <h5 class="mb-2">Drawdown Over Time</h5>
+                <canvas id="spendingTrendsChart" style="max-width:100%; max-height:220px;"></canvas>
+                <span class="text-muted mt-2">No data yet</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="dashboard-chart card-soft p-3 text-center" style="height:320px; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: 0 8px 32px rgba(34,60,80,0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+                <h5 class="mb-2">???</h5>
+                <canvas id="insuranceCoverageChart" style="max-width:100%; max-height:220px;"></canvas>
+                <span class="text-muted mt-2">No data yet</span>
+              </div>
+            </div>
+
+            <!-- End additional charts -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js placeholder scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Empty charts for now
+  var ctxNetWorth = document.getElementById('netWorthChart').getContext('2d');
+  var netWorthChart = new Chart(ctxNetWorth, {
+    type: 'line',
+    data: { labels: [], datasets: [{ label: 'Net Worth', data: [], backgroundColor: 'rgba(58, 183, 195, 0.2)', borderColor: '#1a7f8c', borderWidth: 2 }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  var ctxAssetsLiabilities = document.getElementById('assetsLiabilitiesChart').getContext('2d');
+  var assetsLiabilitiesChart = new Chart(ctxAssetsLiabilities, {
+    type: 'bar',
+    data: {
+      labels: [],
+      datasets: [
+        { label: 'Assets', data: [], backgroundColor: '#3bb3c3' },
+        { label: 'Liabilities', data: [], backgroundColor: '#1a7f8c' }
+      ]
+    },
+    options: { responsive: true, plugins: { legend: { display: true } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  var ctxMonthlySavings = document.getElementById('monthlySavingsChart').getContext('2d');
+  var monthlySavingsChart = new Chart(ctxMonthlySavings, {
+    type: 'bar',
+    data: { labels: [], datasets: [{ label: 'Monthly Savings', data: [], backgroundColor: '#1a7f8c' }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  var ctxDebtPaydown = document.getElementById('debtPaydownChart').getContext('2d');
+  var debtPaydownChart = new Chart(ctxDebtPaydown, {
+    type: 'line',
+    data: { labels: [], datasets: [{ label: 'Debt Paydown', data: [], backgroundColor: 'rgba(220,53,69,0.15)', borderColor: '#dc3545', borderWidth: 2 }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  var ctxSuperGrowth = document.getElementById('superGrowthChart').getContext('2d');
+  var superGrowthChart = new Chart(ctxSuperGrowth, {
+    type: 'line',
+    data: { labels: [], datasets: [{ label: 'Super Growth', data: [], backgroundColor: 'rgba(59,179,195,0.15)', borderColor: '#3bb3c3', borderWidth: 2 }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  var ctxDrawdown = document.getElementById('drawdownChart').getContext('2d');
+  var drawdownChart = new Chart(ctxDrawdown, {
+    type: 'line',
+    data: { labels: [], datasets: [{ label: 'Retirement Drawdown', data: [], backgroundColor: 'rgba(26,127,140,0.15)', borderColor: '#1a7f8c', borderWidth: 2 }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  // Additional charts
+  var ctxExpenseBreakdown = document.getElementById('expenseBreakdownChart').getContext('2d');
+  var expenseBreakdownChart = new Chart(ctxExpenseBreakdown, {
+    type: 'pie',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Expenses',
+        data: [],
+        backgroundColor: ['#1a7f8c', '#3bb3c3', '#ffe066', '#dc3545', '#6c757d']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: true } }
+    }
+  });
+
+  var ctxIncomeSources = document.getElementById('incomeSourcesChart').getContext('2d');
+  var incomeSourcesChart = new Chart(ctxIncomeSources, {
+    type: 'pie',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Income',
+        data: [],
+        backgroundColor: ['#3bb3c3', '#1a7f8c', '#ffe066', '#198754', '#6c757d']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: true } }
+    }
+  });
+
+  var ctxEmergencyFund = document.getElementById('emergencyFundChart').getContext('2d');
+  var emergencyFundChart = new Chart(ctxEmergencyFund, {
+    type: 'bar',
+    data: {
+      labels: ['Goal', 'Current'],
+      datasets: [{
+        label: 'Emergency Fund',
+        data: [],
+        backgroundColor: ['#3bb3c3', '#ffe066']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+
+{% endblock %}

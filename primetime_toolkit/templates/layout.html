@@ -14,15 +14,11 @@
 
 <body>
   <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg shadow-sm sticky-top bg-white">
+  <nav class="navbar navbar-expand-lg shadow-sm sticky-top">
   <div class="container">
     <a class="navbar-brand" href="{{ url_for('views.home') }}">
       <img src="{{ url_for('static', filename='img/primetime_image.png') }}" alt="PrimeTime Toolkit" class="logo-img">
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
-      aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
 
     <div class="collapse navbar-collapse justify-content-end" id="mainNav">
       <ul class="navbar-nav align-items-center">
@@ -31,7 +27,7 @@
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Money Management Tools</a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{{ url_for('views.assessment') }}">Self-Assessment</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('views.budget') }}">Budget Planner</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('views.dashboard') }}">Dashboard</a></li>
             <li><a class="dropdown-item" href="{{ url_for('views.superannuation') }}">Superannuation</a></li>
             <li><a class="dropdown-item" href="#">Investment Tools</a></li>
           </ul>

@@ -15,9 +15,9 @@ views = Blueprint('views', __name__)
 def home():
     return render_template('home.html')
 
-@views.route('/budget')
-def budget():
-    return render_template('budget.html')
+@views.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
 
 @views.route('/superannuation')
 def superannuation():
@@ -68,7 +68,7 @@ def upload_excel():
         os.makedirs(upload_folder, exist_ok=True) 
         file.save(os.path.join(upload_folder, filename))
         flash("File uploaded successfully", "success")
-        return redirect(url_for('views.budget'))
+        return redirect(url_for('views.dashboard'))
 
     flash("Invalid file format", "error")
     return redirect(request.url)

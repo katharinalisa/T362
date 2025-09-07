@@ -53,7 +53,7 @@
             document.getElementById('loadingSpinner').style.display = 'inline-block';
           });
           </script>
-          
+
         </div>
       </div>
       
@@ -75,7 +75,7 @@
     <div class="text-center">
       <h5>Upload Your Completed Excel Spreadsheet on the Next Page</h5>
       <p class="lead-p mb-3">Go to Dashboards to upload your spreadsheet and view your results.</p>
-      <a href="{{ url_for('views.budget') }}"  class="btn btn-cta btn-lg rounded-pill shadow" style="background: linear-gradient(90deg, #1a7f8c 0%, #3bb3c3 100%); color: #fff; font-weight:600; letter-spacing:0.5px; border: none;">Go to Dashboards</a>
+      <a href="{{ url_for('views.dashboard') }}"  class="btn-login btn-lg rounded-pill shadow" style="text-decoration:none;">Go to Dashboards</a>
     </div>
   </div><br><br>
 </section><br><br><br>
@@ -123,5 +123,6 @@
       <i class="bi bi-arrow-right-circle me-2"></i>Visit Learning Hub
     </a>
   </div>
-</section>
+</section><br><br>
+
 {% endblock %}
