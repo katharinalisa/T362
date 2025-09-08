@@ -65,7 +65,7 @@
 
       total += amount;
 
-      // Exact category matches to mirror the workbook
+  
       if (category.toLowerCase() === 'home') totalHome += amount;
       if (category.toLowerCase() === 'superannuation') totalSuper += amount;
     });
@@ -123,8 +123,10 @@
     })
     .then(data => {
       if (data?.redirect) {
-        // Redirect to the next calculator page, e.g., liabilities
-        window.location.href = '/liabilities';
+        window.location.href = data.redirect;
+      } else {
+  
+        alert(data?.message || 'Assets saved!');
       }
     })
     .catch(() => alert('Error saving assets.'));
@@ -141,14 +143,10 @@
     }
   }
 
-  // Optional: format on blur (keep inputs numeric while editing)
+  // format on blur (keep inputs numeric while editing)
   function onTbodyBlur(e) {
     const t = e.target;
     if (t && t.classList.contains('amount')) {
-      // Keep raw number in input (so users can keep editing) — but you can format if desired.
-      // Example if you want to auto-format with commas:
-      // const n = parseAmount(t.value);
-      // t.value = n ? n.toFixed(2) : '';
     }
   }
 

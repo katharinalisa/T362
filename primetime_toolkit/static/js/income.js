@@ -30,7 +30,14 @@
     return Number.isFinite(n) ? n : 0;
   };
 
-  const setCurrency = (el, amount) => { el.textContent = fmt.format(amount || 0); };
+  const setCurrency = (el, amount) => {
+    if (el.tagName === 'INPUT') {
+      el.value = fmt.format(amount || 0);
+    } else {
+      el.textContent = fmt.format(amount || 0);
+    }
+  };
+
 
   function perYear(freq) {
     if (!freq) return 0;
@@ -53,7 +60,7 @@
 
   function clearAll() {
     tbody.innerHTML = '';
-    addRow();        // leave one blank line
+    addRow();    
     recalcAll();
   }
 
@@ -101,12 +108,42 @@
     }
   }
 
+  const saveAndNextBtn = document.getElementById('saveAndNextBtn');
+
+function getIncomeRows() {
+  return Array.from(tbody.querySelectorAll('tr.income-row')).map(row => ({
+    source: row.querySelector('.source')?.value || '',
+    amount: parseNum(row.querySelector('.amount')?.value),
+    frequency: row.querySelector('.frequency')?.value || '',
+    notes: row.querySelector('.notes')?.value || '',
+    include: row.querySelector('.include-toggle')?.checked ?? true
+  }));
+}
+
+saveAndNextBtn?.addEventListener('click', () => {
+  const incomes = getIncomeRows();
+  fetch('/save-income', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ incomes })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data?.redirect) {
+      window.location.href = data.redirect;
+    } else {
+      alert(data?.message || 'Income saved!');
+    }
+  })
+  .catch(() => alert('Error saving income.'));
+});
+
   function onTbodyClick(e) {
     const btn = e.target.closest('.remove-row');
     if (btn) {
       const row = btn.closest('tr.income-row');
       if (row) row.remove();
-      if (tbody.children.length === 0) addRow(); // keep at least one row
+      if (tbody.children.length === 0) addRow();
       recalcAll();
     }
   }
@@ -117,8 +154,13 @@
   tbody.addEventListener('change', onTbodyChange);
   tbody.addEventListener('click', onTbodyClick);
 
-  // ===== Init: start with one blank row =====
+  
+  // ===== Init: prefill =====
   tbody.innerHTML = '';
-  addRow();
+  if (window.incomePrefill && Array.isArray(window.incomePrefill) && window.incomePrefill.length > 0) {
+    window.incomePrefill.forEach(row => addRow(row));
+  } else {
+    addRow();
+  }
   recalcAll();
 })();

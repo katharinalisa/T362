@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
 import json
-from primetime_toolkit.models import db, Subscriber, Asset, Liability
+from primetime_toolkit.models import db, Subscriber, Asset, Liability, Income
 
 
 views = Blueprint('views', __name__)
@@ -258,9 +258,47 @@ def send_email():
 def expenses():
     return render_template('diagnostic/expenses.html')
 
+
+#----------------------------------------------------
+# Income
+
 @views.route('/income')
+@login_required
 def income():
-    return render_template('diagnostic/income.html')
+    user_incomes = Income.query.filter_by(user_id=current_user.id).all()
+    income_data = [
+        {
+            "source": inc.source,
+            "amount": inc.amount,
+            "frequency": inc.frequency,
+            "notes": inc.notes,
+            "include": inc.include
+        }
+        for inc in user_incomes
+    ]
+    return render_template('diagnostic/income.html', income_data=income_data)
+
+
+
+@views.route('/save-income', methods=['POST'])
+@login_required
+def save_income():
+    data = request.get_json()
+    incomes = data.get('incomes', [])
+    Income.query.filter_by(user_id=current_user.id).delete()
+    for i in incomes:
+        income = Income(
+            user_id=current_user.id,
+            source=i['source'],
+            amount=i['amount'],
+            frequency=i['frequency'],
+            notes=i.get('notes', ''),
+            include=i.get('include', True)
+        )
+        db.session.add(income)
+    db.session.commit()
+    flash("Income saved successfully!", "success")
+    return jsonify({'redirect': url_for('views.expenses')})
 
 
 #------------------------------------------------------
@@ -303,7 +341,7 @@ def save_assets():
         db.session.add(asset)
     db.session.commit()
     flash("Assets saved successfully!", "success")
-    return jsonify({'redirect': url_for('views.assets')})
+    return jsonify({'redirect': url_for('views.liabilities')})
 
 
 #-------------------------------------------------------
@@ -316,7 +354,7 @@ def liabilities():
     liabilities_data = [
         {
             "category": l.category,
-            "item": l.item,
+            "name": l.name,
             "amount": l.amount,
             "type": l.type,
             "monthly": l.monthly,
@@ -326,7 +364,6 @@ def liabilities():
     ]
     return render_template('diagnostic/liabilities.html', liabilities_data=liabilities_data)
 
-
 @views.route('/save-liabilities', methods=['POST'])
 @login_required
 def save_liabilities():
@@ -335,18 +372,20 @@ def save_liabilities():
     Liability.query.filter_by(user_id=current_user.id).delete()
     for l in liabilities:
         liability = Liability(
-            user_id=current_user.id,
-            category=l['category'],
-            item=l['item'],
-            amount=l['amount'],
-            type=l['type'],
-            monthly=l['monthly'],
-            notes=l['notes']
-        )
+        user_id=current_user.id,
+        category=l['category'],
+        name=l['name'],
+        amount=l['amount'],
+        type=l['type'],
+        monthly=l['monthly'],
+        notes=l['notes']
+    )
         db.session.add(liability)
     db.session.commit()
-    return jsonify({'message': 'Liabilities saved successfully!'})
+    flash("Liabilities saved successfully!", "success")
+    return jsonify({'redirect': url_for('views.income')})
 
+#------------------------------------------------------
 
 @views.route('/life')
 def life():

@@ -5,13 +5,12 @@
 <div class="container py-4">
   <!-- Header -->
   <div class="mb-3">
-    <h1 class="text-center mb-0" style="color:#9E2A2B; font-family:'Playfair Display', serif;">Liability Tracker</h1>
+    <h1 class="text-center mb-4" style="color:#9E2A2B; font-family:'Playfair Display', serif;">Liability Tracker</h1>
   </div>
 
   <!-- Controls row (right-aligned like assets.html) -->
   <div class="d-flex justify-content-front gap-2 mb-3">
     <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
-    <button id="clearAllBtn" class="btn btn-outline-danger" type="button">Clear All</button>
   </div>
 
   <!-- Helper note -->
@@ -38,11 +37,12 @@
         <tr class="table-light">
           <th style="width:36px;"></th>
           <th class="category-cell">Category</th>
-          <th class="item-cell">Liability Name</th>
+          <th class="name-cell">Liability Name</th>
           <th style="width:160px;">Balance ($)</th>
           <th class="type-cell">Type</th>
           <th style="width:180px;">Monthly Payment ($)</th>
           <th>Notes</th>
+          <th style="width:36px;">Include</th> <!-- Added Include column -->
         </tr>
       </thead>
       <tbody>
@@ -73,10 +73,10 @@
         <input class="form-control form-control-sm category" list="liabilityCategories" placeholder="e.g., Credit Card" />
       </td>
       <td>
-        <input class="form-control form-control-sm item" placeholder="e.g., Visa Platinum" />
+        <input class="form-control form-control-sm name" placeholder="e.g., Visa Platinum" />
       </td>
       <td>
-        <input type="number" min="0" step="0.01" class="form-control form-control-sm amount currency" placeholder="0.00" />
+        <input type="number" min="0" step="0.01" class="form-control form-control-sm amount amount" placeholder="0.00" />
       </td>
       <td>
         <select class="form-select form-select-sm type">
@@ -90,16 +90,24 @@
         </select>
       </td>
       <td>
-        <input type="number" min="0" step="0.01" class="form-control form-control-sm monthly currency" placeholder="0.00" />
+        <input type="number" min="0" step="0.01" class="form-control form-control-sm monthly" placeholder="0.00" />
       </td>
       <td>
         <input class="form-control form-control-sm notes" placeholder="Notes" />
       </td>
+      <td class="text-center">
+        <input type="checkbox" class="include-toggle" checked />
+      </td>
     </tr>
   </template>
 </div>
+  
+<button id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>
+<br><br>
+
 <script>
-  window.liabilitiesPrefill = [];
+window.liabilitiesPrefill = {{ liabilities_data|tojson | default('[]', true) }};
 </script>
+
 <script src="{{ url_for('static', filename='js/liabilities.js') }}"></script>
 {% endblock %}

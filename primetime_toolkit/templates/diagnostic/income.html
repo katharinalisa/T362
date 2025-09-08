@@ -3,10 +3,100 @@
 {% include 'diagnostic/subnav.html' %}
 
 <div class="container py-4">
+  <!-- Header -->
   <div class="mb-3">
     <h1 class="text-center mb-4" style="color:#9E2A2B; font-family:'Playfair Display', serif;">Income Tracker</h1>
   </div>
 
+  <!-- Controls row -->
+  <div class="d-flex justify-content-front gap-2 mb-3">
+    <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
+  </div>
 
+  <!-- Helper note -->
+  <p class="small-note mb-3">
+    List all sources of income. Enter the <strong>Amount</strong>, select the <strong>Frequency</strong>, and add any notes if needed.
+  </p>
 
-  {% endblock %}
+  <!-- Table -->
+  <div class="table-responsive shadow-sm rounded">
+    <table class="table table-bordered mb-0 align-middle" id="incomeTable">
+      <thead>
+        <tr class="table-light">
+          <th style="width:36px;"></th>
+          <th>Source</th>
+          <th>Amount ($)</th>
+          <th>Frequency</th>
+          <th>Annual ($)</th>
+          <th>Weekly ($)</th>
+          <th>Notes</th>
+          <th style="width:36px;">Include</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic rows injected by income.js -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Totals box -->
+  <div class="row g-3 mt-3">
+    <div class="col-lg-6">
+      <div class="totals-box p-3 border rounded bg-light">
+        <div class="row">
+          <div class="col-7 fw-bold">Total Annual Income</div>
+          <div class="col-5 text-end fw-bold" id="totalAnnualIncome">$0</div>
+        </div>
+        <div class="row">
+          <div class="col-7 fw-bold">Total Weekly Income</div>
+          <div class="col-5 text-end fw-bold" id="totalWeeklyIncome">$0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row template -->
+  <template id="incomeRowTemplate">
+    <tr class="income-row">
+      <td class="text-center">
+        <button class="btn btn-outline-danger btn-sm remove-row" type="button" aria-label="Remove row">&times;</button>
+      </td>
+      <td>
+        <input class="form-control form-control-sm source" placeholder="e.g., Salary" />
+      </td>
+      <td>
+        <input type="number" min="0" step="0.01" class="form-control form-control-sm amount" placeholder="0.00" />
+      </td>
+      <td>
+        <select class="form-select form-select-sm frequency">
+          <option value="weekly">Weekly</option>
+          <option value="fortnightly">Fortnightly</option>
+          <option value="monthly">Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="annually">Annually</option>
+        </select>
+      </td>
+      <td>
+        <input class="form-control form-control-sm annual" type="text" readonly />
+      </td>
+      <td>
+        <input class="form-control form-control-sm weekly" type="text" readonly />
+      </td>
+      <td>
+        <input class="form-control form-control-sm notes" placeholder="Notes" />
+      </td>
+      <td class="text-center">
+        <input type="checkbox" class="include-toggle" checked />
+      </td>
+    </tr>
+  </template>
+</div>
+
+<button id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>
+<br><br>
+<script>
+  window.incomePrefill = {{ income_data|tojson | default('[]', true) }};
+</script>
+
+<script src="{{ url_for('static', filename='js/income.js') }}"></script>
+{% endblock %}

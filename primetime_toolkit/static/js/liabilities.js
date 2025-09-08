@@ -12,7 +12,7 @@
   if (!table || !tbody || !rowTemplate) return;
 
   const LIABILITY_TYPES = new Set([
-    'mortgage','investment loan','personal loan','car loan/lease','credit card','other loan',
+    'Mortgage', 'Credit Card', 'Personal Loan', 'Car Loan', 'Student Loan', 'Tax Payable', 'Other'
   ]);
 
   const fmt = new Intl.NumberFormat(undefined, {
@@ -27,17 +27,16 @@
   function addRow(prefill = {}) {
     const frag = rowTemplate.content.cloneNode(true);
     const row = frag.querySelector('tr.liability-row');
+    if (prefill.category) row.querySelector('.category').value = prefill.category;
+    if (prefill.name) row.querySelector('.name').value = prefill.name;
+    if (prefill.amount != null) row.querySelector('.amount').value = prefill.amount;
     if (prefill.type) row.querySelector('.type').value = prefill.type;
-    if (prefill.description) row.querySelector('.description').value = prefill.description;
-    if (prefill.balance != null) row.querySelector('.balance').value = prefill.balance;
-    if (prefill.rate != null) row.querySelector('.rate').value = prefill.rate;
-    if (prefill.term != null) row.querySelector('.term').value = prefill.term;
     if (prefill.monthly != null) row.querySelector('.monthly').value = prefill.monthly;
-    if (prefill.include !== undefined) row.querySelector('.include-toggle').checked = !!prefill.include;
+    if (prefill.notes) row.querySelector('.notes').value = prefill.notes;
     tbody.appendChild(frag);
   }
 
-// --- INIT: prefill from database if available ---
+// prefill from database
   tbody.innerHTML = '';
   if (window.liabilitiesPrefill && Array.isArray(window.liabilitiesPrefill) && window.liabilitiesPrefill.length > 0) {
     window.liabilitiesPrefill.forEach(row => addRow(row));
@@ -56,11 +55,11 @@
       if (!include) return;
 
       const typeStr = (row.querySelector('.type')?.value || '').trim().toLowerCase();
-      const balance = parseNum(row.querySelector('.balance')?.value);
+      const amount = parseNum(row.querySelector('.amount')?.value);
       const monthly = parseNum(row.querySelector('.monthly')?.value);
 
       totalAnnualOutgoings += monthly * 12;
-      if (LIABILITY_TYPES.has(typeStr)) totalLiabilities += balance;
+      if (LIABILITY_TYPES.has(row.querySelector('.type')?.value)) totalLiabilities += amount;
     });
 
     setCurrency(elTotalLiabilities, totalLiabilities);
@@ -70,11 +69,15 @@
   function handleTbodyChange(e) {
     const t = e.target;
     if (!t) return;
-    if (t.classList.contains('type') || t.classList.contains('balance') ||
-        t.classList.contains('monthly') || t.classList.contains('rate') ||
-        t.classList.contains('term') || t.classList.contains('include-toggle')) {
+    if (
+      t.classList.contains('type') ||
+      t.classList.contains('amount') ||
+      t.classList.contains('monthly') ||
+      t.classList.contains('include-toggle')
+    ) {
       recalcTotals();
     }
+
   }
   function handleTbodyClick(e) {
     const btn = e.target.closest('.remove-row');
@@ -95,5 +98,46 @@
   tbody.addEventListener('input', handleTbodyChange);
   tbody.addEventListener('change', handleTbodyChange);
   tbody.addEventListener('click', handleTbodyClick);
+
+
+
+  const saveAndNextBtn = document.getElementById('saveAndNextBtn');
+
+  function getLiabilityRows() {
+    return Array.from(tbody.querySelectorAll('tr.liability-row')).map(row => ({
+      category: row.querySelector('.category')?.value || '',
+      name: row.querySelector('.name')?.value || '', 
+      amount: parseNum(row.querySelector('.amount')?.value),
+      type: row.querySelector('.type')?.value || '',
+      monthly: parseNum(row.querySelector('.monthly')?.value),
+      notes: row.querySelector('.notes')?.value || ''
+    }));
+  }
+
+  saveAndNextBtn?.addEventListener('click', () => {
+    const liabilities = getLiabilityRows();
+    fetch('/save-liabilities', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ liabilities })
+    })
+    .then(res => {
+      if (res.status === 401) {
+        alert('Please log in to save your liabilities.');
+        window.location.href = '/login';
+        return;
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (data?.redirect) {
+        window.location.href = data.redirect;
+      } else {
+        alert(data?.message || 'Liabilities saved!');
+      }
+    })
+    .catch(() => alert('Error saving liabilities.'));
+  });
+
 
 })();
