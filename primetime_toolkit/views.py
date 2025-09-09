@@ -8,6 +8,8 @@ import os
 import json
 from primetime_toolkit.models import db, Subscriber, Asset, Liability, Income
 
+from primetime_toolkit.models import db, Subscriber, Asset, Liability
+from .excel_parser import parse_excel
 
 views = Blueprint('views', __name__)
 
@@ -17,7 +19,21 @@ def home():
 
 @views.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    '''username = current_user.username
+    if not username:
+        flash("Please log in first", "error")
+        return redirect(url_for("auth.login"))'''
+    
+    upload_folder = current_app.config['UPLOAD_FOLDER']
+    data = {}
+
+    if os.path.exists(upload_folder):
+        files = [os.path.join(upload_folder, f) for f in os.listdir(upload_folder) if allowed_file(f)]
+        if files:
+            latest_file = max(files, key=os.path.getmtime)
+            data = parse_excel(latest_file)
+
+    return render_template('dashboard.html', data=data)
 
 @views.route('/superannuation')
 def superannuation():
