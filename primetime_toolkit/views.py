@@ -35,14 +35,42 @@ def workshops():
 def webinars():
     return render_template('learning_hub/webinars.html')
 
-@views.route('/assessment' , methods=['GET'])
-def assessment():
-    return render_template('assessment.html')
-
 @views.route("/eligibility-setup")
 def eligibility_setup():
     return render_template("eligibility_setup.html")
 
+@views.route('/assessment_intro')
+def assessment_intro():
+    return render_template('selftest/assessment_intro.html')
+
+
+@views.route('/assessment1')
+def assessment1():
+    return render_template('selftest/assessment/assessment1.html')
+
+@views.route('/assessment2', methods=['GET', 'POST'])
+def assessment2():
+    return render_template('selftest/assessment/assessment2.html')
+
+@views.route('/assessment3', methods=['GET', 'POST'])
+def assessment3():
+    return render_template('selftest/assessment/assessment3.html')
+
+@views.route('/assessment4', methods=['GET', 'POST'])
+def assessment4():
+    return render_template('selftest/assessment/assessment4.html')
+
+@views.route('/assessment5', methods=['GET', 'POST'])
+def assessment5():
+    if request.method == 'POST':
+        return redirect(url_for('views.assessment6'))
+    return render_template('selftest/assessment/assessment5.html')
+
+@views.route('/assessment6', methods=['GET', 'POST'])
+def assessment6():
+    if request.method == 'POST':
+        return submit_assessment()
+    return render_template('selftest/assessment/assessment6.html')
 
 #--------------------------------------------------------------------------
 # Upload Excel spreadsheet
@@ -149,9 +177,9 @@ def subscribe():
 
 @views.route('/submit-assessment', methods=['POST'])
 def submit_assessment():
-    """Process 20 Likert questions (1–5 each), produce 0–100 total,
-    and classify as Beginner / Progressing / Confident."""
-    TOTAL_QUESTIONS = 20
+    """Process 24 Likert questions (1–5 each), produce 0–120 total,
+    and classify as Inactive / Reactive / Proactive."""
+    TOTAL_QUESTIONS = 24
 
     total_score = 0
     for i in range(1, TOTAL_QUESTIONS + 1):
@@ -162,10 +190,10 @@ def submit_assessment():
             except ValueError:
                 pass
 
-    # Map total_score (0–100) to bands
-    if total_score <= 39:
+    # Map total_score (0–120) to bands
+    if total_score <= 50:
         band = "Inactive"
-    elif total_score <= 69:
+    elif total_score <= 90:
         band = "Reactive"
     else:
         band = "Proactive"
@@ -173,7 +201,7 @@ def submit_assessment():
     result_message = f"You are classified as {band}."
 
     return render_template(
-        'summary.html',
+        'selftest/summary.html',
         result_message=result_message,
         band=band,
         total_score=total_score,
