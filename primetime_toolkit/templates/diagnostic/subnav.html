@@ -6,13 +6,15 @@
   <a href="{{ url_for('views.liabilities') }}" class="tablinks">Liabilities & Savings</a>
   <a href="{{ url_for('views.income') }}" class="tablinks">Income</a>
   <a href="{{ url_for('views.expenses') }}" class="tablinks">Expenses</a>
-  <a href="#" class="tablinks">Subscriptions</a>
+  <a href="{{ url_for('views.subscriptions') }}" class="tablinks">Subscriptions</a>
   <a href="#" class="tablinks">Age Pension Eligibility</a>
   <a href="{{ url_for('views.future_budget') }}" class="tablinks">Future Budget</a>
   <a href="{{ url_for('views.epic') }}" class="tablinks">Epic & One-off</a>
-  <a href="#" class="tablinks">Income Layers</a>
-  <a href="#" class="tablinks">Spending Allocation</a>
-  <a href="#" class="tablinks">Super Projection</a>
+  <a href="{{ url_for('views.income_layers') }}" class="tablinks">Income Layers</a>
+  <a href="{{ url_for('views.spending') }}" class="tablinks">Spending Allocation</a>
+  <a href="{{ url_for('views.super') }}" class="tablinks">Super Projection</a>
   <a href="#" class="tablinks">Debt Paydown</a>
   <a href="{{ url_for('views.calculator') }}" class="tablinks">Enough Calculator</a>
 </div>
+
+
