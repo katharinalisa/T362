@@ -62,14 +62,10 @@ def assessment4():
 
 @views.route('/assessment5', methods=['GET', 'POST'])
 def assessment5():
-    if request.method == 'POST':
-        return redirect(url_for('views.assessment6'))
     return render_template('selftest/assessment/assessment5.html')
 
 @views.route('/assessment6', methods=['GET', 'POST'])
 def assessment6():
-    if request.method == 'POST':
-        return submit_assessment()
     return render_template('selftest/assessment/assessment6.html')
 
 #--------------------------------------------------------------------------
