@@ -1,25 +1,89 @@
 {% extends'selftest/assessment_intro.html' %}
+{% set step_label = "Protecting & Preparing" %}
+{% set step_number = 6 %}
 
 {% block content %}
 <style>
   .step-box {
     background: #f1f1f1;
     border-radius: 12px;
-    padding: 2rem;
+    padding: 0;
     max-width: 600px;
     margin: 2rem auto;
+    overflow: hidden;
     text-align: center;
+  }
+  .header-box {
+    background: #1e2b3a;
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    width: 100%;
   }
   .likert label {
     margin: 0 10px;
     font-weight: 500;
   }
+  .progress-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: flex-start;
+  }
+  .progress-ring-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+  }
+  .progress-ring {
+    width: 100%;
+    height: 100%;
+  }
+  .progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .step-title {
+    font-size: 1.35rem;
+    margin: 0;
+    color: white;
+  }
 </style>
 
+  
 <div class="step-box">
-  <div class="mb-4">
-    <h5>Step 6 of 6</h5>
-    <h2 class="mb-3">Protecting & Preparing</h2>
+  <div class="header-box mb-4">
+    <div class="progress-ring-wrapper">
+      <svg class="progress-ring" viewBox="0 0 36 36" style="transform: rotate(0deg);">
+        <path
+          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+          fill="none"
+          stroke="#eee"
+          stroke-width="4"
+        />
+        <path
+          d="M18 2.0845 a 15.9155 15.9155 0 1 1 0 31.831 a 15.9155 15.9155 0 1 1 0 -31.831"
+          fill="none"
+          stroke="#007bff"
+          stroke-width="4"
+          stroke-dasharray="100, 100"
+          stroke-dashoffset="{{ 100 - (100 / 6 * step_number) }}"
+        />
+      </svg>
+      <div class="progress-text">{{ step_number }} of 6</div>
+    </div>
+    <div>
+      <h4 class="step-title">{{ step_label }}</h4>
+    </div>
   </div>
 
   <form method="POST" action="{{ url_for('views.submit_assessment') }}">
@@ -57,7 +121,7 @@
     </div>
 
     <div class="text-center">
-      <button type="submit" class="btn btn-primary">View My Summary</button>
+      <button type="submit" class="btn btn-primary">View My Result</button>
     </div>
   </form>
 </div>
