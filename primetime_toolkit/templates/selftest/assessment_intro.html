@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section style="padding: 80px 20px; background-color: #f9f9fb; text-align: center;">
+  <div style="max-width: 900px; margin: 0 auto;">
+    <h1 style="font-size: 3rem; font-weight: 700; color: #0a2f4a;">Welcome to the Prime Time Self-Assessment</h1>
+    <p style="font-size: 1.2rem; color: #4a4a4a; margin: 20px 0 40px;">
+      This self-assessment helps you understand where you stand across 6 important life and financial categories. Reflect, score yourself, and take your first step toward your ideal future.
+    </p>
+
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 60px;">
+      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">1. Purpose &amp; Direction</div>
+      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">2. Spending &amp; Cashflow</div>
+      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">3. Saving &amp; Emergency</div>
+      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">4. Debt &amp; Stress</div>
+      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">5. Superannuation</div>
+      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">6. Protect &amp; Prepare</div>
+    </div>
+
+    <a href="{{ url_for('views.assessment1') }}" aria-label="Start the self assessment">
+      <button style="padding: 14px 36px; font-size: 1.2rem; background-color: #4f46e5; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s;">
+        Start Assessment
+      </button>
+    </a>
+  </div>
+</section>
+{% endblock %}
