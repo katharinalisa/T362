@@ -431,3 +431,21 @@ def calculator():
 @views.route('/epic')                  
 def epic():
     return render_template('diagnostic/epic.html')
+
+@views.route('/subscriptions')
+def subscriptions():
+    return render_template('diagnostic/subscriptions.html')
+
+
+@views.route('/income_layers')
+def income_layers():
+    return render_template('diagnostic/income_layers.html')
+
+@views.route('/spending')
+def spending():
+    return render_template('diagnostic/spending_allocation.html')
+
+
+@views.route('/super')
+def super():
+    return render_template('diagnostic/super_projection.html')
