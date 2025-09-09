@@ -1,0 +1,98 @@
+{% extends 'layout.html' %}
+{% block content %}
+  {% include 'diagnostic/subnav.html' %}
+
+  <div class="container py-4">
+    <h1 class="text-center mb-4" style="color:#9E2A2B; font-family:'Playfair Display', serif;">
+      Subscriptions
+    </h1>
+
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
+      <button id="clearAllBtn" class="btn btn-outline-danger" type="button">Clear All</button>
+      <button id="loadBtn" class="btn btn-outline-secondary ms-auto" type="button">Load</button>
+      <button id="saveBtn" class="btn btn-primary" type="button">Save</button>
+    </div>
+
+    <p class="small-note mb-3">
+      Track your recurring services or direct debits. Enter the cost and frequency; annual totals are calculated automatically.
+    </p>
+
+    <!-- Suggestions -->
+    <datalist id="subServiceOptions">
+      <option value="Streaming service (Netflix)" />
+      <option value="Music streaming (Spotify)" />
+      <option value="Cloud storage (iCloud)" />
+      <option value="Gym membership" />
+      <option value="News subscription" />
+      <option value="Magazine subscription" />
+      <option value="Software subscription" />
+      <option value="Video streaming (Stan)" />
+      <option value="Amazon Prime" />
+      <option value="Other subscription" />
+    </datalist>
+
+    <div class="table-responsive shadow-sm rounded">
+      <table id="subsTable" class="table table-bordered mb-0 align-middle">
+        <thead>
+          <tr class="table-light">
+            <th style="width:36px;"></th>
+            <th class="item-cell">Subscription/Service</th>
+            <th class="item-cell">Provider</th>
+            <th style="width:180px;">Cost per period ($)</th>
+            <th style="width:140px;">Frequency</th>
+            <th style="width:160px;">Annual cost ($)</th>
+            <th style="width:120px;">Include?</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="row g-3 mt-3">
+      <div class="col-lg-6">
+        <div class="totals-box p-3 border rounded bg-light">
+          <div class="row">
+            <div class="col-7 fw-bold">TOTAL SUBSCRIPTION</div>
+            <div class="col-5 text-end fw-bold" id="totalAnnual">$0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row template -->
+  <template id="subsRowTemplate">
+    <tr class="subs-row">
+      <td class="text-center">
+        <button class="btn btn-outline-danger btn-sm remove-row" type="button" aria-label="Remove row">&times;</button>
+      </td>
+      <td>
+        <input class="form-control form-control-sm service" list="subServiceOptions" placeholder="e.g., Streaming service (Netflix)" />
+      </td>
+      <td>
+        <input class="form-control form-control-sm provider" placeholder="(for example: Netflix, Microsoft Office)" />
+      </td>
+      <td>
+        <input type="number" min="0" step="0.01" class="form-control form-control-sm amount" placeholder="0.00" />
+      </td>
+      <td>
+        <select class="form-select form-select-sm freq">
+          <option selected>Monthly</option>
+          <option>Weekly</option>
+          <option>Fortnightly</option>
+          <option>Quarterly</option>
+          <option>Annually</option>
+        </select>
+      </td>
+      <td class="currency annual">$0</td>
+      <td class="text-center">
+        <div class="form-check form-switch d-inline-flex">
+          <input class="form-check-input include" type="checkbox" checked />
+        </div>
+      </td>
+    </tr>
+  </template>
+
+  <script src="{{ url_for('static', filename='js/subscriptions.js') }}"></script>
+{% endblock %}
