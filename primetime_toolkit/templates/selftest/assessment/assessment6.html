@@ -57,6 +57,71 @@
     margin: 0;
     color: white;
   }
+
+  .likert input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    margin: 0 8px;
+    outline: none;
+    transition: 0.2s all ease-in-out;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .likert input[type="radio"]:checked {
+    background-color: #7e57c2;
+    border-color: #7e57c2;
+  }
+
+  .likert input[type="radio"]::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    display: none;
+  }
+
+  .likert input[type="radio"]:checked::after {
+    display: block;
+  }
+
+  .likert {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .likert-label {
+    font-weight: 500;
+    color: #444;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  .likert label.large input[type="radio"] {
+    transform: scale(1.4);
+  }
+
+  .likert label.medium input[type="radio"] {
+    transform: scale(1.1);
+  }
+
+  .likert label.small input[type="radio"] {
+    transform: scale(0.85);
+  }
 </style>
 
   
@@ -90,33 +155,39 @@
     <div class="mb-4">
       <p class="fw-bold">1. I feel protected against major financial shocks.</p>
       <div class="likert">
-        <label><input type="radio" name="q1" value="1" required> 1</label>
-        <label><input type="radio" name="q1" value="2"> 2</label>
-        <label><input type="radio" name="q1" value="3"> 3</label>
-        <label><input type="radio" name="q1" value="4"> 4</label>
-        <label><input type="radio" name="q1" value="5"> 5</label>
+        <span class="likert-label">Disagree</span>
+        <label class="large"><input type="radio" name="q1" value="1" required></label>
+        <label class="medium"><input type="radio" name="q1" value="2"></label>
+        <label class="small"><input type="radio" name="q1" value="3"></label>
+        <label class="medium"><input type="radio" name="q1" value="4"></label>
+        <label class="large"><input type="radio" name="q1" value="5"></label>
+        <span class="likert-label">Agree</span>
       </div>
     </div>
 
     <div class="mb-4">
       <p class="fw-bold">2. I have someone I trust for financial guidance or advice.</p>
       <div class="likert">
-        <label><input type="radio" name="q2" value="1" required> 1</label>
-        <label><input type="radio" name="q2" value="2"> 2</label>
-        <label><input type="radio" name="q2" value="3"> 3</label>
-        <label><input type="radio" name="q2" value="4"> 4</label>
-        <label><input type="radio" name="q2" value="5"> 5</label>
+        <span class="likert-label">Disagree</span>
+        <label class="large"><input type="radio" name="q2" value="1" required></label>
+        <label class="medium"><input type="radio" name="q2" value="2"></label>
+        <label class="small"><input type="radio" name="q2" value="3"></label>
+        <label class="medium"><input type="radio" name="q2" value="4"></label>
+        <label class="large"><input type="radio" name="q2" value="5"></label>
+        <span class="likert-label">Agree</span>
       </div>
     </div>
 
     <div class="mb-4">
       <p class="fw-bold">3. I feel prepared for ageing-related needs (e.g., care, housing).</p>
       <div class="likert">
-        <label><input type="radio" name="q3" value="1" required> 1</label>
-        <label><input type="radio" name="q3" value="2"> 2</label>
-        <label><input type="radio" name="q3" value="3"> 3</label>
-        <label><input type="radio" name="q3" value="4"> 4</label>
-        <label><input type="radio" name="q3" value="5"> 5</label>
+        <span class="likert-label">Disagree</span>
+        <label class="large"><input type="radio" name="q3" value="1" required></label>
+        <label class="medium"><input type="radio" name="q3" value="2"></label>
+        <label class="small"><input type="radio" name="q3" value="3"></label>
+        <label class="medium"><input type="radio" name="q3" value="4"></label>
+        <label class="large"><input type="radio" name="q3" value="5"></label>
+        <span class="likert-label">Agree</span>
       </div>
     </div>
 
