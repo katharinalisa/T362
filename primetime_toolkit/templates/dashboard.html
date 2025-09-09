@@ -110,11 +110,15 @@
 <!-- Chart.js placeholder scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  const dashboardData = {{ data|tojson }};
   // Empty charts for now
   var ctxNetWorth = document.getElementById('netWorthChart').getContext('2d');
   var netWorthChart = new Chart(ctxNetWorth, {
     type: 'line',
-    data: { labels: [], datasets: [{ label: 'Net Worth', data: [], backgroundColor: 'rgba(58, 183, 195, 0.2)', borderColor: '#1a7f8c', borderWidth: 2 }] },
+    data: { 
+      labels: [], 
+      datasets: [{ label: 'Net Worth', data: [dashboardData.net_worth], backgroundColor: 'rgba(58, 183, 195, 0.2)', borderColor: '#1a7f8c', borderWidth: 2 }] 
+    },
     options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
   });
 
@@ -122,10 +126,10 @@
   var assetsLiabilitiesChart = new Chart(ctxAssetsLiabilities, {
     type: 'bar',
     data: {
-      labels: [],
+      labels: ['Assets','Liabilities'],
       datasets: [
-        { label: 'Assets', data: [], backgroundColor: '#3bb3c3' },
-        { label: 'Liabilities', data: [], backgroundColor: '#1a7f8c' }
+        { label: 'Assets', data: [dashboardData.assets], backgroundColor: '#3bb3c3' },
+        { label: 'Liabilities', data: [dashboardData.liabilities], backgroundColor: '#1a7f8c' }
       ]
     },
     options: { responsive: true, plugins: { legend: { display: true } }, scales: { y: { beginAtZero: true } } }
@@ -134,7 +138,7 @@
   var ctxMonthlySavings = document.getElementById('monthlySavingsChart').getContext('2d');
   var monthlySavingsChart = new Chart(ctxMonthlySavings, {
     type: 'bar',
-    data: { labels: [], datasets: [{ label: 'Monthly Savings', data: [], backgroundColor: '#1a7f8c' }] },
+    data: { labels: [], datasets: [{ label: 'Monthly Savings', data: [dashboardData.monthly_savings], backgroundColor: '#1a7f8c' }] },
     options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
   });
 
@@ -148,14 +152,14 @@
   var ctxSuperGrowth = document.getElementById('superGrowthChart').getContext('2d');
   var superGrowthChart = new Chart(ctxSuperGrowth, {
     type: 'line',
-    data: { labels: [], datasets: [{ label: 'Super Growth', data: [], backgroundColor: 'rgba(59,179,195,0.15)', borderColor: '#3bb3c3', borderWidth: 2 }] },
+    data: { labels: [], datasets: [{ label: 'Super Growth', data: [dashboardData.super], backgroundColor: 'rgba(59,179,195,0.15)', borderColor: '#3bb3c3', borderWidth: 2 }] },
     options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
   });
 
   var ctxDrawdown = document.getElementById('drawdownChart').getContext('2d');
   var drawdownChart = new Chart(ctxDrawdown, {
     type: 'line',
-    data: { labels: [], datasets: [{ label: 'Retirement Drawdown', data: [], backgroundColor: 'rgba(26,127,140,0.15)', borderColor: '#1a7f8c', borderWidth: 2 }] },
+    data: { labels: [], datasets: [{ label: 'Retirement Drawdown', data: [dashboardData.drawdown_over_time], backgroundColor: 'rgba(26,127,140,0.15)', borderColor: '#1a7f8c', borderWidth: 2 }] },
     options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
   });
 
@@ -167,7 +171,7 @@
       labels: [],
       datasets: [{
         label: 'Expenses',
-        data: [],
+        data: [dashboardData.expenses],
         backgroundColor: ['#1a7f8c', '#3bb3c3', '#ffe066', '#dc3545', '#6c757d']
       }]
     },
@@ -184,7 +188,7 @@
       labels: [],
       datasets: [{
         label: 'Income',
-        data: [],
+        data: [dashboardData.income],
         backgroundColor: ['#3bb3c3', '#1a7f8c', '#ffe066', '#198754', '#6c757d']
       }]
     },
@@ -201,7 +205,7 @@
       labels: ['Goal', 'Current'],
       datasets: [{
         label: 'Emergency Fund',
-        data: [],
+        data: [dashboardData.emergency_fund],
         backgroundColor: ['#3bb3c3', '#ffe066']
       }]
     },
