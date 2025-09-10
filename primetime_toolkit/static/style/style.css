@@ -622,3 +622,112 @@ body:not(:target) #Summary { display: block; }
   .sidebar { padding-top: 64px; }
   .sidebar a { font-size: 16px; }
 }
+
+
+
+
+
+
+/* === Popup Chat Styles === */
+
+/* Screen-reader only helper */
+.visually-hidden {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+}
+
+/* Floating circle button */
+.open-button {
+  background-color: #f7f7f7;
+  color: #fff;
+  font-size: 22px;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 20px;
+  right: 25px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 2100;
+  padding: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.open-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+/* Popup container */
+.chat-popup {
+  display: none;
+  position: fixed;
+  bottom: 90px; 
+  right: 25px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  z-index: 2101;
+  background-color: #fff;
+  width: 320px;
+  max-height: 480px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+/* Chat inner layout */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 10px;
+}
+
+/* Messages area */
+.messages {
+  flex: 1;
+  padding: 8px;
+  overflow-y: auto;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Textarea */
+.form-container textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: none;
+  min-height: 60px;
+}
+
+/* Chat icon inside the button */
+.chat-icon {
+  width: 50px;       
+  height: 50px;
+  object-fit: contain;
+  pointer-events: none; 
+}
+/* Buttons */
+.form-container .btn {
+  background-color: #04AA6D;
+  color: #fff;
+  padding: 12px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 6px;
+  border-radius: 6px;
+}
+
+.form-container .btn:hover { opacity: 0.92; }
+.form-container .cancel { background-color: #dc3545; }
