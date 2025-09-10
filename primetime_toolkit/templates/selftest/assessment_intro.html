@@ -9,12 +9,12 @@
     </p>
 
     <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 60px;">
-      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">1. Purpose & Direction</div>
-      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">2. Spending & Cashflow</div>
-      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">3. Saving & Emergency Planning</div>
-      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">4. Debt & Financial Stress</div>
-      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">5. Superannuation & Retirement Readiness</div>
-      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">6. Protecting & Prepare</div>
+      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">1. Purpose &amp; Direction</div>
+      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">2. Spending &amp; Cashflow</div>
+      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">3. Saving &amp; Emergency</div>
+      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">4. Debt &amp; Stress</div>
+      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">5. Superannuation</div>
+      <div style="background-color: #eef2f7; padding: 16px 24px; border-radius: 12px; font-weight: 500;">6. Protect &amp; Prepare</div>
     </div>
 
     <a href="{{ url_for('views.assessment1') }}" aria-label="Start the self assessment">
@@ -22,6 +22,73 @@
         Start Assessment
       </button>
     </a>
+  </div>
+</section>
+<section style="padding: 80px 20px; background-color: #0a2f4a; width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
+  <h2 style="color: white; text-align: center; font-size: 2.5rem; font-weight: 700;">What Others Are Saying</h2>
+  <p style="color: #e0e0e0; text-align: center; font-size: 1.1rem; margin: 10px auto 40px; max-width: 700px;">
+    Real feedback from people who used the Prime Time Self-Assessment to start planning their financial future.
+  </p>
+
+  <style>
+    .testimonial-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .testimonial-card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 260px;
+      flex: 1;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .step1 { border-top: 6px solid #007bff; }
+    .step2 { border-top: 6px solid #28a745; }
+    .step3 { border-top: 6px solid #0ea5e9; }
+    .step4 { border-top: 6px solid #9333ea; }
+
+    .badge1, .badge2, .badge3, .badge4 {
+      color: white;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    .badge1 { background-color: #007bff; }
+    .badge2 { background-color: #28a745; }
+    .badge3 { background-color: #0ea5e9; }
+    .badge4 { background-color: #9333ea; }
+  </style>
+
+  <div class="testimonial-cards">
+    <div class="testimonial-card step1">
+      <div class="badge1">Alex – 52</div>
+      <h4 style="color: #0a2f4a; font-size: 1.1rem; margin-bottom: 8px;">Small Business Owner</h4>
+      <p style="font-size: 0.95rem; color: #333;">“This helped me realise I wasn’t as prepared as I thought. The step-by-step guidance made it easy to spot where I need to focus.”</p>
+    </div>
+    <div class="testimonial-card step2">
+      <div class="badge2">Rita – 60</div>
+      <h4 style="color: #0a2f4a; font-size: 1.1rem; margin-bottom: 8px;">Nurse</h4>
+      <p style="font-size: 0.95rem; color: #333;">“I didn’t think much about retirement before, but this site helped me understand where I stand and what to do next.”</p>
+    </div>
+    <div class="testimonial-card step3">
+      <div class="badge3">Ben – 47</div>
+      <h4 style="color: #0a2f4a; font-size: 1.1rem; margin-bottom: 8px;">Engineer</h4>
+      <p style="font-size: 0.95rem; color: #333;">“It’s not just numbers. It made me reflect on my goals, habits, and values. Helped put things in perspective.”</p>
+    </div>
+    <div class="testimonial-card step4">
+      <div class="badge4">Lina – 55</div>
+      <h4 style="color: #0a2f4a; font-size: 1.1rem; margin-bottom: 8px;">Teacher</h4>
+      <p style="font-size: 0.95rem; color: #333;">“It gave me peace of mind. I could finally see what steps I should take for my future. I wish I had this tool years ago.”</p>
+    </div>
   </div>
 </section>
 {% endblock %}
