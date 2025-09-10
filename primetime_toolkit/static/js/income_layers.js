@@ -34,21 +34,17 @@
 
   function clearAll() {
     tbody.innerHTML = '';
-    [
-      'Employment income',
-      'Superannuation pension',
-      'Investment income',
-      'Age pension',
-      'Rental/business income',
-      'Other'
-    ].forEach(l => addRow({ layer: l }));
+    // ✅ Just one blank starter row
+    addRow();
   }
 
-  // Remove row
+  // Remove row (keep at least one row)
   tbody.addEventListener('click', (e) => {
     const btn = e.target.closest('.remove-row');
     if (!btn) return;
-    btn.closest('tr.layer-row')?.remove();
+    const row = btn.closest('tr.layer-row');
+    row?.remove();
+    if (!tbody.querySelector('tr.layer-row')) addRow();
   });
 
   addBtn?.addEventListener('click', () => addRow());
@@ -66,9 +62,11 @@
     }));
 
     // simple client-side guard: start <= end
-    for (const it of items) if (it.end_age && it.start_age && it.start_age > it.end_age) {
-      alert(`"${it.layer || 'Row'}": Start age must be ≤ End age.`);
-      return;
+    for (const it of items) {
+      if (it.end_age && it.start_age && it.start_age > it.end_age) {
+        alert(`"${it.layer || 'Row'}": Start age must be ≤ End age.`);
+        return;
+      }
     }
 
     try {
@@ -90,7 +88,10 @@
       if (!res.ok) throw new Error();
       const rows = await res.json();
       tbody.innerHTML = '';
-      if (!rows.length) { clearAll(); return; }
+      if (!rows.length) {
+        clearAll(); // ✅ one blank row if DB empty
+        return;
+      }
       rows.forEach(addRow);
     } catch {
       clearAll();
