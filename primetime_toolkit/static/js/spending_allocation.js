@@ -18,8 +18,7 @@
 
   // Cache of phase -> budgeted annual from Future Budget
   let budgetMap = {};
-
-  function normPhase(p) { return (p || '').trim().toLowerCase(); }
+  const normPhase = p => (p || '').trim().toLowerCase();
 
   async function pullBudget() {
     try {
@@ -31,10 +30,10 @@
         const annual = (r.baseline || 0) + (r.oneoff || 0) + (r.epic || 0) || r.annual || 0;
         budgetMap[normPhase(r.phase)] = annual;
       });
-      recalcAll(); // refresh displayed budgets
     } catch {
       budgetMap = {};
-      recalcAll();
+    } finally {
+      recalcAll(); // refresh displayed budgets either way
     }
   }
 
@@ -43,11 +42,11 @@
     const row  = frag.querySelector('tr.sa-row');
 
     if (prefill.id) row.dataset.id = prefill.id;
-    row.querySelector('.phase').value    = prefill.phase ?? '';
-    row.querySelector('.col-base').value = prefill.cost_base ?? '';
-    row.querySelector('.col-life').value = prefill.cost_life ?? '';
-    row.querySelector('.col-save').value = prefill.cost_save ?? '';
-    row.querySelector('.col-health').value = prefill.cost_health ?? '';
+    row.querySelector('.phase').value       = prefill.phase ?? '';
+    row.querySelector('.col-base').value    = prefill.cost_base ?? '';
+    row.querySelector('.col-life').value    = prefill.cost_life ?? '';
+    row.querySelector('.col-save').value    = prefill.cost_save ?? '';
+    row.querySelector('.col-health').value  = prefill.cost_health ?? '';
     row.querySelector('.col-other').value   = prefill.cost_other ?? '';
 
     tbody.appendChild(frag);
@@ -55,9 +54,8 @@
 
   function clearAll() {
     tbody.innerHTML = '';
-    [
-      'Set-up','Lifestyle','Part-timing','Epic retirement','Passive retirement/ageing','Frailty'
-    ].forEach(p => addRow({ phase: p }));
+    // ✅ Just one blank starter row
+    addRow();
     recalcAll();
   }
 
@@ -75,8 +73,8 @@
 
     const surplus = budget - total;
 
-    row.querySelector('.total').textContent   = AUD.format(total);
-    row.querySelector('.budget').textContent  = AUD.format(budget);
+    row.querySelector('.total').textContent  = AUD.format(total);
+    row.querySelector('.budget').textContent = AUD.format(budget);
 
     const surplusEl = row.querySelector('.surplus');
     surplusEl.textContent = AUD.format(surplus);
@@ -101,7 +99,10 @@
   tbody.addEventListener('click', (e) => {
     const btn = e.target.closest('.remove-row');
     if (!btn) return;
-    btn.closest('tr.sa-row')?.remove();
+    const row = btn.closest('tr.sa-row');
+    row?.remove();
+    // Keep at least one row visible
+    if (!tbody.querySelector('tr.sa-row')) addRow();
     recalcAll();
   });
 
@@ -151,7 +152,7 @@
 
   // init: load data then budget
   document.addEventListener('DOMContentLoaded', async () => {
-    await loadAll();
-    await pullBudget();
+    await loadAll();     // ensures at least 1 starter row if DB empty
+    await pullBudget();  // then overlay budgets
   });
 })();
