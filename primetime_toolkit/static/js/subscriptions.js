@@ -24,10 +24,10 @@
     const row  = frag.querySelector('tr.subs-row');
 
     if (prefill.id) row.dataset.id = prefill.id;
-    row.querySelector('.service').value  = prefill.service ?? '';
-    row.querySelector('.provider').value = prefill.provider ?? '';
-    row.querySelector('.amount').value   = prefill.amount_per_period ?? '';
-    row.querySelector('.freq').value     = prefill.frequency ?? 'Monthly';
+    row.querySelector('.service').value   = prefill.service   ?? '';
+    row.querySelector('.provider').value  = prefill.provider  ?? '';
+    row.querySelector('.amount').value    = prefill.amount_per_period ?? '';
+    row.querySelector('.freq').value      = prefill.frequency ?? 'Monthly';
     row.querySelector('.include').checked = prefill.include !== false;
 
     tbody.appendChild(frag);
@@ -35,18 +35,8 @@
 
   function clearAll() {
     tbody.innerHTML = '';
-    [
-      'Streaming service (Netflix)',
-      'Music streaming (Spotify)',
-      'Cloud storage (iCloud)',
-      'Gym membership',
-      'News subscription',
-      'Magazine subscription',
-      'Software subscription',
-      'Video streaming (Stan)',
-      'Amazon Prime',
-      'Other subscription'
-    ].forEach(s => addRow({ service: s }));
+    // ✅ just one starter row (like Assets)
+    addRow({ service: 'Streaming service (Netflix)' });
     recalcAll();
   }
 
@@ -73,21 +63,22 @@
   // Delegated events
   tbody.addEventListener('input', (e) => {
     const t = e.target;
-    if (!t) return;
-    if (t.classList.contains('service') || t.classList.contains('provider') || t.classList.contains('amount')) {
+    if (t && (t.classList.contains('service') || t.classList.contains('provider') || t.classList.contains('amount'))) {
       recalcAll();
     }
   });
   tbody.addEventListener('change', (e) => {
     const t = e.target;
-    if (!t) return;
-    if (t.classList.contains('freq') || t.classList.contains('include')) recalcAll();
+    if (t && (t.classList.contains('freq') || t.classList.contains('include'))) {
+      recalcAll();
+    }
   });
   tbody.addEventListener('click', (e) => {
     const btn = e.target.closest('.remove-row');
-    if (!btn) return;
-    btn.closest('tr.subs-row')?.remove();
-    recalcAll();
+    if (btn) {
+      btn.closest('tr.subs-row')?.remove();
+      recalcAll();
+    }
   });
 
   addBtn?.addEventListener('click', () => { addRow(); recalcAll(); });
@@ -122,7 +113,10 @@
       if (!res.ok) throw new Error();
       const rows = await res.json();
       tbody.innerHTML = '';
-      if (!rows.length) { clearAll(); return; }
+      if (!rows.length) { 
+        clearAll(); 
+        return; 
+      }
       rows.forEach(addRow);
       recalcAll();
     } catch {
