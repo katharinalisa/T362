@@ -25,9 +25,9 @@
     const row  = frag.querySelector('tr.epic-row');
     if (prefill.id) row.dataset.id = prefill.id;
 
-    row.querySelector('.item').value   = prefill.item ?? '';
-    row.querySelector('.amount').value = prefill.amount ?? '';
-    row.querySelector('.freq').value   = prefill.frequency ?? 'Once only';
+    row.querySelector('.item').value      = prefill.item ?? '';
+    row.querySelector('.amount').value    = prefill.amount ?? '';
+    row.querySelector('.freq').value      = prefill.frequency ?? 'Once only';
     row.querySelector('.include').checked = prefill.include !== false;
 
     tbody.appendChild(frag);
@@ -35,13 +35,8 @@
 
   function clearAll() {
     tbody.innerHTML = '';
-    // Start with a few handy rows
-    [
-      { item:'3-month sabbatical' },
-      { item:'Caravan trip around Australia', frequency:'Every second year' },
-      { item:'Renovate kitchen' },
-      { item:'Round-the-world cruise' },
-    ].forEach(addRow);
+    // ✅ Just one blank starter row
+    addRow();
     recalcAll();
   }
 
@@ -87,6 +82,8 @@
     if (!btn) return;
     const row = btn.closest('tr.epic-row');
     if (row) row.remove();
+    // Keep at least one row visible
+    if (!tbody.querySelector('tr.epic-row')) addRow();
     recalcAll();
   });
 
@@ -127,7 +124,7 @@
       yearsEl.value = payload?.settings?.years ?? 10;
       tbody.innerHTML = '';
       (payload?.items ?? []).forEach(addRow);
-      if (!tbody.children.length) clearAll();
+      if (!tbody.children.length) clearAll(); // ✅ one starter row if DB empty
       recalcAll();
     } catch {
       clearAll();
