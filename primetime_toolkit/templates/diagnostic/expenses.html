@@ -116,6 +116,11 @@
     </td>
   </tr>
 </template>
-
+  </template>
+  <button id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>
+  <br><br>
+<script>
+  window.expensesPrefill = {{ expenses_data | tojson | default('[]', true) }};
+</script>
 <script src="{{ url_for('static', filename='js/expenses.js') }}"></script>
 {% endblock %}
