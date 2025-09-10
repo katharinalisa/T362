@@ -15,44 +15,48 @@
 <body>
   <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg shadow-sm sticky-top">
-  <div class="container">
-    <a class="navbar-brand" href="{{ url_for('views.home') }}">
-      <img src="{{ url_for('static', filename='img/primetime_image.png') }}" alt="PrimeTime Toolkit" class="logo-img">
-    </a>
+    <div class="container">
+      <a class="navbar-brand" href="{{ url_for('views.home') }}">
+        <img src="{{ url_for('static', filename='img/primetime_image.png') }}" alt="PrimeTime Toolkit" class="logo-img">
+      </a>
 
-    <div class="collapse navbar-collapse justify-content-end" id="mainNav">
-      <ul class="navbar-nav align-items-center">
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('views.home') }}">Home</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Money Management Tools</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('views.assessment_intro') }}">Self-Assessment</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('views.dashboard') }}">Dashboard</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('views.superannuation') }}">Superannuation</a></li>
-            <li><a class="dropdown-item" href="#">Investment Tools</a></li>
-          </ul>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('views.learninghub') }}">Learning Hub</a></li>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        {% if current_user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.profile') }}">Welcome, {{ current_user.name }}</a>
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('views.home') }}">Home</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Money Management Tools</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('views.assessment_intro') }}">Self-Assessment</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('views.dashboard') }}">Dashboard</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('views.superannuation') }}">Superannuation</a></li>
+              <li><a class="dropdown-item" href="#">Investment Tools</a></li>
+            </ul>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out</a>
-          </li>
-        {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
-          </li>
-          <li class="nav-item ms-2">
-            <a href="{{ url_for('auth.register') }}" class="btn-login">Sign Up</a>
-          </li>
-        {% endif %}
-      </ul>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('views.learninghub') }}">Learning Hub</a></li>
+
+          {% if current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('auth.profile') }}">Welcome, {{ current_user.name }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
+            </li>
+            <li class="nav-item ms-2">
+              <a href="{{ url_for('auth.register') }}" class="btn-login">Sign Up</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
   <!-- Flash messages -->
   <div id="flash-overlay" style="position:fixed; top:90px; left:0; width:100%; z-index:2000; pointer-events:none;">
@@ -76,44 +80,104 @@
 
   <!-- Footer -->
   <footer><br>
-  <section class="gradient-section2 text-center" style="padding-top:2rem; padding-bottom:2rem;">
-    <div class="container"><br>
-      <div class="row">
-        <div class="col-md-4 mb-3">
-          <h3 style="color:#bbbbbb;">Quick Links</h3>
-          <ul class="list-unstyled">
-            <li><a href="{{ url_for('views.home') }}" class="footer-list-item text-decoration-none">Home</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Budget Planner</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Superannuation</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Investment Tools</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Savings & Super Growth</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Retirement Drawdown</a></li>
-          </ul>
-        </div>
-        <div class="col-md-4 mb-3">
-          <h3 style="color:#bbbbbb;">Contact Us</h3>
-          <p style="color:#bbbbbb;">
-            Email: <a href="mailto:support@primetimetoolkit.com.au">support@primetimetoolkit.com.au</a><br>
-            Phone: 1300 000 111<br>
-            Address: 88 Retirement Ave, Brisbane, QLD
-          </p>
-        </div>
-        <div class="col-md-4 mb-3">
-          <h3 style="color:#bbbbbb;">Learning Hub</h3>
-          <ul class="list-unstyled">
-            <li><a href="#" class="footer-list-item text-decoration-none">Workshops</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Webinars</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Resources</a></li>
-          </ul>
+    <section class="gradient-section2 text-center" style="padding-top:2rem; padding-bottom:2rem;">
+      <div class="container"><br>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <h3 style="color:#bbbbbb;">Quick Links</h3>
+            <ul class="list-unstyled">
+              <li><a href="{{ url_for('views.home') }}" class="footer-list-item text-decoration-none">Home</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Budget Planner</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Superannuation</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Investment Tools</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Savings & Super Growth</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Retirement Drawdown</a></li>
+            </ul>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h3 style="color:#bbbbbb;">Contact Us</h3>
+            <p style="color:#bbbbbb;">
+              Email: <a href="mailto:support@primetimetoolkit.com.au">support@primetimetoolkit.com.au</a><br>
+              Phone: 1300 000 111<br>
+              Address: 88 Retirement Ave, Brisbane, QLD
+            </p>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h3 style="color:#bbbbbb;">Learning Hub</h3>
+            <ul class="list-unstyled">
+              <li><a href="#" class="footer-list-item text-decoration-none">Workshops</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Webinars</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Resources</a></li>
+            </ul>
+          </div>
         </div>
       </div>
+    </section>
+    <div class="text-center" style="font-size: 0.85rem; color:#aeaeae; background:transparent;">
+      © 2025 <span class="accent-text" style="color:#be9200;">PrimeTime Toolkit</span>. All rights reserved.
     </div>
-  </section>
-  <div class="text-center" style="font-size: 0.85rem; color:#aeaeae; background:transparent;">
-    © 2025 <span class="accent-text" style="color:#be9200;">PrimeTime Toolkit</span>. All rights reserved.
-  </div>
   </footer>
+
+  <!-- Chat button + popup -->
+  <button class="open-button" id="chatToggle">
+  <img src="{{ url_for('static', filename='img/bot.png') }}" alt="Chat" class="chat-icon">
+</button>
+
+  <div class="chat-popup" id="ptChat" role="dialog" aria-modal="true" aria-labelledby="ptChatTitle">
+    <form action="javascript:void(0);" class="form-container" id="ptChatForm">
+      <div class="messages" id="ptChatMessages" aria-live="polite" aria-atomic="false"></div>
+      <label id="ptChatTitle" class="visually-hidden">PrimeTime Chat</label>
+      <textarea id="ptChatInput" placeholder="Type message…" required></textarea>
+      <button type="submit" class="btn">Send</button>
+      <button type="button" class="btn cancel" id="ptChatClose">Close</button>
+    </form>
+  </div>
+
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Chat Widget JS -->
+  <script>
+  (function () {
+    const toggleBtn = document.getElementById('chatToggle');
+    const popup     = document.getElementById('ptChat');
+    const form      = document.getElementById('ptChatForm');
+    const input     = document.getElementById('ptChatInput');
+    const messages  = document.getElementById('ptChatMessages');
+    const closeBtn  = document.getElementById('ptChatClose');
+
+    function openChat() {
+      popup.style.display = 'block';
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      setTimeout(() => input && input.focus(), 0);
+    }
+    function closeChat() {
+      popup.style.display = 'none';
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      toggleBtn.focus();
+    }
+    function toggleChat() {
+      (popup.style.display === 'block') ? closeChat() : openChat();
+    }
+    function sendMessage(e) {
+      e.preventDefault();
+      const text = (input.value || '').trim();
+      if (!text) return;
+      const p = document.createElement('p');
+      p.textContent = 'You: ' + text;
+      messages.appendChild(p);
+      messages.scrollTop = messages.scrollHeight;
+      input.value = '';
+    }
+
+    toggleBtn.addEventListener('click', toggleChat);
+    closeBtn.addEventListener('click', closeChat);
+    form.addEventListener('submit', sendMessage);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && popup.style.display === 'block') closeChat();
+    });
+  })();
+  </script>
 </body>
 </html>
