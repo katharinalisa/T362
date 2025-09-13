@@ -24,7 +24,7 @@
     const row  = frag.querySelector('tr.subs-row');
 
     if (prefill.id) row.dataset.id = prefill.id;
-    row.querySelector('.service').value   = prefill.service   ?? '';
+    row.querySelector('.service').value   = prefill.service   ?? '';        // empty -> placeholder shows
     row.querySelector('.provider').value  = prefill.provider  ?? '';
     row.querySelector('.amount').value    = prefill.amount_per_period ?? '';
     row.querySelector('.freq').value      = prefill.frequency ?? 'Monthly';
@@ -35,8 +35,8 @@
 
   function clearAll() {
     tbody.innerHTML = '';
-    // ✅ just one starter row (like Assets)
-    addRow({ service: 'Streaming service (Netflix)' });
+    // ✅ just one starter row with NO default text
+    addRow(); // CHANGED: removed { service: 'Streaming service (Netflix)' }
     recalcAll();
   }
 
@@ -124,6 +124,7 @@
     }
   }
 
+  // Optional: if you wire a separate Save button
   saveBtn?.addEventListener('click', () => { void saveAll(); });
   loadBtn?.addEventListener('click', () => { void loadAll(); });
 
