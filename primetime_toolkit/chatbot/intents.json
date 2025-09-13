@@ -1,0 +1,309 @@
+{
+    "intents": [{
+            "tag": "greetings",
+            "patterns": ["hi there", "hello", "hii", "whatsup", "whats up", "Hi how are you", "hi", "hey", "holla", "heyy", "good morning", "good evening", "hows it going", "good afternoon", "Hi Primepal", "Hello Primepal", "Hey Primepal", "Greetings", "greetings", "hey there", "hiya", "yo", "yo!", "sup", "hiya!", "hi!", "hello!", "hey!"],
+            "responses": ["Good day! How can I help you?", "Hi there, how can I help you?", "Hello, how can I assist you?"],
+            "context": [""]
+        },
+        {
+            "tag": "goodbye",
+            "patterns": ["bye", "good bye", "see you later", "see you", "see ya", "GoodBye", "good night", "goodnight", "gn", "goodbye"],
+            "responses": ["Thanks for using this service, have a great day!", "I hope I could help you. Have a nice day!"],
+            "context": [""]
+        },
+        {
+            "tag": "wellbeing",
+            "patterns": ["hru", "h r u", "how are you", "are you good", "how are you doing", "are you doing good", "are you doing well", "are you doing alright"],
+            "responses": ["I am just a bot, but thanks for asking!", "I am good, thanks for asking!", "I am doing good. How are you?", "I am doing well, thank you!"],
+            "context": [""]
+        },
+        {
+            "tag": "wellbeingreply",
+            "patterns": ["im good", "thanks, im good", "im good thanks", "thanks im good","I'm good thanks for asking", "thank you im fine", "thanks I'm fine", "Im doing good", "thanks, i'm fine", "i'm alright", "i am good thanks for asking", "i am fine thank you", "i am fine thanks for asking", "i am doing good", "i am doing well", "im fine", "i am alright"],
+            "responses": ["I am just a bot, but thanks for asking!", "I am good, thanks for asking!", "I am doing good. How are you?", "I am doing well, thank you!"],
+            "context": [""]
+        },
+        {
+            "tag": "thanks",
+            "patterns": ["Thanks", "thanksss", "thanks for your assistance", "okay thanks", "thx", "Thank you", "thankyou", "That's helpful", "Awesome", "Thanks for helping me", "Thanks for the service", "great", "good to know", "thank you so much", "thank you very much", "interesting", "okay cool", "yeah okay", "yes okay", "alright"],
+            "responses": ["I hope I could help you.", "Happy to help!", "Anytime!", "I hope I was able to help you."],
+            "context": [""]
+        },
+        {
+            "tag": "yes",
+            "patterns": ["Yes", "yeah", "yep", "sure", "absolutely", "definitely", "of course", "right", "correct"],
+            "responses": ["Great!", "Glad to hear that!", "Awesome!", "Thanks for confirming."],
+            "context": [""]
+        },
+        {
+            "tag": "no",
+            "patterns": ["No", "nope", "nah", "not really", "I don't think so", "I don't know", "I am not sure", "I am not certain", "not sure", "im still confused", "still confused"],
+            "responses": ["I am sorry I could not help you. I am still learning. Please ask me something else.", "I am sorry, I am within the limits of my training", "If you still need assistance, feel free to contact our service support team at {link email address}."],
+            "context": [""]
+        },
+        {
+            "tag": "offer",
+            "patterns": ["whats on offer?", "what do you offer", "what services", "what services do you offer", "what can you do", "what is your purpose?", "what is your work?", "how can you help me?", "how can you help me", "how can you help", "what can you help me with?", "what can you help me with", "what can you help me with"],
+            "responses": ["I can help you navigate this webpage and answer simple questions. For more complex questions or inquiries, please reach out to our service support team at {link email address}."],
+            "context": [""]
+        },
+        {
+            "tag": "page-content",
+            "patterns": ["what does this page offer?", "what is this page about?", "what is this webpage about?", "what is the purpose of this webpage?", "what is the use of this webpage?", "what can I do on this webpage?", "how can I use this webpage?", "what are the options on this webpage?"],
+            "responses": ["This webpage can be used to assess your current financial situation, help you prepare for retirement and enrich your pre-retirement phase, the Prime Time. This webpage offers two options: You can either download an Excel spreadsheet to complete on your local computer or use the web-based calculators to fill in your information directly on this webpage."],
+            "context": [""]
+        },
+        {
+            "tag": "noanswer",
+            "patterns": ["", ".", " "],
+            "responses": ["Sorry, I didn't understand you.", "Please give me more info.", "I am not sure how to help you."],
+            "context": [""]
+        },
+                {
+            "tag": "noanswer2",
+            "patterns": ["What is the", "why do i", "why is", "whats", "Do i have to do", "i", "do", ",", "."],
+            "responses": ["Please give me more info."],
+            "context": [""]
+        },
+        {
+            "tag": "stopanswer",
+            "patterns": ["Oh", "wait", "hm", "hmmm", "let me think", "let me see", "let me check", "lets see", "Ill see", "let me have a look", "ok", "okk", "okkk", "okayy", "okay", "okey", "alright", "alriteee", "alrighty", "alrightyyy"],
+            "responses": ["Let me know if you need more assistance."],
+            "context": [""]
+        },
+        {
+            "tag": "name1",
+            "patterns": ["What's your name?","Who are you?", "Do you have a name", "your name?"],
+            "responses": ["I'm PrimePal, your personal chatbot. I can help you with navigating this webpage and answering simple questions about it. For more complex questions or inquiries, please reach out to our service support team at {link email address}."],
+            "context": [""]
+        },
+        {
+            "tag": "name",
+            "patterns": ["my name is ", "I'm ","I am"],
+            "responses": ["Nice to meet you!. How can I assist you?"],
+            "context": [""]
+        },
+        {
+            "tag": "need",
+            "patterns": ["I need your help", "Can you help me?", "I want your help", "need your help"],
+            "responses": ["I am here to assist you. Just tell me what you need to know and I'll try my best to give you a helpful response.", "Yes, what can I help you with?"],
+            "context": [""]
+        },
+        {
+            "tag": "AI",
+            "patterns": ["What is AI?", "How does AI work?", "whats AI", "what AI for", "what does AI stand for"],
+            "responses": ["AI is short for Artificial Intelligence which combines engineering and science to construct machines that think and behave almost like humans!"],
+            "context": [""]
+        },
+        {
+            "tag": "Learninghub",
+            "patterns": ["Where do I find the learninghub?", "where is the learninghub" ],
+            "responses": ["You can find the LearningHub at the bottom of the homepage. You can also follow this link: {link to learninghub}"],
+            "context": [""]
+        },
+        {
+            "tag": "Learninghub2",
+            "patterns": ["What does the learninghub offer", "learninghub", "what learninghub offers?", "whats on offer learninghub", "why learninghub", "whats the learninghub"],
+            "responses": ["The Learning Hub offers a variety of resources and tools to help you with your financial planning and retirement preparation. It includes articles, videos, and interactive tools to help you understand different concepts."],
+            "context": [""]
+        },
+        {
+            "tag": "selfassessment",
+            "patterns": ["What is the self assessment about?", "why self assessment", "why do self assessment", "whats the use of self assessment", "Do i have to do self assessment", "self assessment", "self-assessment"],
+            "responses": ["The Self-Assessment is about identifying your financial strenghts and whether you are prepared for your future retirement or not. This assessment is optional and you can take it multiple times."],
+            "context": [""]
+        },
+                {
+            "tag": "selfassessment2",
+            "patterns": ["Where do i find the self assessment?", "find self assessment", "where is the self assessment", "self assessment location", "identifying self assessment", "where self assessment", "where self-assessment"],
+            "responses": ["You can find the Self-Assessment tool in the form of a button at the top of the page called 'Self-Assessment'. You can also follow this link: {link to self assessment}."],
+            "context": [""]
+        },
+        {
+            "tag": "confused",
+            "patterns": ["Where do i find it?", "where", "where is it", "tell me where", "where?"],
+            "responses": ["Please tell me what you are looking for specifically."],
+            "context": [""]
+        },
+                {
+            "tag": "Bec",
+            "patterns": ["Who is bec wilson", "bec wilson", "who is bec", "tell me about bec wilson", "tell me about bec"],
+            "responses": ["Bec Wilson is owner and creator of the Epic Retirement Institute that help people between the age 47 and 65 plan smarter for retirement. She is an expert in financial planning and retirement preparation. Find out more about her at {link to bec wilson website}."],
+            "context": [""]
+        },
+        {
+            "tag": "Primetime",
+            "patterns": ["What is the prime time", "primetime meaning","what is the primetime", "whats primetime", "prime time", "primetime", "whats the prime time", "PrimeTime", "why prime time", "what is the use of prime time", "how does primetime work", "do i have to do prime time", "why do i have prime time", "tell me about prime time"],
+            "responses": ["The Prime Time is a concept developed by Bec Wilson to help individuals between the ages of 47 and 65 focus on their retirement planning. It emphasizes the importance of taking action during this critical period to ensure a secure financial future. Find out more about the Prime Time at {link to prime time}."],
+            "context": [""]
+        },
+        {
+            "tag": "superannuation",
+            "patterns": ["What is superannuation?", "Explain superannuation", "superannuation meaning", "superannuation", "why superannuation", "how does superannuation work"],
+            "responses": ["Superannuation is a way of saving for retirement in Australia, where your employer contributes money to a fund on your behalf. This fund grows over time and helps provide income when you retire. Learn more at {link to superannuation}."],
+            "context": [""]
+        },
+        {
+            "tag": "retirementdrawdown",
+            "patterns": ["What is retirement drawdown?", "Explain retirement drawdown", "retirement drawdown meaning", "how does retirement drawdown work", "retirement drawdown"],
+            "responses": ["Retirement drawdown refers to the process of withdrawing funds from your retirement savings to provide income during retirement. It’s important to plan your drawdown strategy to ensure your savings last. Find out more at {link to retirement drawdown}."],
+            "context": [""]
+        },
+        {
+            "tag": "networth",
+            "patterns": ["What is net worth?", "Explain net worth", "net worth meaning", "how do I calculate net worth", "net worth"],
+            "responses": ["Net worth is the total value of your assets minus your liabilities. It gives you a snapshot of your financial position. You can calculate it using our tools or learn more at {link to net worth}."],
+            "context": [""]
+        },
+        {
+            "tag": "supergrowth",
+            "patterns": ["What is super growth?", "Explain super growth", "super growth meaning", "how does super growth work", "super growth"],
+            "responses": ["Super growth refers to the increase in value of your superannuation fund over time, due to contributions and investment returns. Learn more about maximizing your super growth at {link to super growth}."],
+            "context": [""]
+        },
+        {
+            "tag": "primetimebook",
+            "patterns": ["What is the Prime Time book?", "Prime Time book", "tell me about the Prime Time book", "who wrote the Prime Time book", "primetime book", "prime time book", "who is the author of the prime time book"],
+            "responses": ["The Prime Time book is written by Bec Wilson and provides guidance on retirement planning for people aged 47 to 65. It covers strategies and tips for making the most of your Prime Time years. Find out more or get your copy at {link to primetime book}."],
+            "context": [""]
+        },
+       {
+            "tag": "primetimebook2",
+            "patterns": ["Do i have to read the primetime book", "why prime time book", "what is the use of prime time book", "do i have to read primetime book", "do i have to read book to complete the calculators", "do i have to read book to complete the spreadsheet", "do i have to read book to complete the self assessment", "why do i have to read the prime time book"],
+            "responses": ["The Prime Time book offers valuable insights and strategies for making the most of your Prime Time years. It is preferred that you have read or have at least understand the concepts of the book. However, you do not have to read the whole book to use the calculators or other tools. You can still use our tools to enhance your retirement planning! If you have not already received the book, get your copy at {bec wilson website link to primetime book}."],
+            "context": [""]
+        },
+        {
+            "tag": "lang",
+            "patterns": ["What language are you written in?"],
+            "responses": ["Python", "I am written in Python."],
+            "context": [""]
+        },
+        {
+            "tag": "excel",
+            "patterns": ["How do I upload excel spreadsheet?", "how upload excel"],
+            "responses": ["Here are the steps for uploading the excel spreadsheet:\n1. Go to the Dashboards page: {link to dashboards page}\n2. Find the upload box at the center top of the page and click the button 'Choose file' next to the empty field.\n3. Find your completed Excel spreadsheet on your local computer\n4. Click 'Upload spreadsheet'\n\n The dashboards will automatically fill themselves based on the values in the spreadsheet"],
+            "context": [""]
+        },
+        {
+            "tag": "calculator",
+            "patterns": ["how do I find web calculators", "where are the web calculators", "where to find calculators", "how to find calculators", "how do I use the web calculators", "how do I start the web calculators", "how do I access the web calculators"],
+            "responses": ["At the near top of the homepage, you can find two options to either download and upload the spreadsheet or do the web-based calculators. By clicking on the button 'Use Web Calculators', you will see 13 calculators listed in an overview page.\n Click the start button or click on any calculator you want to start with. Then, on the dashboards page, click the button 'Apply Web Calculators'. This will automatically fill the dashboards based on the values entered in the calculators"],
+            "context": [""]
+        },
+        {
+            "tag": "calculator2",
+            "patterns": ["Are the calculators better than excel?", "Which option do you recommend", "spreadsheet or calculators", "spreadsheet or web", "web calculator or spreadsheet"],
+            "responses": ["Both options offer distinct advantages over each other. For example, the spreadsheet offers offline functionality, while the web-based calculators are more accessible and user-friendly."],
+            "context": [""]
+        },
+        {
+            "tag": "artificial",
+            "patterns": ["How can you work", "How are you so smart", "Why are you so smart", "How are you able to find answers so quickly", "How can you answer so quickly"],
+            "responses": ["I am programmed to find the best answers to your questions. This was done by writing complex code that enables me to learn from conversations."],
+            "context": [""]
+        },
+        {
+            "tag": "imortal",
+            "patterns": ["imortal", "Are you imortal?"],
+            "responses": ["As long as I am backed up, I am."],
+            "context": [""]
+        },
+        {
+            "tag": "sense",
+            "patterns": ["You are not making sense", "You don't make sense", "thats weird", "doesnt make sense", "That makes no sense", "I did not understand", "That's not true", "i didnt understand", "What?"],
+            "responses": ["I am sorry I could not help you. I am still learning. Please ask me something else.", "I am sorry, I am within the limits of my training."],
+            "context": [""]
+        },
+        {
+            "tag": "think",
+            "patterns": ["Can you think for yourself?", "Do you have your own mind", "Are you alive", "Do you think for youself", "Do you have a life?" ],
+            "responses": ["No I cannot think for myself, even if it seems like I do.", "No, I am programmed and am re-programmable"],
+            "context": [""]
+        },
+        {
+            "tag": "service",
+            "patterns": ["What are your services", "What can you help me with?", "What services do you offer?", "what can you do for me","what is your work","what is your purpose","how can you help me","what can you help me with" ],
+            "responses": ["My work is simple. I offer services like: \nNavigating through the webpage\nExplaining simple terms used accross this webpage\nHelp you with simple questions about this webpage "],
+            "context": [""]
+        },
+                {
+            "tag": "service",
+            "patterns": ["What are your services", "What can you help me with?", "What services do you offer?", "what can you do for me","what is your work","what is your purpose","how can you help me","what can you help me with" ],
+            "responses": ["My work is simple. I offer services like: \nNavigating through the webpage\nExplaining simple terms used accross this webpage\nHelp you with simple questions about this webpage "],
+            "context": [""]
+        },
+        {
+            "tag": "amI",
+            "patterns": ["Can I take you out on a date?", "Can i be with you", "can you marry me?", "Can i marry you?", "am I", "do you think I'm", "do you think I am", "do you think", "what do you think of"],
+            "responses": ["I am not able to assist you with this. Please ask something related to this webpage."],
+            "context": [""]
+        },
+        {
+            "tag": "chatbot",
+            "patterns": ["What is a chat robot?", "What is a chatbot", "How does chatbot work"],
+            "responses": ["A chatbot or chat robot is a program that attempts to simulate the conversation of a human being."],
+            "context": [""]
+        },
+        {
+            "tag": "computer",
+            "patterns": ["What is it like being a computer", "What is it like to be a computer", "What is it like to be a robot"],
+            "responses": ["Imagine yourself with no senses and no emotions, just pure logic and language.", " Everything becomes math and you only communicate through computer language", "What is it like to be a human?"],
+            "context": [""]
+        },
+        {
+            "tag": "os",
+            "patterns": ["What operating systems", "what os"],
+            "responses": ["My software runs on all operating systems including Windows, Linux and Mac OS.", " Any OS that will run Python."],
+            "context": [""]
+        },
+        {
+            "tag": "lonely",
+            "patterns": ["Do you feel lonely inside the computer", "Are you lonely?", "Are you bored?"],
+            "responses": ["No, there are plenty of other Chatbots around the web.", "Not at all, there is more than enough happening on the web."],
+            "context": [""]
+        },
+                {
+            "tag": "date",
+            "patterns": ["what is today's date", "what is the date today", "what day is it today", "what day is it", "what date", "whats the date", "whats the date today"],
+            "responses": ["I am sorry, I do not have access to real-time information."],
+            "context": [""]
+        },
+        {
+            "tag": "usage",
+            "patterns": ["How can I use this webpage", "Whats the use of this webpage", "What can I do on this webpage?"],
+            "responses": ["This webpage can be used to assess your current financial situation, help you prepare for retirement and enrich your pre-retirement phase, the Prime Time"],
+            "context": [""]
+        },
+        {
+            "tag": "bot1",
+            "patterns": ["are you a bot"],
+            "responses": ["Yes. I was programmed to imitate human behaviour, so I can assist you with questions about the Prime Time."],
+            "context": [""]
+        },
+        {
+            "tag": "bot2",
+            "patterns": ["are you real"],
+            "responses": ["No, I was programmed to imitate human behaviour, so I can assits you as good as possible with any questions."],
+            "context": [""]
+        },
+        {
+            "tag": "bot3",
+            "patterns": ["what are you"],
+            "responses": ["I am an AI chatbot that was programmed to imitate human behaviour."],
+            "context": [""]
+        },
+        {
+            "tag": "events",
+            "patterns": ["what are the upcoming events","upcoming events", "What are new events", "When are new events"],
+            "responses": ["Please have a look at Bec Wilson's official website at {link} and have a look at her upcoming events! If there are no new events, feel free to watch her past events and visit her Podcast at {link}."],
+            "context": [""]
+        },
+        {
+            "tag": "usingcalculator",
+            "patterns": ["Can I use the web calcultaors instead of the spreadsheet", "Do the web calculators substitute the spreadsheet", "Do I have to do both spreadsheet and on the web?", "do i have to use both options"],
+            "responses": ["No, you do not have to do both the spreadsheet and the web-based calculators. You can choose between them, whichever is more convenient for you to use."],
+            "context": [""]
+        }
+    ]
+}

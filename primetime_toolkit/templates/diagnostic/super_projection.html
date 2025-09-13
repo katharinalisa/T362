@@ -1,0 +1,107 @@
+{% extends 'layout.html' %}
+{% block content %}
+  {% include 'diagnostic/subnav.html' %}
+
+  <div class="container py-4">
+    <h1 class="text-center mb-4" style="color:#9E2A2B; font-family:'Playfair Display', serif;">
+      Super Projection
+    </h1>
+
+    <!-- Assumptions -->
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-6 col-md-3">
+            <label class="form-label">Starting age</label>
+            <input id="sp_start_age" type="number" class="form-control" min="0" step="1" placeholder="e.g., 50">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">Retirement age</label>
+            <input id="sp_retire_age" type="number" class="form-control" min="0" step="1" placeholder="e.g., 60">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">Life expectancy age</label>
+            <input id="sp_end_age" type="number" class="form-control" min="0" step="1" placeholder="e.g., 90">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">Years (auto)</label>
+            <input id="sp_years" type="number" class="form-control" readonly placeholder="—">
+          </div>
+
+          <div class="col-6 col-md-3">
+            <label class="form-label">Starting balance ($)</label>
+            <input id="sp_opening" type="number" class="form-control" min="0" step="0.01" placeholder="e.g., 200,000">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">Net annual return (%)</label>
+            <input id="sp_return" type="number" class="form-control" step="0.01" placeholder="e.g., 5.5">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">Annual gross contribution ($)</label>
+            <input id="sp_gross_contrib" type="number" class="form-control" min="0" step="0.01" placeholder="e.g., 15,000">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">Contributions tax (%)</label>
+            <input id="sp_contrib_tax" type="number" class="form-control" step="0.01" placeholder="e.g., 15">
+          </div>
+
+          <div class="col-6 col-md-3">
+            <label class="form-label">Annual drawdown after retirement ($)</label>
+            <input id="sp_drawdown" type="number" class="form-control" min="0" step="0.01" placeholder="e.g., 45,000">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">Inflation (%)</label>
+            <input id="sp_inflation" type="number" class="form-control" step="0.01" placeholder="e.g., 2.5">
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <button id="sp_calc" class="btn btn-success" type="button">Calculate</button>
+          <button id="sp_load" class="btn btn-outline-secondary" type="button">Load</button>
+          <button id="sp_save" class="btn btn-primary" type="button">Save</button>
+          <button id="sp_csv" class="btn btn-outline-info" type="button">Download CSV</button>
+
+          <div class="ms-auto d-flex align-items-center gap-4">
+            <div>
+              <small class="text-muted">Ending balance</small>
+              <div id="sp_end_nominal" class="fw-bold">$0</div>
+            </div>
+            <div>
+              <small class="text-muted">Ending balance (real)</small>
+              <div id="sp_end_real" class="fw-bold">$0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projection table -->
+    <div class="table-responsive shadow-sm rounded">
+      <table class="table table-bordered align-middle mb-0">
+        <thead class="table-light" style="position: sticky; top: 0; z-index: 2;">
+          <tr>
+            <th style="width:70px;">Year</th>
+            <th style="width:80px;">Age</th>
+            <th>Opening balance</th>
+            <th>Gross contribution</th>
+            <th>Contribution tax</th>
+            <th>Net contribution</th>
+            <th>Net return</th>
+            <th>Drawdown</th>
+            <th>Closing balance</th>
+            <th>Real closing balance</th>
+          </tr>
+        </thead>
+        <tbody id="sp_tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="small-note mt-3">
+      Notes: Net return is calculated on the opening balance (user-friendly model). Contributions
+      stop at retirement age; drawdowns start at and after retirement age. “Real” balances are
+      inflation-adjusted to today’s dollars.
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/super_projection.js') }}"></script>
+{% endblock %}

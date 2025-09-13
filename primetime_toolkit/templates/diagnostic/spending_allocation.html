@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+{% block content %}
+  {% include 'diagnostic/subnav.html' %}
+
+  <div class="container py-4">
+    <h1 class="text-center mb-4" style="color:#9E2A2B; font-family:'Playfair Display', serif;">
+      Spending Allocation
+    </h1>
+
+    <p class="small-note mb-3">
+      Allocate your spending across categories for each phase and compare against your Future Budget.
+      Totals and surplus/deficit are calculated automatically.
+    </p>
+
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
+      <button id="clearAllBtn" class="btn btn-outline-danger" type="button">Clear All</button>
+      <button id="refreshBudgetBtn" class="btn btn-outline-secondary" type="button">Refresh Budget</button>
+    </div>
+
+    <!-- Phase suggestions -->
+    <datalist id="phaseOptions">
+      <option value="Set-up" />
+      <option value="Lifestyle" />
+      <option value="Part-timing" />
+      <option value="Epic retirement" />
+      <option value="Passive retirement/ageing" />
+      <option value="Frailty" />
+    </datalist>
+
+    <div class="table-responsive shadow-sm rounded">
+      <table id="saTable" class="table table-bordered mb-0 align-middle">
+        <thead>
+          <tr class="table-light">
+            <th style="width:36px;"></th>
+            <th class="item-cell">Phase</th>
+            <th style="width:160px;">Cost of living baseline ($)</th>
+            <th style="width:160px;">Lifestyle discretionary ($)</th>
+            <th style="width:160px;">Saving &amp; investing ($)</th>
+            <th style="width:160px;">Health &amp; care ($)</th>
+            <th style="width:160px;">Other ($)</th>
+            <th style="width:160px;">Total spending ($)</th>
+            <th style="width:160px;">Budgeted amount ($)</th>
+            <th style="width:140px;">Surplus/Deficit ($)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Row template -->
+  <template id="saRowTemplate">
+    <tr class="sa-row">
+      <td class="text-center">
+        <button class="btn btn-outline-danger btn-sm remove-row" type="button" aria-label="Remove row">&times;</button>
+      </td>
+      <td><input class="form-control form-control-sm phase" list="phaseOptions" placeholder="e.g., Lifestyle" /></td>
+      <td><input type="number" min="0" step="0.01" class="form-control form-control-sm col-base" placeholder="0.00" /></td>
+      <td><input type="number" min="0" step="0.01" class="form-control form-control-sm col-life" placeholder="0.00" /></td>
+      <td><input type="number" min="0" step="0.01" class="form-control form-control-sm col-save" placeholder="0.00" /></td>
+      <td><input type="number" min="0" step="0.01" class="form-control form-control-sm col-health" placeholder="0.00" /></td>
+      <td><input type="number" min="0" step="0.01" class="form-control form-control-sm col-other" placeholder="0.00" /></td>
+      <td class="currency total">$0</td>
+      <td class="currency budget">$0</td>
+      <td class="currency surplus">$0</td>
+    </tr>
+  </template>
+<button id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>
+<br><br>
+
+  <script src="{{ url_for('static', filename='js/spending_allocation.js') }}"></script>
+{% endblock %}

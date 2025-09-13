@@ -1,0 +1,77 @@
+{% extends 'layout.html' %}
+{% block content %}
+  {% include 'diagnostic/subnav.html' %}
+
+  <div class="container py-4">
+    <h1 class="text-center mb-4" style="color:#9E2A2B; font-family:'Playfair Display', serif;">
+      Income Layers
+    </h1>
+
+    <p class="small-note mb-3">
+      Define each layer of income and the age range during which it applies. Enter the estimated
+      <strong>annual</strong> amount for that layer.
+    </p>
+
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
+      <button id="clearAllBtn" class="btn btn-outline-danger" type="button">Clear All</button>
+    </div>
+
+    <!-- Suggestions -->
+    <datalist id="layerOptions">
+      <option value="Employment income" />
+      <option value="Superannuation pension" />
+      <option value="Investment income" />
+      <option value="Age pension" />
+      <option value="Rental/business income" />
+      <option value="Other" />
+    </datalist>
+
+    <div class="table-responsive shadow-sm rounded">
+      <table id="layersTable" class="table table-bordered mb-0 align-middle">
+        <thead>
+          <tr class="table-light">
+            <th style="width:36px;"></th>
+            <th class="item-cell">Income layer</th>
+            <th class="item-cell">Description</th>
+            <th style="width:120px;">Start age</th>
+            <th style="width:120px;">End age</th>
+            <th style="width:200px;">Estimated annual amount ($)</th>
+          </tr>
+        </thead>
+
+        <!-- ✅ One starter row -->
+        <tbody>
+          <tr class="layer-row">
+            <td class="text-center">
+              <button class="btn btn-outline-danger btn-sm remove-row" type="button" aria-label="Remove row">&times;</button>
+            </td>
+            <td><input class="form-control form-control-sm layer" list="layerOptions" placeholder="e.g., Employment income" /></td>
+            <td><input class="form-control form-control-sm desc" placeholder="Notes (optional)" /></td>
+            <td><input type="number" min="0" step="1" class="form-control form-control-sm start" placeholder="e.g., 55" /></td>
+            <td><input type="number" min="0" step="1" class="form-control form-control-sm end" placeholder="e.g., 67" /></td>
+            <td><input type="number" min="0" step="0.01" class="form-control form-control-sm amount" placeholder="0.00" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Row template -->
+  <template id="layerRowTemplate">
+    <tr class="layer-row">
+      <td class="text-center">
+        <button class="btn btn-outline-danger btn-sm remove-row" type="button" aria-label="Remove row">&times;</button>
+      </td>
+      <td><input class="form-control form-control-sm layer" list="layerOptions" placeholder="e.g., Employment income" /></td>
+      <td><input class="form-control form-control-sm desc" placeholder="Notes (optional)" /></td>
+      <td><input type="number" min="0" step="1" class="form-control form-control-sm start" placeholder="e.g., 55" /></td>
+      <td><input type="number" min="0" step="1" class="form-control form-control-sm end" placeholder="e.g., 67" /></td>
+      <td><input type="number" min="0" step="0.01" class="form-control form-control-sm amount" placeholder="0.00" /></td>
+    </tr>
+  </template>
+   <button id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>
+  <br><br>
+
+  <script src="{{ url_for('static', filename='js/income_layers.js') }}"></script>
+{% endblock %}

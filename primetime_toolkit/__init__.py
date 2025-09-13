@@ -30,8 +30,12 @@ def create_app():
 
     from .auth import auth
     from .views import views
+    from .chatbot.chatbot import chatbot_bp
+
+
 
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(views, url_prefix='/')
+    app.register_blueprint(chatbot_bp, url_prefix='/chatbot')
 
     return app

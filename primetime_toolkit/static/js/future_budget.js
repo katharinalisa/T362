@@ -1,185 +1,188 @@
-// static/js/future_budget.js
 (() => {
-  // ===== DOM =====
-  const table = document.getElementById('futureBudgetTable');
-  const tbody = table?.querySelector('tbody');
-  const rowTemplate = document.getElementById('futureRowTemplate');
+  // Elements
+  const table   = document.getElementById('futureBudgetTable');
+  const tbody   = table?.querySelector('tbody');
+  const rowTpl  = document.getElementById('futureRowTemplate');
 
-  const addRowBtn  = document.getElementById('addRowBtn');
-  const clearBtn   = document.getElementById('clearAllBtn');
-  const saveBtn    = document.getElementById('saveBtn');
-  const loadBtn    = document.getElementById('loadBtn');
+  const addBtn      = document.getElementById('addRowBtn');
+  const clearBtn    = document.getElementById('clearAllBtn');
+  const saveBtn     = document.getElementById('saveAndNextBtn');
 
-  const elTotalYears   = document.getElementById('totalYears');
-  const elLifetimeTotal= document.getElementById('lifetimeTotal');
+  const totalYearsEl   = document.getElementById('totalYears');
+  const lifetimeTotalEl= document.getElementById('lifetimeTotal');
 
-  if (!tbody || !rowTemplate) return;
+  if (!table || !tbody || !rowTpl) return;
 
-  // ===== Constants =====
-  const PHASE_AGE = {
-    'set-up': '45–50',
-    'lifestyling': '50–60',
-    'part-timing': '60–65',
-    'epic retirement': '65–75',
-    'passive retirement/ageing': '75–85',
-    'frailty': '85–95',
-  };
-
-  const AUD = new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency: 'AUD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  });
-
-  // ===== Utils =====
+  // Helpers
+  const AUD = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'AUD', minimumFractionDigits: 0 });
   const parseNum = (v) => {
     const n = parseFloat(String(v ?? '').replace(/[^\d.-]/g, ''));
     return Number.isFinite(n) ? n : 0;
   };
 
-  const setCurrency = (el, amount) => { el.textContent = AUD.format(amount || 0); };
+  // Optional phase → example age range mapping (only used to auto-fill read-only field when phase changes)
+  const PHASE_AGE_HINT = {
+    'Set-up': '25–35',
+    'Lifestyling': '35–50',
+    'Part-timing': '50–60',
+    'Epic retirement': '60–70',
+    'Passive retirement/ageing': '70–80',
+    'Frailty': '80+'
+  };
 
-  // ===== Row helpers =====
+  // ----- Row ops -----
   function addRow(prefill = {}) {
-    const frag = rowTemplate.content.cloneNode(true);
+    const frag = rowTpl.content.cloneNode(true);
     const row  = frag.querySelector('tr.future-row');
 
     if (prefill.id) row.dataset.id = prefill.id;
-    if (prefill.phase)     row.querySelector('.phase').value      = prefill.phase;
-    if (prefill.age_range) row.querySelector('.age-range').value  = prefill.age_range;
-    if (prefill.years!=null)    row.querySelector('.years').value    = prefill.years;
-    if (prefill.baseline!=null) row.querySelector('.baseline').value = prefill.baseline;
-    if (prefill.oneoff!=null)   row.querySelector('.oneoff').value   = prefill.oneoff;
-    if (prefill.epic!=null)     row.querySelector('.epic').value     = prefill.epic;
+
+    const phaseEl    = row.querySelector('.phase');
+    const ageEl      = row.querySelector('.age-range');
+    const yearsEl    = row.querySelector('.years');
+    const baseEl     = row.querySelector('.baseline');
+    const oneoffEl   = row.querySelector('.oneoff');
+    const epicEl     = row.querySelector('.epic');
+
+    phaseEl.value  = prefill.phase ?? '';
+    // If API provided age_range use it; else leave blank until user picks a phase
+    ageEl.value    = prefill.age_range ?? '';
+    yearsEl.value  = prefill.years ?? '';
+    baseEl.value   = prefill.baseline ?? '';
+    oneoffEl.value = prefill.oneoff ?? '';
+    epicEl.value   = prefill.epic ?? '';
 
     tbody.appendChild(frag);
   }
 
-  function prefillSix() {
-    [
-      { phase: 'Set-up',                 age_range: '45–50' },
-      { phase: 'Lifestyling',            age_range: '50–60' },
-      { phase: 'Part-timing',            age_range: '60–65' },
-      { phase: 'Epic retirement',        age_range: '65–75' },
-      { phase: 'Passive retirement/ageing', age_range: '75–85' },
-      { phase: 'Frailty',                age_range: '85–95' },
-    ].forEach(addRow);
-  }
-
   function clearAll() {
     tbody.innerHTML = '';
-    prefillSix();
+    // ✅ Always keep one blank starter row
+    addRow();
     recalcAll();
   }
 
-  // ===== Calculations =====
-  function recalcRow(row) {
+  // ----- Calculations -----
+  function annualFromRow(row) {
     const baseline = parseNum(row.querySelector('.baseline')?.value);
     const oneoff   = parseNum(row.querySelector('.oneoff')?.value);
     const epic     = parseNum(row.querySelector('.epic')?.value);
-    const annual   = baseline + oneoff + epic;
-    setCurrency(row.querySelector('.annual'), annual);
+    return baseline + oneoff + epic;
+  }
+
+  function recalcRow(row) {
+    const annual = annualFromRow(row);
+    row.querySelector('.annual').textContent = AUD.format(annual);
     return annual;
   }
 
   function recalcAll() {
-    let yearsTotal = 0;
-    let lifetime   = 0;
+    let sumYears = 0;
+    let lifetime = 0;
 
-    tbody.querySelectorAll('tr.future-row').forEach((row) => {
-      const years  = parseNum(row.querySelector('.years')?.value);
+    tbody.querySelectorAll('tr.future-row').forEach(row => {
       const annual = recalcRow(row);
-      yearsTotal += years;
-      lifetime   += years * annual;
+      const years  = parseNum(row.querySelector('.years')?.value);
+      sumYears += years;
+      lifetime += annual * years;
     });
 
-    elTotalYears.textContent = yearsTotal || 0;
-    setCurrency(elLifetimeTotal, lifetime);
+    totalYearsEl.textContent    = `${sumYears}`;
+    lifetimeTotalEl.textContent = AUD.format(lifetime);
   }
 
-  // ===== Events (delegate to tbody) =====
-  function onTbodyInput(e) {
+  // ----- Events -----
+  // Delegate inputs for recalculation
+  tbody.addEventListener('input', (e) => {
     const t = e.target;
     if (!t) return;
 
+    // Auto-fill Age range when phase changes (optional hint only)
     if (t.classList.contains('phase')) {
-      const key = (t.value || '').trim().toLowerCase();
       const row = t.closest('tr.future-row');
-      if (row) row.querySelector('.age-range').value = PHASE_AGE[key] || '';
+      const ageEl = row?.querySelector('.age-range');
+      if (ageEl) {
+        const hint = PHASE_AGE_HINT[t.value?.trim()] || '';
+        // only set hint if user hasn't typed anything (read-only field anyway)
+        ageEl.value = hint;
+      }
     }
 
     if (
-      t.classList.contains('phase')     ||
-      t.classList.contains('years')     ||
-      t.classList.contains('baseline')  ||
-      t.classList.contains('oneoff')    ||
+      t.classList.contains('phase') ||
+      t.classList.contains('years') ||
+      t.classList.contains('baseline') ||
+      t.classList.contains('oneoff') ||
       t.classList.contains('epic')
-    ) recalcAll();
-  }
+    ) {
+      recalcAll();
+    }
+  });
 
-  function onTbodyClick(e) {
+  // Remove row
+  tbody.addEventListener('click', (e) => {
     const btn = e.target.closest('.remove-row');
     if (!btn) return;
     const row = btn.closest('tr.future-row');
-    if (row) row.remove();
-    if (tbody.children.length === 0) prefillSix();
-    recalcAll();
-  }
+    row?.remove();
+    if (!tbody.querySelectorAll('tr.future-row').length) {
+      clearAll(); // keep one starter row minimum
+    } else {
+      recalcAll();
+    }
+  });
 
-  // ===== DB I/O =====
+  // Header buttons
+  addBtn?.addEventListener('click', () => { addRow(); recalcAll(); });
+  clearBtn?.addEventListener('click', clearAll);
+
+  // ----- DB I/O -----
   async function saveAll() {
     const items = [...tbody.querySelectorAll('tr.future-row')].map(row => ({
       id: row.dataset.id || null,
-      phase:     row.querySelector('.phase')?.value?.trim()      || '',
-      age_range: row.querySelector('.age-range')?.value?.trim()  || '',
-      years:     parseNum(row.querySelector('.years')?.value),
-      baseline:  parseNum(row.querySelector('.baseline')?.value),
-      oneoff:    parseNum(row.querySelector('.oneoff')?.value),
-      epic:      parseNum(row.querySelector('.epic')?.value),
+      phase: row.querySelector('.phase')?.value?.trim() || '',
+      age_range: row.querySelector('.age-range')?.value?.trim() || '',
+      years: parseNum(row.querySelector('.years')?.value),
+      baseline: parseNum(row.querySelector('.baseline')?.value),
+      oneoff: parseNum(row.querySelector('.oneoff')?.value),
+      epic: parseNum(row.querySelector('.epic')?.value),
+      // computed for convenience (API may ignore)
+      annual_total: annualFromRow(row)
     }));
 
     try {
       const res = await fetch('/api/future_budget/bulk', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type':'application/json' },
         body: JSON.stringify({ items })
       });
-      if (!res.ok) throw new Error('Save failed');
+      if (!res.ok) throw new Error();
       alert('Saved.');
-    } catch (err) {
-      console.error(err);
-      alert('Could not save. Check server logs.');
+    } catch {
+      alert('Save failed. Check server logs.');
     }
   }
 
   async function loadAll() {
     try {
       const res = await fetch('/api/future_budget');
-      if (!res.ok) throw new Error('Load failed');
+      if (!res.ok) throw new Error();
       const rows = await res.json();
+
       tbody.innerHTML = '';
-      if (!rows.length) { prefillSix(); recalcAll(); return; }
+      if (!rows.length) {
+        clearAll(); // ✅ one starter row if DB empty
+        return;
+      }
       rows.forEach(addRow);
       recalcAll();
-    } catch (err) {
-      console.warn('Falling back to defaults:', err);
+    } catch {
       clearAll();
     }
   }
 
-  // ===== Wire buttons & init =====
-  addRowBtn?.addEventListener('click', () => { addRow(); recalcAll(); });
-  clearBtn ?.addEventListener('click', clearAll);
-  saveBtn  ?.addEventListener('click', () => { void saveAll(); });
-  loadBtn  ?.addEventListener('click', () => { void loadAll(); });
+  saveBtn?.addEventListener('click', () => { void saveAll(); });
 
-  tbody.addEventListener('input',  onTbodyInput);
-  tbody.addEventListener('change', onTbodyInput);
-  tbody.addEventListener('click',  onTbodyClick);
-
-  // Init on DOM ready (no top-level await needed)
-  document.addEventListener('DOMContentLoaded', () => {
-    loadAll(); // if API empty/unavailable, we fallback inside loadAll()
-  });
+  // ----- Init -----
+  document.addEventListener('DOMContentLoaded', loadAll);
 })();

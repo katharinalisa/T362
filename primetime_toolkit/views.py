@@ -8,6 +8,8 @@ import os
 import json
 from primetime_toolkit.models import db, Subscriber, Asset, Liability, Income
 
+from primetime_toolkit.models import db, Subscriber, Asset, Liability
+from .excel_parser import parse_excel
 
 views = Blueprint('views', __name__)
 
@@ -17,7 +19,21 @@ def home():
 
 @views.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    '''username = current_user.username
+    if not username:
+        flash("Please log in first", "error")
+        return redirect(url_for("auth.login"))'''
+    
+    upload_folder = current_app.config['UPLOAD_FOLDER']
+    data = {}
+
+    if os.path.exists(upload_folder):
+        files = [os.path.join(upload_folder, f) for f in os.listdir(upload_folder) if allowed_file(f)]
+        if files:
+            latest_file = max(files, key=os.path.getmtime)
+            data = parse_excel(latest_file)
+
+    return render_template('dashboard.html', data=data)
 
 @views.route('/superannuation')
 def superannuation():
@@ -35,14 +51,38 @@ def workshops():
 def webinars():
     return render_template('learning_hub/webinars.html')
 
-@views.route('/assessment' , methods=['GET'])
-def assessment():
-    return render_template('assessment.html')
-
 @views.route("/eligibility-setup")
 def eligibility_setup():
     return render_template("eligibility_setup.html")
 
+@views.route('/assessment_intro')
+def assessment_intro():
+    return render_template('selftest/assessment_intro.html')
+
+
+@views.route('/assessment1')
+def assessment1():
+    return render_template('selftest/assessment/assessment1.html')
+
+@views.route('/assessment2', methods=['GET', 'POST'])
+def assessment2():
+    return render_template('selftest/assessment/assessment2.html')
+
+@views.route('/assessment3', methods=['GET', 'POST'])
+def assessment3():
+    return render_template('selftest/assessment/assessment3.html')
+
+@views.route('/assessment4', methods=['GET', 'POST'])
+def assessment4():
+    return render_template('selftest/assessment/assessment4.html')
+
+@views.route('/assessment5', methods=['GET', 'POST'])
+def assessment5():
+    return render_template('selftest/assessment/assessment5.html')
+
+@views.route('/assessment6', methods=['GET', 'POST'])
+def assessment6():
+    return render_template('selftest/assessment/assessment6.html')
 
 #--------------------------------------------------------------------------
 # Upload Excel spreadsheet
@@ -149,9 +189,9 @@ def subscribe():
 
 @views.route('/submit-assessment', methods=['POST'])
 def submit_assessment():
-    """Process 20 Likert questions (1–5 each), produce 0–100 total,
-    and classify as Beginner / Progressing / Confident."""
-    TOTAL_QUESTIONS = 20
+    """Process 24 Likert questions (1–5 each), produce 0–120 total,
+    and classify as Inactive / Reactive / Proactive."""
+    TOTAL_QUESTIONS = 24
 
     total_score = 0
     for i in range(1, TOTAL_QUESTIONS + 1):
@@ -162,10 +202,10 @@ def submit_assessment():
             except ValueError:
                 pass
 
-    # Map total_score (0–100) to bands
-    if total_score <= 39:
+    # Map total_score (0–120) to bands
+    if total_score <= 50:
         band = "Inactive"
-    elif total_score <= 69:
+    elif total_score <= 90:
         band = "Reactive"
     else:
         band = "Proactive"
@@ -173,7 +213,7 @@ def submit_assessment():
     result_message = f"You are classified as {band}."
 
     return render_template(
-        'summary.html',
+        'selftest/summary.html',
         result_message=result_message,
         band=band,
         total_score=total_score,
@@ -403,3 +443,21 @@ def calculator():
 @views.route('/epic')                  
 def epic():
     return render_template('diagnostic/epic.html')
+
+@views.route('/subscriptions')
+def subscriptions():
+    return render_template('diagnostic/subscriptions.html')
+
+
+@views.route('/income_layers')
+def income_layers():
+    return render_template('diagnostic/income_layers.html')
+
+@views.route('/spending')
+def spending():
+    return render_template('diagnostic/spending_allocation.html')
+
+
+@views.route('/super')
+def super():
+    return render_template('diagnostic/super_projection.html')

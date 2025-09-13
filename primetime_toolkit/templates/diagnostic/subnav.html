@@ -1,18 +1,47 @@
-<!-- Tab navigation -->
-<div class="tab">
-  <a href="{{ url_for('views.tracker') }}" class="tablinks">All Calculators</a>
-  <a href="{{ url_for('views.life') }}" class="tablinks">Life Expectancy</a>
-  <a href="{{ url_for('views.assets') }}" class="tablinks">Assets</a>
-  <a href="{{ url_for('views.liabilities') }}" class="tablinks">Liabilities & Savings</a>
-  <a href="{{ url_for('views.income') }}" class="tablinks">Income</a>
-  <a href="{{ url_for('views.expenses') }}" class="tablinks">Expenses</a>
-  <a href="#" class="tablinks">Subscriptions</a>
-  <a href="#" class="tablinks">Age Pension Eligibility</a>
-  <a href="{{ url_for('views.future_budget') }}" class="tablinks">Future Budget</a>
-  <a href="{{ url_for('views.epic') }}" class="tablinks">Epic & One-off</a>
-  <a href="#" class="tablinks">Income Layers</a>
-  <a href="#" class="tablinks">Spending Allocation</a>
-  <a href="#" class="tablinks">Super Projection</a>
-  <a href="#" class="tablinks">Debt Paydown</a>
-  <a href="{{ url_for('views.calculator') }}" class="tablinks">Enough Calculator</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Link to your global stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div id="mySidebar" class="sidebar">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+  <a href="{{ url_for('views.tracker') }}">All Calculators</a>
+  <a href="{{ url_for('views.life') }}">Life Expectancy</a>
+  <a href="{{ url_for('views.assets') }}">Assets</a>
+  <a href="{{ url_for('views.liabilities') }}">Liabilities & Savings</a>
+  <a href="{{ url_for('views.income') }}">Income</a>
+  <a href="{{ url_for('views.expenses') }}">Expenses</a>
+  <a href="{{ url_for('views.subscriptions') }}">Subscriptions</a>
+  <a href="{{ url_for('views.future_budget') }}">Future Budget</a>
+  <a href="{{ url_for('views.epic') }}">Epic & One-off</a>
+  <a href="{{ url_for('views.income_layers') }}">Income Layers</a>
+  <a href="{{ url_for('views.spending') }}">Spending Allocation</a>
+  <a href="{{ url_for('views.super') }}">Super Projection</a>
+  <a href="#">Debt Paydown</a>
+  <a href="{{ url_for('views.calculator') }}">Enough Calculator</a>
 </div>
+
+<!-- Main content -->
+<div id="main">
+  <button class="openbtn" onclick="openNav()">☰ Menu</button>
+</div>
+
+<script>
+function openNav() {
+  document.getElementById("mySidebar").style.width = "250px";
+  document.getElementById("main").style.marginLeft = "250px";
+}
+
+function closeNav() {
+  document.getElementById("mySidebar").style.width = "0";
+  document.getElementById("main").style.marginLeft= "0";
+}
+</script>
+
+</body>
+</html>

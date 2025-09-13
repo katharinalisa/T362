@@ -1,0 +1,284 @@
+{% extends'selftest/assessment_intro.html' %}
+
+{% block content %}
+{% set step_number = 1 %}
+{% set step_label = "Purpose & Direction" %}
+<style>
+  .step-box {
+    background: #f1f1f1;
+    border-radius: 12px;
+    padding: 0;
+    max-width: 600px;
+    margin: 2rem auto;
+    overflow: hidden;
+    text-align: center;
+  }
+  .header-box {
+    background: #1e2b3a;
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    width: 100%;
+  }
+  .likert label {
+    margin: 0 10px;
+    font-weight: 500;
+  }
+  .likert input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    margin: 0 8px;
+    outline: none;
+    transition: 0.2s all ease-in-out;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .likert input[type="radio"]:checked {
+    background-color: #7e57c2;
+    border-color: #7e57c2;
+  }
+
+  .likert input[type="radio"]::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    display: none;
+  }
+
+  .likert input[type="radio"]:checked::after {
+    display: block;
+  }
+
+  .likert {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .progress-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: flex-start;
+  }
+  .progress-ring-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+  }
+  .progress-ring {
+    width: 100%;
+    height: 100%;
+  }
+  .progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .step-title {
+    font-size: 1.35rem;
+    margin: 0;
+    color: white;
+  }
+  .likert-label {
+    font-weight: 500;
+    color: #444;
+    min-width: 60px;
+    text-align: center;
+  }
+  .likert label.large input[type="radio"] {
+    transform: scale(1.4);
+  }
+  .likert label.medium input[type="radio"] {
+    transform: scale(1.1);
+  }
+  .likert label.small input[type="radio"] {
+    transform: scale(0.85);
+  }
+
+  .step-cards {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin: 3rem auto;
+    padding: 2rem;
+    max-width: 100%;
+    background-color: #f9f9f9;
+    border-radius: 16px;
+  }
+  .step-card {
+    flex: 1;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    border-top: 6px solid;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+  .step-card h4 {
+    margin: 1rem 0 0.5rem;
+    color: #333;
+    font-size: 1.25rem;
+  }
+  .step-card p {
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  .step-badge {
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+  }
+  .step-img {
+    height: 80px;
+    margin: 0 auto 1rem;
+    display: block;
+  }
+
+  .step1 { border-top: 6px solid #007bff; }
+  .step2 { border-top: 6px solid #28a745; }
+  .step3 { border-top: 6px solid #6f42c1; }
+
+  .badge1 { background-color: #007bff; }
+  .badge2 { background-color: #28a745; }
+  .badge3 { background-color: #6f42c1; }
+</style>
+
+<div class="step-cards">
+  <div class="step-card step1">
+    <div class="step-badge badge1">STEP 1</div>
+    <img src="/static/img/step1.png" alt="Step 1" class="step-img">
+    <h4>Check Your Financial Stage</h4>
+    <p>Be honest and go with your instinct to see where you are financially.</p>
+  </div>
+  <div class="step-card step2">
+    <div class="step-badge badge2">STEP 2</div>
+    <img src="/static/img/step2.png" alt="Step 2" class="step-img">
+    <h4>View Your Results</h4>
+    <p>Understand how your responses map to key areas of financial wellbeing.</p>
+  </div>
+  <div class="step-card step3">
+    <div class="step-badge badge3">STEP 3</div>
+    <img src="/static/img/step3.jpg" alt="Step 3" class="step-img">
+    <h4>Use Your Budget Plan</h4>
+    <p>Take action by using the budget plan and tracking your progress.</p>
+  </div>
+</div>
+
+<div class="step-box">
+  <div class="header-box mb-4">
+    <div class="progress-ring-wrapper">
+      <svg class="progress-ring" viewBox="0 0 36 36" style="transform: rotate(0deg);">
+        <path
+          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+          fill="none"
+          stroke="#eee"
+          stroke-width="4"
+        />
+        <path
+          d="M18 2.0845 a 15.9155 15.9155 0 1 1 0 31.831 a 15.9155 15.9155 0 1 1 0 -31.831"
+          fill="none"
+          stroke="#007bff"
+          stroke-width="4"
+          stroke-dasharray="100, 100"
+          stroke-dashoffset="{{ 100 - (100 / 6 * step_number) }}"
+        />
+      </svg>
+      <div class="progress-text">{{ step_number }} of 6</div>
+    </div>
+    <div>
+      <h4 class="step-title">{{ step_label }}</h4>
+    </div>
+  </div>
+
+  <form method="POST" action="/assessment2">
+    <div class="mb-4">
+      <p class="fw-bold">1. I can explain how my financial choices align with my personal values.</p>
+      <div class="likert">
+        <span class="likert-label">Disagree</span>
+        <label class="large"><input type="radio" name="q1" value="1" required></label>
+        <label class="medium"><input type="radio" name="q1" value="2"></label>
+        <label class="small"><input type="radio" name="q1" value="3"></label>
+        <label class="medium"><input type="radio" name="q1" value="4"></label>
+        <label class="large"><input type="radio" name="q1" value="5"></label>
+        <span class="likert-label">Agree</span>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <p class="fw-bold">2. I have defined what financial independence means for me.</p>
+      <div class="likert">
+        <span class="likert-label">Disagree</span>
+        <label class="large"><input type="radio" name="q2" value="1" required></label>
+        <label class="medium"><input type="radio" name="q2" value="2"></label>
+        <label class="small"><input type="radio" name="q2" value="3"></label>
+        <label class="medium"><input type="radio" name="q2" value="4"></label>
+        <label class="large"><input type="radio" name="q2" value="5"></label>
+        <span class="likert-label">Agree</span>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <p class="fw-bold">3. I have clear life goals that guide my decision-making.</p>
+      <div class="likert">
+        <span class="likert-label">Disagree</span>
+        <label class="large"><input type="radio" name="q3" value="1" required></label>
+        <label class="medium"><input type="radio" name="q3" value="2"></label>
+        <label class="small"><input type="radio" name="q3" value="3"></label>
+        <label class="medium"><input type="radio" name="q3" value="4"></label>
+        <label class="large"><input type="radio" name="q3" value="5"></label>
+        <span class="likert-label">Agree</span>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <p class="fw-bold">4. I feel empowered, not stuck, when thinking about my future.</p>
+      <div class="likert">
+        <span class="likert-label">Disagree</span>
+        <label class="large"><input type="radio" name="q4" value="1" required></label>
+        <label class="medium"><input type="radio" name="q4" value="2"></label>
+        <label class="small"><input type="radio" name="q4" value="3"></label>
+        <label class="medium"><input type="radio" name="q4" value="4"></label>
+        <label class="large"><input type="radio" name="q4" value="5"></label>
+        <span class="likert-label">Agree</span>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary">Next</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

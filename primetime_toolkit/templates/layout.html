@@ -1,6 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <style>
+      #chatbot-widget {
+          position: fixed;
+          bottom: 30px;
+          right: 30px;
+          z-index: 9999;
+      }
+      #chatbot-toggle {
+          background: #1976d2;
+          color: #fff;
+          border: none;
+          border-radius: 50%;
+          width: 56px;
+          height: 56px;
+          font-size: 1.7rem;
+          cursor: pointer;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      }
+      #chatbot-container {
+          width: 350px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+          border-radius: 10px;
+          background: #f7f7f7;
+          position: relative;
+          margin-top: 10px;
+          display: none;
+      }
+      .chatbot-container {
+          max-width: 100%;
+          margin: 0;
+          background: #f7f7f7;
+          border-radius: 10px;
+          box-shadow: none;
+          padding: 20px 10px;
+      }
+      .chat-header h1 {
+          font-size: 1.3rem;
+          margin-bottom: -20px;
+          text-align: center;
+      }
+
+      hr {
+          color: rgb(123, 123, 123);
+          margin-bottom: -60px;
+      }
+
+      #chatbox {
+          background: #f7f7f7;
+          border-radius: 8px;
+          min-height: 250px;
+          max-height: 250px;
+          overflow-y: auto;
+          padding: 10px;
+          border-width: 1px;
+      }
+      .userText {
+          text-align: right;
+          margin: 8px 0;
+      }
+      .userText span {
+          background: #1976d2;
+          color: #fff;
+          padding: 8px 14px;
+          border-radius: 18px 18px 2px 18px;
+          display: inline-block;
+          max-width: 80%;
+          word-break: break-word;
+          font-size: 1rem;
+          line-height: 1.5;
+          font-family: 'Inter', sans-serif;
+          text-align: left;
+      }
+      .botText {
+          text-align: left;
+          margin: 8px 0;
+      }
+      .botText span {
+        background: #fff;
+        color: #333;
+        padding: 8px 14px;
+        border-radius: 18px 18px 18px 2px;
+        display: inline-block;
+        max-width: 80%;
+        word-break: break-word;
+        border: 1px solid #bdbdbd;
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+
+      #userInput {
+          display: flex;
+          gap: 8px;
+          width: 250px;
+          align-items: center;
+          margin-bottom: 0;
+      }
+      #text {
+              flex: 2;
+              min-width: 0;
+              padding: 8px 16px;
+              font-size: 1rem;
+              border-radius: 6px;
+              border: 1px solid #bdbdbd;
+              outline: none;
+              transition: border-color 0.2s;
+      }
+      #text:focus {
+          border-color: #1976d2;
+      }
+      #send {
+          padding: 8px 16px;
+          font-size: 1rem;
+          border-radius: 6px;
+          background: #1976d2;
+          color: #fff;
+          border: none;
+          cursor: pointer;
+          transition: background 0.2s;
+      }
+      #send:hover {
+          background: #1565c0;
+      }
+      .visually-hidden {
+          position: absolute;
+          left: -10000px;
+          top: auto;
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+      }
+  </style>
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PrimeTime Toolkit</title>
@@ -15,44 +148,48 @@
 <body>
   <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg shadow-sm sticky-top">
-  <div class="container">
-    <a class="navbar-brand" href="{{ url_for('views.home') }}">
-      <img src="{{ url_for('static', filename='img/primetime_image.png') }}" alt="PrimeTime Toolkit" class="logo-img">
-    </a>
+    <div class="container">
+      <a class="navbar-brand" href="{{ url_for('views.home') }}">
+        <img src="{{ url_for('static', filename='img/primetime_image.png') }}" alt="PrimeTime Toolkit" class="logo-img">
+      </a>
 
-    <div class="collapse navbar-collapse justify-content-end" id="mainNav">
-      <ul class="navbar-nav align-items-center">
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('views.home') }}">Home</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Money Management Tools</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('views.assessment') }}">Self-Assessment</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('views.dashboard') }}">Dashboard</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('views.superannuation') }}">Superannuation</a></li>
-            <li><a class="dropdown-item" href="#">Investment Tools</a></li>
-          </ul>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('views.learninghub') }}">Learning Hub</a></li>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        {% if current_user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.profile') }}">Welcome, {{ current_user.name }}</a>
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('views.home') }}">Home</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Money Management Tools</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('views.assessment_intro') }}">Self-Assessment</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('views.dashboard') }}">Dashboard</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('views.superannuation') }}">Superannuation</a></li>
+              <li><a class="dropdown-item" href="#">Investment Tools</a></li>
+            </ul>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out</a>
-          </li>
-        {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
-          </li>
-          <li class="nav-item ms-2">
-            <a href="{{ url_for('auth.register') }}" class="btn-login">Sign Up</a>
-          </li>
-        {% endif %}
-      </ul>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('views.learninghub') }}">Learning Hub</a></li>
+
+          {% if current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('auth.profile') }}">Welcome, {{ current_user.name }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
+            </li>
+            <li class="nav-item ms-2">
+              <a href="{{ url_for('auth.register') }}" class="btn-login">Sign Up</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
   <!-- Flash messages -->
   <div id="flash-overlay" style="position:fixed; top:90px; left:0; width:100%; z-index:2000; pointer-events:none;">
@@ -76,44 +213,158 @@
 
   <!-- Footer -->
   <footer><br>
-  <section class="gradient-section2 text-center" style="padding-top:2rem; padding-bottom:2rem;">
-    <div class="container"><br>
-      <div class="row">
-        <div class="col-md-4 mb-3">
-          <h3 style="color:#bbbbbb;">Quick Links</h3>
-          <ul class="list-unstyled">
-            <li><a href="{{ url_for('views.home') }}" class="footer-list-item text-decoration-none">Home</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Budget Planner</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Superannuation</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Investment Tools</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Savings & Super Growth</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Retirement Drawdown</a></li>
-          </ul>
-        </div>
-        <div class="col-md-4 mb-3">
-          <h3 style="color:#bbbbbb;">Contact Us</h3>
-          <p style="color:#bbbbbb;">
-            Email: <a href="mailto:support@primetimetoolkit.com.au">support@primetimetoolkit.com.au</a><br>
-            Phone: 1300 000 111<br>
-            Address: 88 Retirement Ave, Brisbane, QLD
-          </p>
-        </div>
-        <div class="col-md-4 mb-3">
-          <h3 style="color:#bbbbbb;">Learning Hub</h3>
-          <ul class="list-unstyled">
-            <li><a href="#" class="footer-list-item text-decoration-none">Workshops</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Webinars</a></li>
-            <li><a href="#" class="footer-list-item text-decoration-none">Resources</a></li>
-          </ul>
+    <section class="gradient-section2 text-center" style="padding-top:2rem; padding-bottom:2rem;">
+      <div class="container"><br>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <h3 style="color:#bbbbbb;">Quick Links</h3>
+            <ul class="list-unstyled">
+              <li><a href="{{ url_for('views.home') }}" class="footer-list-item text-decoration-none">Home</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Budget Planner</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Superannuation</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Investment Tools</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Savings & Super Growth</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Retirement Drawdown</a></li>
+            </ul>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h3 style="color:#bbbbbb;">Contact Us</h3>
+            <p style="color:#bbbbbb;">
+              Email: <a href="mailto:support@primetimetoolkit.com.au">support@primetimetoolkit.com.au</a><br>
+              Phone: 1300 000 111<br>
+              Address: 88 Retirement Ave, Brisbane, QLD
+            </p>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h3 style="color:#bbbbbb;">Learning Hub</h3>
+            <ul class="list-unstyled">
+              <li><a href="#" class="footer-list-item text-decoration-none">Workshops</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Webinars</a></li>
+              <li><a href="#" class="footer-list-item text-decoration-none">Resources</a></li>
+            </ul>
+          </div>
         </div>
       </div>
+    </section>
+    <div class="text-center" style="font-size: 0.85rem; color:#aeaeae; background:transparent;">
+      © 2025 <span class="accent-text" style="color:#be9200;">PrimeTime Toolkit</span>. All rights reserved.
     </div>
-  </section>
-  <div class="text-center" style="font-size: 0.85rem; color:#aeaeae; background:transparent;">
-    © 2025 <span class="accent-text" style="color:#be9200;">PrimeTime Toolkit</span>. All rights reserved.
-  </div>
   </footer>
+
+
+<!--_________________________-->
+  <!-- Chat button + popup -->
+
+  <div id="chatbot-widget">
+    <button id="chatbot-toggle" aria-label="Open chatbot">💬</button>
+    <div id="chatbot-container">
+      <div class="chatbot-container">
+        <div class="chat-header">
+          <h1>The Prime Time AI ChatBot</h1><br>
+          <hr>
+        </div>
+        <div id="chatbox" aria-live="polite" aria-label="Chat conversation">
+          <div class="botText"><span>Hi! I'm PrimePal, your personal chatbot. How can I help you?</span></div>
+        </div>
+        <form id="chat-form" autocomplete="off" aria-label="Send a message">
+          <div id="userInput">
+            <label for="text" class="visually-hidden">Type your message</label>
+            <input id="text" type="text" name="msg" placeholder="Type your message..." class="form-control" aria-required="true" aria-label="Message">
+            <button type="submit" id="send" class="btn btn-warning" aria-label="Send message">Send</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+  <!-- script for chatbot-->
+  <script>
+    $(document).ready(function() {
+      $("#chatbot-toggle").on("click", function() {
+        $("#chatbot-container").toggle();
+      });
+      $("#chat-form").on("submit", function(event) {
+        event.preventDefault();
+        var rawText = $("#text").val();
+        if (!rawText.trim()) return;
+        var userHtml = '<div class="userText"><span>' + rawText + "</span></div>";
+        $("#text").val("");
+        $("#chatbox").append(userHtml);
+        $("#chatbox")[0].scrollTop = $("#chatbox")[0].scrollHeight;
+
+        setTimeout(function() {
+          var typingId = 'typing-indicator-' + Date.now();
+          var typingHtml = '<div class="botText" id="' + typingId + '"><span><em>Typing...</em></span></div>';
+          $("#chatbox").append(typingHtml);
+          $("#chatbox")[0].scrollTop = $("#chatbox")[0].scrollHeight;
+
+          $.ajax({
+            data: { msg: rawText },
+            type: "POST",
+            url: "/chatbot/get",
+          }).done(function(data) {
+            setTimeout(function() {
+              $("#" + typingId).remove();
+              var botHtml = '<div class="botText"><span>' + data + "</span></div>";
+              $("#chatbox").append($.parseHTML(botHtml));
+              $("#chatbox")[0].scrollTop = $("#chatbox")[0].scrollHeight;
+            }, 2000);
+          });
+        }, 1000);
+      });
+    });
+  </script>
+
+
+
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Chat Widget JS -->
+  <script>
+  (function () {
+    const toggleBtn = document.getElementById('chatToggle');
+    const popup     = document.getElementById('ptChat');
+    const form      = document.getElementById('ptChatForm');
+    const input     = document.getElementById('ptChatInput');
+    const messages  = document.getElementById('ptChatMessages');
+    const closeBtn  = document.getElementById('ptChatClose');
+
+    function openChat() {
+      popup.style.display = 'block';
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      setTimeout(() => input && input.focus(), 0);
+    }
+    function closeChat() {
+      popup.style.display = 'none';
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      toggleBtn.focus();
+    }
+    function toggleChat() {
+      (popup.style.display === 'block') ? closeChat() : openChat();
+    }
+    function sendMessage(e) {
+      e.preventDefault();
+      const text = (input.value || '').trim();
+      if (!text) return;
+      const p = document.createElement('p');
+      p.textContent = 'You: ' + text;
+      messages.appendChild(p);
+      messages.scrollTop = messages.scrollHeight;
+      input.value = '';
+    }
+
+    toggleBtn.addEventListener('click', toggleChat);
+    closeBtn.addEventListener('click', closeChat);
+    form.addEventListener('submit', sendMessage);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && popup.style.display === 'block') closeChat();
+    });
+  })();
+  </script>
 </body>
 </html>

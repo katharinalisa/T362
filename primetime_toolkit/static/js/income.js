@@ -1,166 +1,145 @@
 (() => {
-  // ===== DOM =====
-  const table = document.getElementById('incomeTable');
-  const tbody = table?.querySelector('tbody');
-  const rowTemplate = document.getElementById('incomeRowTemplate');
-  const addRowBtn = document.getElementById('addRowBtn');
-  const clearAllBtn = document.getElementById('clearAllBtn');
+  const tbody = document.querySelector('#incomeTable tbody');
+  const rowTpl = document.getElementById('incomeRowTemplate');
 
-  const elTotalAnnual = document.getElementById('totalAnnualIncome');
-  const elTotalWeekly = document.getElementById('totalWeeklyIncome');
+  const addBtn   = document.getElementById('addRowBtn');
+  const clearBtn = document.getElementById('clearAllBtn');
+  const saveBtn  = document.getElementById('saveAndNextBtn');
 
-  if (!table || !tbody || !rowTemplate) return;
+  const totalAnnualEl = document.getElementById('totalAnnualIncome');
+  const totalWeeklyEl = document.getElementById('totalWeeklyIncome');
 
-  // ===== Helpers =====
-  const PERIODS_PER_YEAR = {
-    weekly: 52,
-    fortnightly: 26,
-    monthly: 12,
-    quarterly: 4,
-    annually: 1
-  };
+  if (!tbody || !rowTpl) return;
 
-  const fmt = new Intl.NumberFormat(undefined, {
-    style: 'currency', currency: 'AUD', minimumFractionDigits: 0, maximumFractionDigits: 0
-  });
-
+  const AUD = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'AUD', minimumFractionDigits: 0 });
   const parseNum = (v) => {
-    if (v == null) return 0;
-    const n = parseFloat(String(v).replace(/[^\d.-]/g, ''));
+    const n = parseFloat(String(v ?? '').replace(/[^\d.-]/g, ''));
     return Number.isFinite(n) ? n : 0;
   };
 
-  const setCurrency = (el, amount) => {
-    if (el.tagName === 'INPUT') {
-      el.value = fmt.format(amount || 0);
-    } else {
-      el.textContent = fmt.format(amount || 0);
-    }
-  };
+  // Conversion factors to annual
+  const FACTOR_ANNUAL = { weekly: 52, fortnightly: 26, monthly: 12, quarterly: 4, annually: 1 };
 
-
-  function perYear(freq) {
-    if (!freq) return 0;
-    const key = String(freq).trim().toLowerCase();
-    return PERIODS_PER_YEAR[key] ?? 0;
-  }
-
-  // ===== Row management =====
   function addRow(prefill = {}) {
-    const frag = rowTemplate.content.cloneNode(true);
-    const row = frag.querySelector('tr.income-row');
+    const frag = rowTpl.content.cloneNode(true);
+    const row  = frag.querySelector('tr.income-row');
 
-    if (prefill.source) row.querySelector('.source').value = prefill.source;
-    if (prefill.amount != null) row.querySelector('.amount').value = prefill.amount;
-    if (prefill.frequency) row.querySelector('.frequency').value = prefill.frequency;
-    if (prefill.include !== undefined) row.querySelector('.include-toggle').checked = !!prefill.include;
+    if (prefill.id) row.dataset.id = prefill.id;
+    row.querySelector('.source').value   = prefill.source   ?? '';
+    row.querySelector('.amount').value   = prefill.amount   ?? '';
+    row.querySelector('.frequency').value = prefill.frequency ?? 'monthly';
+    row.querySelector('.notes').value    = prefill.notes    ?? '';
+    row.querySelector('.include-toggle').checked = prefill.include !== false;
 
     tbody.appendChild(frag);
   }
 
   function clearAll() {
     tbody.innerHTML = '';
-    addRow();    
+    // ✅ Always leave one starter row
+    addRow();
     recalcAll();
   }
 
-  // ===== Calculations =====
+  function annualFromRow(row) {
+    const amt  = parseNum(row.querySelector('.amount')?.value);
+    const freq = String(row.querySelector('.frequency')?.value || '').toLowerCase();
+    const factor = FACTOR_ANNUAL[freq] ?? 0;
+    return amt * factor;
+  }
+
   function recalcRow(row) {
-    const amount = parseNum(row.querySelector('.amount')?.value);
-    const freq = row.querySelector('.frequency')?.value;
+    const include = !!row.querySelector('.include-toggle')?.checked;
+    const annual  = include ? annualFromRow(row) : 0;
+    const weekly  = annual / 52;
 
-    const annual = amount * perYear(freq);
-    const weekly = annual / 52;
-
-    setCurrency(row.querySelector('.annual'), annual);
-    setCurrency(row.querySelector('.weekly'), weekly);
-
+    row.querySelector('.annual').value = AUD.format(annual);
+    row.querySelector('.weekly').value = AUD.format(weekly);
     return { annual, weekly };
   }
 
   function recalcAll() {
-    let totalAnnual = 0;
-    let totalWeekly = 0;
-
-    tbody.querySelectorAll('tr.income-row').forEach((row) => {
-      const include = row.querySelector('.include-toggle')?.checked;
+    let sumAnnual = 0;
+    let sumWeekly = 0;
+    tbody.querySelectorAll('tr.income-row').forEach(row => {
       const { annual, weekly } = recalcRow(row);
-      if (include) {
-        totalAnnual += annual;
-        totalWeekly += weekly;
-      }
+      sumAnnual += annual;
+      sumWeekly += weekly;
     });
-
-    setCurrency(elTotalAnnual, totalAnnual);
-    setCurrency(elTotalWeekly, totalWeekly);
+    totalAnnualEl.textContent = AUD.format(sumAnnual);
+    totalWeeklyEl.textContent = AUD.format(sumWeekly);
   }
 
-  // ===== Events =====
-  function onTbodyChange(e) {
-    const t = e.target;
-    if (!t) return;
-    if (
-      t.classList.contains('amount') ||
-      t.classList.contains('frequency') ||
-      t.classList.contains('include-toggle')
-    ) {
+  // Delegated events
+  tbody.addEventListener('input', (e) => {
+    if (e.target.classList.contains('source') || e.target.classList.contains('amount') || e.target.classList.contains('notes')) {
       recalcAll();
     }
-  }
+  });
 
-  const saveAndNextBtn = document.getElementById('saveAndNextBtn');
-
-function getIncomeRows() {
-  return Array.from(tbody.querySelectorAll('tr.income-row')).map(row => ({
-    source: row.querySelector('.source')?.value || '',
-    amount: parseNum(row.querySelector('.amount')?.value),
-    frequency: row.querySelector('.frequency')?.value || '',
-    notes: row.querySelector('.notes')?.value || '',
-    include: row.querySelector('.include-toggle')?.checked ?? true
-  }));
-}
-
-saveAndNextBtn?.addEventListener('click', () => {
-  const incomes = getIncomeRows();
-  fetch('/save-income', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ incomes })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data?.redirect) {
-      window.location.href = data.redirect;
-    } else {
-      alert(data?.message || 'Income saved!');
+  tbody.addEventListener('change', (e) => {
+    if (e.target.classList.contains('frequency') || e.target.classList.contains('include-toggle')) {
+      recalcAll();
     }
-  })
-  .catch(() => alert('Error saving income.'));
-});
+  });
 
-  function onTbodyClick(e) {
+  tbody.addEventListener('click', (e) => {
     const btn = e.target.closest('.remove-row');
     if (btn) {
-      const row = btn.closest('tr.income-row');
-      if (row) row.remove();
-      if (tbody.children.length === 0) addRow();
-      recalcAll();
+      btn.closest('tr.income-row')?.remove();
+      if (!tbody.querySelectorAll('tr.income-row').length) {
+        clearAll(); // ✅ ensure table never goes fully empty
+      } else {
+        recalcAll();
+      }
+    }
+  });
+
+  addBtn?.addEventListener('click', () => { addRow(); recalcAll(); });
+  clearBtn?.addEventListener('click', clearAll);
+
+  // ---- DB I/O ----
+  async function saveAll() {
+    const items = [...tbody.querySelectorAll('tr.income-row')].map(row => ({
+      id: row.dataset.id || null,
+      source: row.querySelector('.source')?.value?.trim() || '',
+      amount: parseNum(row.querySelector('.amount')?.value),
+      frequency: row.querySelector('.frequency')?.value || 'monthly',
+      notes: row.querySelector('.notes')?.value?.trim() || '',
+      include: !!row.querySelector('.include-toggle')?.checked,
+    }));
+    try {
+      const res = await fetch('/api/income/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items })
+      });
+      if (!res.ok) throw new Error();
+      alert('Saved.');
+    } catch {
+      alert('Save failed. Check server logs.');
     }
   }
 
-  addRowBtn?.addEventListener('click', () => { addRow(); recalcAll(); });
-  clearAllBtn?.addEventListener('click', clearAll);
-  tbody.addEventListener('input', onTbodyChange);
-  tbody.addEventListener('change', onTbodyChange);
-  tbody.addEventListener('click', onTbodyClick);
-
-  
-  // ===== Init: prefill =====
-  tbody.innerHTML = '';
-  if (window.incomePrefill && Array.isArray(window.incomePrefill) && window.incomePrefill.length > 0) {
-    window.incomePrefill.forEach(row => addRow(row));
-  } else {
-    addRow();
+  async function loadAll() {
+    try {
+      const res = await fetch('/api/income');
+      if (!res.ok) throw new Error();
+      const rows = await res.json();
+      tbody.innerHTML = '';
+      if (!rows.length) { 
+        clearAll(); // ✅ if DB empty, start with one row
+        return;
+      }
+      rows.forEach(addRow);
+      recalcAll();
+    } catch {
+      clearAll();
+    }
   }
-  recalcAll();
+
+  saveBtn?.addEventListener('click', () => { void saveAll(); });
+
+  // Init
+  document.addEventListener('DOMContentLoaded', loadAll);
 })();
