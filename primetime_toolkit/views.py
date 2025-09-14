@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
 import json
-from primetime_toolkit.models import db, Subscriber, Asset, Liability, Income
+from primetime_toolkit.models import db, Subscriber, Asset, Liability, Income, Expense
 
 from primetime_toolkit.models import db, Subscriber, Asset, Liability
 from .excel_parser import parse_excel
@@ -289,58 +289,6 @@ def send_email():
 
     return redirect(url_for('views.home'))
 
-
-#---------------------------------------------------
-
-
-
-@views.route('/expenses')
-def expenses():
-    return render_template('diagnostic/expenses.html')
-
-
-#----------------------------------------------------
-# Income
-
-@views.route('/income')
-@login_required
-def income():
-    user_incomes = Income.query.filter_by(user_id=current_user.id).all()
-    income_data = [
-        {
-            "source": inc.source,
-            "amount": inc.amount,
-            "frequency": inc.frequency,
-            "notes": inc.notes,
-            "include": inc.include
-        }
-        for inc in user_incomes
-    ]
-    return render_template('diagnostic/income.html', income_data=income_data)
-
-
-
-@views.route('/save-income', methods=['POST'])
-@login_required
-def save_income():
-    data = request.get_json()
-    incomes = data.get('incomes', [])
-    Income.query.filter_by(user_id=current_user.id).delete()
-    for i in incomes:
-        income = Income(
-            user_id=current_user.id,
-            source=i['source'],
-            amount=i['amount'],
-            frequency=i['frequency'],
-            notes=i.get('notes', ''),
-            include=i.get('include', True)
-        )
-        db.session.add(income)
-    db.session.commit()
-    flash("Income saved successfully!", "success")
-    return jsonify({'redirect': url_for('views.expenses')})
-
-
 #------------------------------------------------------
 # Assets block
 
@@ -426,6 +374,107 @@ def save_liabilities():
     return jsonify({'redirect': url_for('views.income')})
 
 #------------------------------------------------------
+
+# Income
+@views.route('/income')
+@login_required
+def income():
+    user_incomes = Income.query.filter_by(user_id=current_user.id).all()
+    income_data = [
+        {
+            "source": inc.source,
+            "amount": inc.amount,
+            "frequency": inc.frequency,
+            "notes": inc.notes,
+            "include": inc.include
+        }
+        for inc in user_incomes
+    ]
+    return render_template('diagnostic/income.html', income_data=income_data)
+
+
+@views.route('/save-income', methods=['POST'])
+@login_required
+def save_income():
+    data = request.get_json() or {}
+    incomes = data.get('incomes', [])
+    Income.query.filter_by(user_id=current_user.id).delete()
+    for i in incomes:
+        db.session.add(Income(
+            user_id=current_user.id,
+            source=i.get('source', ''),
+            amount=i.get('amount', 0),
+            frequency=i.get('frequency', ''),
+            notes=i.get('notes', ''),
+            include=i.get('include', True)
+        ))
+    db.session.commit()
+    flash("Income saved successfully!", "success")
+    # Next step in your flow → Expenses
+    return jsonify({'redirect': url_for('views.expenses')})
+#---------------------------------------------------
+# ---- Expenses ----
+@views.route('/expenses')
+@login_required
+def expenses():
+    user_expenses = Expense.query.filter_by(user_id=current_user.id).all()
+    expenses_data = [
+        {
+            "phase": e.phase,
+            "baseline": e.baseline,
+            "lifestyle": e.lifestyle,
+            "saving_investing": e.saving_investing,
+            "health_care": e.health_care,
+            "other": e.other,
+            "total_spending": e.total_spending,
+            "budgeted_amount": e.budgeted_amount,
+            "surplus_deficit": e.surplus_deficit,
+        }
+        for e in user_expenses
+    ]
+    return render_template('diagnostic/expenses.html',
+                           expenses_data=expenses_data or [])
+
+
+@views.route('/save-expenses', methods=['POST'])
+@login_required
+def save_expenses():
+    try:
+        data = request.get_json() or {}
+        expenses = data.get('expenses', [])
+
+        # Clear old ones
+        Expense.query.filter_by(user_id=current_user.id).delete()
+
+        for e in expenses:
+            db.session.add(Expense(
+                user_id=current_user.id,
+                phase=e.get("phase", ""),
+                baseline=float(e.get("baseline") or 0),
+                lifestyle=float(e.get("lifestyle") or 0),
+                saving_investing=float(e.get("saving_investing") or 0),
+                health_care=float(e.get("health_care") or 0),
+                other=float(e.get("other") or 0),
+                total_spending=float(e.get("total_spending") or 0),
+                budgeted_amount=float(e.get("budgeted_amount") or 0),
+                surplus_deficit=float(e.get("surplus_deficit") or 0),
+            ))
+
+        db.session.commit()
+        flash("Expenses saved successfully!", "success")
+        # Next step in flow → Subscriptions
+        return jsonify({'redirect': url_for('views.subscriptions')})
+
+    except Exception as e:
+        db.session.rollback()
+        import traceback; traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+    
+
+
+
+
+    
 
 @views.route('/life')
 def life():
