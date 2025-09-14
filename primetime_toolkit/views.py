@@ -333,8 +333,7 @@ def save_assets():
 
 
 #-------------------------------------------------------
-# Liabilities block
-
+# ---- Liabilities ----
 @views.route('/liabilities')
 @login_required
 def liabilities():
@@ -374,8 +373,7 @@ def save_liabilities():
     return jsonify({'redirect': url_for('views.income')})
 
 #------------------------------------------------------
-
-# Income
+# ---- Income ----
 @views.route('/income')
 @login_required
 def income():
@@ -474,7 +472,7 @@ def save_expenses():
 
 
 
-    
+
 
 @views.route('/life')
 def life():
