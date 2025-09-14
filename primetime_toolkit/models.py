@@ -1,5 +1,6 @@
 from . import db
 from werkzeug.security import generate_password_hash
+from datetime import datetime
 from flask_login import UserMixin
 
 
@@ -73,3 +74,24 @@ class Income(db.Model):
     frequency = db.Column(db.String(32))
     notes = db.Column(db.String(128))
     include = db.Column(db.Boolean, default=True)
+
+
+class Expense(db.Model):
+    __tablename__ = 'expenses'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    phase = db.Column(db.String(120), nullable=False)
+    baseline = db.Column(db.Float, default=0.0)
+    lifestyle = db.Column(db.Float, default=0.0)
+    saving_investing = db.Column(db.Float, default=0.0)
+    health_care = db.Column(db.Float, default=0.0)
+    other = db.Column(db.Float, default=0.0)
+
+    total_spending = db.Column(db.Float, default=0.0)     
+    budgeted_amount = db.Column(db.Float, default=0.0)   
+    surplus_deficit = db.Column(db.Float, default=0.0)     
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
