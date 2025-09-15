@@ -1,26 +1,26 @@
 (() => {
-  // Elements
-  const table   = document.getElementById('futureBudgetTable');
-  const tbody   = table?.querySelector('tbody');
-  const rowTpl  = document.getElementById('futureRowTemplate');
+  // ===== DOM =====
+  const table = document.getElementById('futureBudgetTable');
+  const tbody = table?.querySelector('tbody');
+  const rowTemplate = document.getElementById('futureRowTemplate');
+  const addRowBtn = document.getElementById('addRowBtn');
+  const clearAllBtn = document.getElementById('clearAllBtn');
+  const saveAndNextBtn = document.getElementById('saveAndNextBtn');
 
-  const addBtn      = document.getElementById('addRowBtn');
-  const clearBtn    = document.getElementById('clearAllBtn');
-  const saveBtn     = document.getElementById('saveAndNextBtn');
+  const totalYearsEl = document.getElementById('totalYears');
+  const lifetimeTotalEl = document.getElementById('lifetimeTotal');
 
-  const totalYearsEl   = document.getElementById('totalYears');
-  const lifetimeTotalEl= document.getElementById('lifetimeTotal');
+  if (!table || !tbody || !rowTemplate) return; // safety
 
-  if (!table || !tbody || !rowTpl) return;
-
-  // Helpers
-  const AUD = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'AUD', minimumFractionDigits: 0 });
+  // ===== Utils =====
+  const AUD = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 });
   const parseNum = (v) => {
     const n = parseFloat(String(v ?? '').replace(/[^\d.-]/g, ''));
     return Number.isFinite(n) ? n : 0;
   };
+  const setCurrency = (el, n) => { if (el) el.textContent = AUD.format(n || 0); };
 
-  // Optional phase → example age range mapping (only used to auto-fill read-only field when phase changes)
+  // Optional hint when phase changes (edit to taste)
   const PHASE_AGE_HINT = {
     'Set-up': '25–35',
     'Lifestyling': '35–50',
@@ -30,86 +30,90 @@
     'Frailty': '80+'
   };
 
-  // ----- Row ops -----
+  // ===== Rows =====
   function addRow(prefill = {}) {
-    const frag = rowTpl.content.cloneNode(true);
+    const frag = rowTemplate.content.cloneNode(true);
     const row  = frag.querySelector('tr.future-row');
 
-    if (prefill.id) row.dataset.id = prefill.id;
-
-    const phaseEl    = row.querySelector('.phase');
-    const ageEl      = row.querySelector('.age-range');
-    const yearsEl    = row.querySelector('.years');
-    const baseEl     = row.querySelector('.baseline');
-    const oneoffEl   = row.querySelector('.oneoff');
-    const epicEl     = row.querySelector('.epic');
-
-    phaseEl.value  = prefill.phase ?? '';
-    // If API provided age_range use it; else leave blank until user picks a phase
-    ageEl.value    = prefill.age_range ?? '';
-    yearsEl.value  = prefill.years ?? '';
-    baseEl.value   = prefill.baseline ?? '';
-    oneoffEl.value = prefill.oneoff ?? '';
-    epicEl.value   = prefill.epic ?? '';
+    // Expected classes in the template:
+    // .phase .age_range .years .baseline .oneoff .epic  and a cell .annual
+    row.querySelector('.phase').value      = prefill.phase ?? '';
+    row.querySelector('.age_range').value  = prefill.age_range ?? '';
+    row.querySelector('.years').value      = prefill.years_in_phase ?? prefill.years ?? '';
+    row.querySelector('.baseline').value   = prefill.baseline_cost ?? prefill.baseline ?? '';
+    row.querySelector('.oneoff').value     = prefill.oneoff_costs ?? prefill.oneoff ?? '';
+    row.querySelector('.epic').value       = prefill.epic_experiences ?? prefill.epic ?? '';
 
     tbody.appendChild(frag);
   }
 
   function clearAll() {
     tbody.innerHTML = '';
-    // ✅ Always keep one blank starter row
     addRow();
     recalcAll();
   }
 
-  // ----- Calculations -----
-  function annualFromRow(row) {
+  // ===== Calculations =====
+  function annualForRow(row) {
     const baseline = parseNum(row.querySelector('.baseline')?.value);
     const oneoff   = parseNum(row.querySelector('.oneoff')?.value);
     const epic     = parseNum(row.querySelector('.epic')?.value);
     return baseline + oneoff + epic;
   }
 
-  function recalcRow(row) {
-    const annual = annualFromRow(row);
-    row.querySelector('.annual').textContent = AUD.format(annual);
-    return annual;
-  }
-
   function recalcAll() {
-    let sumYears = 0;
-    let lifetime = 0;
+    let yearsTotal = 0;
+    let lifetimeTotal = 0;
 
     tbody.querySelectorAll('tr.future-row').forEach(row => {
-      const annual = recalcRow(row);
-      const years  = parseNum(row.querySelector('.years')?.value);
-      sumYears += years;
-      lifetime += annual * years;
+      const annual = annualForRow(row);
+      setCurrency(row.querySelector('.annual'), annual);
+
+      const years = parseNum(row.querySelector('.years')?.value);
+      yearsTotal += years;
+      lifetimeTotal += annual * years;
     });
 
-    totalYearsEl.textContent    = `${sumYears}`;
-    lifetimeTotalEl.textContent = AUD.format(lifetime);
+    if (totalYearsEl) totalYearsEl.textContent = `${yearsTotal}`;
+    setCurrency(lifetimeTotalEl, lifetimeTotal);
   }
 
-  // ----- Events -----
-  // Delegate inputs for recalculation
-  tbody.addEventListener('input', (e) => {
+  // ===== Gather payload =====
+  function collectRows() {
+    return Array.from(tbody.querySelectorAll('tr.future-row')).map(row => {
+      const baseline = parseNum(row.querySelector('.baseline')?.value);
+      const oneoff   = parseNum(row.querySelector('.oneoff')?.value);
+      const epic     = parseNum(row.querySelector('.epic')?.value);
+      const annual   = baseline + oneoff + epic;
+
+      return {
+        phase: row.querySelector('.phase')?.value?.trim() || '',
+        age_range: row.querySelector('.age_range')?.value?.trim() || '',
+        years_in_phase: parseNum(row.querySelector('.years')?.value),
+        baseline_cost: baseline,
+        oneoff_costs: oneoff,
+        epic_experiences: epic,
+        total_annual_budget: annual
+      };
+    });
+  }
+
+  // ===== Events =====
+  function onTbodyInput(e) {
     const t = e.target;
     if (!t) return;
 
-    // Auto-fill Age range when phase changes (optional hint only)
     if (t.classList.contains('phase')) {
       const row = t.closest('tr.future-row');
-      const ageEl = row?.querySelector('.age-range');
-      if (ageEl) {
-        const hint = PHASE_AGE_HINT[t.value?.trim()] || '';
-        // only set hint if user hasn't typed anything (read-only field anyway)
-        ageEl.value = hint;
+      const age = row?.querySelector('.age_range');
+      if (age && !age.value) {
+        age.value = PHASE_AGE_HINT[t.value?.trim()] || '';
       }
     }
 
     if (
       t.classList.contains('phase') ||
+      t.classList.contains('age_range') ||
       t.classList.contains('years') ||
       t.classList.contains('baseline') ||
       t.classList.contains('oneoff') ||
@@ -117,72 +121,56 @@
     ) {
       recalcAll();
     }
-  });
+  }
 
-  // Remove row
-  tbody.addEventListener('click', (e) => {
+  function onTbodyClick(e) {
     const btn = e.target.closest('.remove-row');
     if (!btn) return;
     const row = btn.closest('tr.future-row');
-    row?.remove();
-    if (!tbody.querySelectorAll('tr.future-row').length) {
-      clearAll(); // keep one starter row minimum
-    } else {
-      recalcAll();
-    }
+    if (row) row.remove();
+    if (!tbody.querySelector('tr.future-row')) addRow();
+    recalcAll();
+  }
+
+  addRowBtn?.addEventListener('click', () => { addRow(); recalcAll(); });
+  clearAllBtn?.addEventListener('click', clearAll);
+  tbody.addEventListener('input', onTbodyInput);
+  tbody.addEventListener('change', onTbodyInput);
+  tbody.addEventListener('click', onTbodyClick);
+
+  // ===== Save & Next =====
+  saveAndNextBtn?.addEventListener('click', () => {
+    const budgets = collectRows();
+    fetch('/save-future-budget', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ budgets })
+    })
+      .then(res => {
+        if (res.status === 401) {
+          alert('Please log in to save your Future Budget.');
+          window.location.href = '/login';
+          return null;
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (!data) return;
+        if (data.redirect) {
+          window.location.href = data.redirect; // next step (we set this to /epic in the route)
+        } else {
+          alert(data.message || 'Future Budget saved!');
+        }
+      })
+      .catch(() => alert('Error saving Future Budget.'));
   });
 
-  // Header buttons
-  addBtn?.addEventListener('click', () => { addRow(); recalcAll(); });
-  clearBtn?.addEventListener('click', clearAll);
-
-  // ----- DB I/O -----
-  async function saveAll() {
-    const items = [...tbody.querySelectorAll('tr.future-row')].map(row => ({
-      id: row.dataset.id || null,
-      phase: row.querySelector('.phase')?.value?.trim() || '',
-      age_range: row.querySelector('.age-range')?.value?.trim() || '',
-      years: parseNum(row.querySelector('.years')?.value),
-      baseline: parseNum(row.querySelector('.baseline')?.value),
-      oneoff: parseNum(row.querySelector('.oneoff')?.value),
-      epic: parseNum(row.querySelector('.epic')?.value),
-      // computed for convenience (API may ignore)
-      annual_total: annualFromRow(row)
-    }));
-
-    try {
-      const res = await fetch('/api/future_budget/bulk', {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify({ items })
-      });
-      if (!res.ok) throw new Error();
-      alert('Saved.');
-    } catch {
-      alert('Save failed. Check server logs.');
-    }
+  // ===== Init (prefill like assets/subscriptions) =====
+  tbody.innerHTML = '';
+  if (Array.isArray(window.futureBudgetPrefill) && window.futureBudgetPrefill.length > 0) {
+    window.futureBudgetPrefill.forEach(addRow);
+  } else {
+    addRow();
   }
-
-  async function loadAll() {
-    try {
-      const res = await fetch('/api/future_budget');
-      if (!res.ok) throw new Error();
-      const rows = await res.json();
-
-      tbody.innerHTML = '';
-      if (!rows.length) {
-        clearAll(); // ✅ one starter row if DB empty
-        return;
-      }
-      rows.forEach(addRow);
-      recalcAll();
-    } catch {
-      clearAll();
-    }
-  }
-
-  saveBtn?.addEventListener('click', () => { void saveAll(); });
-
-  // ----- Init -----
-  document.addEventListener('DOMContentLoaded', loadAll);
+  recalcAll();
 })();
