@@ -6,9 +6,8 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
 import json
-from primetime_toolkit.models import db, Subscriber, Asset, Liability, Income, Expense
+from primetime_toolkit.models import db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience
 
-from primetime_toolkit.models import db, Subscriber, Asset, Liability
 from .excel_parser import parse_excel
 
 views = Blueprint('views', __name__)
@@ -472,24 +471,190 @@ def save_expenses():
 
 
 
+#---------------------------------------------------
+# ---- Subscriptions ----
+@views.route('/subscriptions')
+@login_required
+def subscriptions():
+    rows = Subscription.query.filter_by(user_id=current_user.id).all()
+    subscriptions_data = [
+        {
+            "name": r.name,
+            "amount": r.amount,
+            "frequency": r.frequency,
+            "notes": r.notes,
+            "include": r.include,
+            "annual_amount": r.annual_amount,
+        } for r in rows
+    ]
+    return render_template('diagnostic/subscriptions.html',
+                           subscriptions_data=subscriptions_data or [])
+
+
+@views.route('/save-subscriptions', methods=['POST'])
+@login_required
+def save_subscriptions():
+    try:
+        data = request.get_json(silent=True) or {}
+        subs = data.get('subscriptions', [])
+
+        Subscription.query.filter_by(user_id=current_user.id).delete()
+
+        def as_float(v):
+            try:
+                return float(v or 0)
+            except (TypeError, ValueError):
+                return 0.0
+
+        for s in subs:
+            db.session.add(Subscription(
+                user_id=current_user.id,
+                name=s.get('name', ''),
+                amount=as_float(s.get('amount')),
+                frequency=s.get('frequency', '') or 'monthly',
+                notes=s.get('notes', ''),
+                include=bool(s.get('include', False)),
+                annual_amount=as_float(s.get('annual_amount')),
+            ))
+        db.session.commit()
+        # chain to Future Budget
+        return jsonify({'redirect': url_for('views.future_budget')})
+    except Exception as e:
+        db.session.rollback()
+        import traceback; traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+
+#---------------------------------------------------
+ # ---- Future Budget ----
+@views.route('/future_budget')
+@login_required
+def future_budget():
+    rows = FutureBudget.query.filter_by(user_id=current_user.id).all()
+    future_budget_data = [
+        {
+            "phase": r.phase,
+            "age_range": r.age_range,
+            "years_in_phase": r.years_in_phase,
+            "baseline_cost": r.baseline_cost,
+            "oneoff_costs": r.oneoff_costs,
+            "epic_experiences": r.epic_experiences,
+            "total_annual_budget": r.total_annual_budget,
+        } for r in rows
+    ]
+    return render_template('diagnostic/future_budget.html',
+                           future_budget_data=future_budget_data or [])
+
+
+@views.route('/save-future-budget', methods=['POST'])
+@login_required
+def save_future_budget():
+    try:
+        data = request.get_json(silent=True) or {}
+        budgets = data.get('budgets', [])
+
+        FutureBudget.query.filter_by(user_id=current_user.id).delete()
+
+        def as_float(v):
+            try:
+                return float(v or 0)
+            except (TypeError, ValueError):
+                return 0.0
+
+        def as_int(v):
+            try:
+                return int(v or 0)
+            except (TypeError, ValueError):
+                return 0
+
+        for b in budgets:
+            db.session.add(FutureBudget(
+                user_id=current_user.id,
+                phase=b.get('phase', ''),
+                age_range=b.get('age_range', ''),
+                years_in_phase=as_int(b.get('years_in_phase')),
+                baseline_cost=as_float(b.get('baseline_cost')),
+                oneoff_costs=as_float(b.get('oneoff_costs')),
+                epic_experiences=as_float(b.get('epic_experiences')),
+                total_annual_budget=as_float(b.get('total_annual_budget')),
+            ))
+        db.session.commit()
+        flash("Future Budget saved successfully!", "success")
+        # end of chain, stay on same page or redirect to Epic if needed
+        return jsonify({'redirect': url_for('views.epic')})
+    except Exception as e:
+        db.session.rollback()
+        import traceback; traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+
+    
+#---------------------------------------------------
+@views.route('/epic')
+@login_required
+def epic():
+    rows = EpicExperience.query.filter_by(user_id=current_user.id).all()
+    epic_data = [
+        {
+            "item": r.item,
+            "amount": r.amount,
+            "frequency": r.frequency,
+            "include": r.include,
+        } for r in rows
+    ]
+    epic_years = 10  # adjust if you persist years separately
+    return render_template('diagnostic/epic.html',
+                           epic_data=epic_data or [],
+                           epic_years=epic_years)
+
+@views.route('/save-epic', methods=['POST'])
+@login_required
+def save_epic():
+    try:
+        payload = request.get_json(silent=True) or {}
+        items = payload.get('items', [])
+        # settings = payload.get('settings', {})  # contains {"years": N} if you decide to persist it
+
+        EpicExperience.query.filter_by(user_id=current_user.id).delete()
+
+        def as_float(v):
+            try:
+                return float(v or 0)
+            except (TypeError, ValueError):
+                return 0.0
+
+        for it in items:
+            db.session.add(EpicExperience(
+                user_id=current_user.id,
+                item=it.get('item', ''),
+                amount=as_float(it.get('amount')),
+                frequency=it.get('frequency') or 'Once only',
+                include=bool(it.get('include', True)),
+            ))
+        db.session.commit()
+        flash('Epic experiences saved successfully!', 'success')
+        # after Epic, your flow goes to Spending Allocation
+        return jsonify({'redirect': url_for('views.spending')})
+    except Exception as e:
+        db.session.rollback()
+        import traceback; traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+#---------------------------------------------------
+
 
 
 @views.route('/life')
 def life():
     return render_template('diagnostic/life_expectancy.html')
 
-@views.route('/future_budget')
-def future_budget():
-    return render_template('diagnostic/future_budget.html')
+
 
 @views.route('/calculator')                
 def calculator():                           
     return render_template('diagnostic/calculator.html')
 
 
-@views.route('/epic')                  
-def epic():
-    return render_template('diagnostic/epic.html')
+
 
 @views.route('/subscriptions')
 def subscriptions():
