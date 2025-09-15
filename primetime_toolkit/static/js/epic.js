@@ -8,6 +8,7 @@
   const clearBtn= document.getElementById('clearAllBtn');
   const saveBtn = document.getElementById('saveBtn');
   const loadBtn = document.getElementById('loadBtn');
+  const saveAndNextBtn = document.getElementById('saveAndNextBtn');
 
   const grandTotalEl = document.getElementById('grandTotal');
 
@@ -93,23 +94,31 @@
   addBtn?.addEventListener('click', () => { addRow(); recalcAll(); });
   clearBtn?.addEventListener('click', clearAll);
 
-  // DB I/O
-  async function saveAll() {
-    const items = [...tbody.querySelectorAll('tr.epic-row')].map(row => ({
-      id: row.dataset.id || null,
+  function collectItems() {
+    return [...tbody.querySelectorAll('tr.epic-row')].map(row => ({
       item: row.querySelector('.item')?.value?.trim() || '',
       amount: num(row.querySelector('.amount')?.value),
       frequency: row.querySelector('.freq')?.value || 'Once only',
       include: !!row.querySelector('.include')?.checked,
     }));
+  }
+
+  // DB I/O
+  async function saveAll({ redirectAfter = false } = {}) {
+    const items = collectItems();
     const settings = { years: Math.max(1, Math.floor(num(yearsEl.value))) };
 
     try {
-      const res = await fetch('/api/epic_one_off/bulk', {
+      const res = await fetch('/save-epic', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ settings, items })
       });
       if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (redirectAfter && data?.redirect) {
+        window.location.href = data.redirect;
+        return;
+      }
       alert('Saved.');
     } catch {
       alert('Save failed. Check server logs.');
@@ -131,9 +140,23 @@
     }
   }
 
-  saveBtn?.addEventListener('click', () => { void saveAll(); });
+  saveBtn?.addEventListener('click', () => { void saveAll({ redirectAfter: false }); });
   loadBtn?.addEventListener('click', () => { void loadAll(); });
+  saveAndNextBtn?.addEventListener('click', () => { void saveAll({ redirectAfter: true }); });
 
-  // Init
-  document.addEventListener('DOMContentLoaded', loadAll);
+  function initFromPrefill() {
+    const pre = (window && Array.isArray(window.epicPrefill)) ? window.epicPrefill : null;
+    const preYears = (window && typeof window.epicYears === 'number') ? window.epicYears : null;
+    if (!pre) return false;
+    tbody.innerHTML = '';
+    if (preYears != null && yearsEl) yearsEl.value = preYears;
+    pre.forEach(addRow);
+    if (!tbody.children.length) clearAll();
+    recalcAll();
+    return true;
+  }
+
+  if (!initFromPrefill()) {
+    document.addEventListener('DOMContentLoaded', loadAll);
+  }
 })();
