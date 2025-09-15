@@ -656,9 +656,6 @@ def calculator():
 
 
 
-@views.route('/subscriptions')
-def subscriptions():
-    return render_template('diagnostic/subscriptions.html')
 
 
 @views.route('/income_layers')
