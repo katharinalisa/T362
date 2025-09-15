@@ -18,12 +18,12 @@
     </p>
 
     <datalist id="phaseOptions">
-      <option value="Set-up" />
-      <option value="Lifestyling" />
-      <option value="Part-timing" />
-      <option value="Epic retirement" />
-      <option value="Passive retirement/ageing" />
-      <option value="Frailty" />
+      <option value="Set-up"></option>
+      <option value="Lifestyling"></option>
+      <option value="Part-timing"></option>
+      <option value="Epic retirement"></option>
+      <option value="Passive retirement/ageing"></option>
+      <option value="Frailty"></option>
     </datalist>
 
     <div class="table-responsive shadow-sm rounded">
@@ -41,14 +41,14 @@
           </tr>
         </thead>
 
-        <!-- ✅ One starter row (blank placeholders) -->
         <tbody>
+          <!-- Starter row (JS may clear/replace this if it preloads) -->
           <tr class="future-row">
             <td class="text-center">
               <button class="btn btn-outline-danger btn-sm remove-row" type="button" aria-label="Remove row">&times;</button>
             </td>
             <td><input class="form-control form-control-sm phase" list="phaseOptions" placeholder="e.g., Set-up" /></td>
-            <td><input class="form-control form-control-sm age-range" placeholder="e.g., 45–50" readonly /></td>
+            <td><input class="form-control form-control-sm age_range" placeholder="e.g., 45–50" readonly /></td>
             <td><input type="number" min="0" step="1"    class="form-control form-control-sm years"    placeholder="0" /></td>
             <td><input type="number" min="0" step="0.01" class="form-control form-control-sm baseline" placeholder="0.00" /></td>
             <td><input type="number" min="0" step="0.01" class="form-control form-control-sm oneoff"   placeholder="0.00" /></td>
@@ -85,7 +85,7 @@
         <button class="btn btn-outline-danger btn-sm remove-row" type="button" aria-label="Remove row">&times;</button>
       </td>
       <td><input class="form-control form-control-sm phase" list="phaseOptions" placeholder="e.g., Set-up" /></td>
-      <td><input class="form-control form-control-sm age-range" placeholder="e.g., 45–50" readonly /></td>
+      <td><input class="form-control form-control-sm age_range" placeholder="e.g., 45–50" readonly /></td>
       <td><input type="number" min="0" step="1"    class="form-control form-control-sm years"    placeholder="0" /></td>
       <td><input type="number" min="0" step="0.01" class="form-control form-control-sm baseline" placeholder="0.00" /></td>
       <td><input type="number" min="0" step="0.01" class="form-control form-control-sm oneoff"   placeholder="0.00" /></td>
@@ -94,8 +94,12 @@
     </tr>
   </template>
 
-  <button id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>
+  <button type="button" id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>
   <br><br>
 
+  <!-- Prefill payload for JS (safe default then JSON) -->
+  <script>
+    window.futureBudgetPrefill = {{ future_budget_data | default([], true) | tojson }};
+  </script>
   <script src="{{ url_for('static', filename='js/future_budget.js') }}"></script>
 {% endblock %}
