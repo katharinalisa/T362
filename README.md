@@ -1,12 +1,12 @@
 # Technical documentation of the Prime Time Toolkit
 
-Overview: 
+## Overview: 
 The Prime Time Toolkit webpage provides users with tools and resources to assess and 
 improve their financial literacy. It includes 13 interactive web-based calculators, a 
 downloadable spreadsheet, a self-assessment component, and educational content inside a 
 learning hub. 
 
-Core Components: 
+## Core Components: 
 Upon entering the webpage, a user has the option to either complete the interactive 
 web-based calculators which consists of a series of calculations equivalent to calculations 
 within the Excel spreadsheet, or a user can download the Excel spreadsheet and conveniently 
@@ -63,7 +63,9 @@ webpage
 
 ● Ensures secure storage and retrieval of user data. 
 
-Self-Assessment Module (Optional): 
+
+
+## Self-Assessment Module (Optional): 
 
 ● Helps users evaluate their current financial situation. 
 
