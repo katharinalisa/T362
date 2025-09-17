@@ -6,6 +6,7 @@ import numpy as np
 import pickle
 import json
 import nltk
+import time
 from flask import Blueprint, request
 from keras.models import load_model
 from nltk.stem import WordNetLemmatizer
@@ -34,6 +35,7 @@ lemmatizer = WordNetLemmatizer()
 @chatbot_bp.route("/get", methods=["POST"])
 def chatbot_response():
     load_chatbot_assets()
+    time.sleep(3)
 
     msg = request.form["msg"]
     if msg.startswith('my name is'):

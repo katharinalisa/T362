@@ -85,7 +85,7 @@
         },
         {
             "tag": "need",
-            "patterns": ["I need your help", "Can you help me?", "I want your help", "need your help"],
+            "patterns": ["I need your help", "Can you help me?", "I want your help", "need your help", "help me"],
             "responses": ["I am here to assist you. Just tell me what you need to know and I'll try my best to give you a helpful response.", "Yes, what can I help you with?"],
             "context": [""]
         },
@@ -97,7 +97,7 @@
         },
         {
             "tag": "Learninghub",
-            "patterns": ["Where do I find the learninghub?", "where is the learninghub" ],
+            "patterns": ["Where do I find the learninghub?", "help me find learninghub", "where is the learninghub" ],
             "responses": ["You can find the LearningHub at the bottom of the homepage. You can also follow this link: {link to learninghub}"],
             "context": [""]
         },
@@ -115,7 +115,7 @@
         },
                 {
             "tag": "selfassessment2",
-            "patterns": ["Where do i find the self assessment?", "find self assessment", "where is the self assessment", "self assessment location", "identifying self assessment", "where self assessment", "where self-assessment"],
+            "patterns": ["Where do i find the self assessment?", "help me find self assessment", "find self assessment", "where is the self assessment", "self assessment location", "identifying self assessment", "where self assessment", "where self-assessment"],
             "responses": ["You can find the Self-Assessment tool in the form of a button at the top of the page called 'Self-Assessment'. You can also follow this link: {link to self assessment}."],
             "context": [""]
         },
@@ -181,13 +181,13 @@
         },
         {
             "tag": "excel",
-            "patterns": ["How do I upload excel spreadsheet?", "how upload excel"],
+            "patterns": ["How do I upload excel spreadsheet?", "how upload excel", "wher do i find upload excel", "where can i upload excel", "how to upload excel", "how do i upload the excel spreadsheet", "where to upload excel spreadsheet", "where can i upload the excel spreadsheet", "how do i start uploading the excel spreadsheet", "how do i begin uploading the excel spreadsheet", "how do i use the excel spreadsheet", "how do i find the upload box", "how to find upload", "where is the upload"],
             "responses": ["Here are the steps for uploading the excel spreadsheet:\n1. Go to the Dashboards page: {link to dashboards page}\n2. Find the upload box at the center top of the page and click the button 'Choose file' next to the empty field.\n3. Find your completed Excel spreadsheet on your local computer\n4. Click 'Upload spreadsheet'\n\n The dashboards will automatically fill themselves based on the values in the spreadsheet"],
             "context": [""]
         },
         {
             "tag": "calculator",
-            "patterns": ["how do I find web calculators", "where are the web calculators", "where to find calculators", "how to find calculators", "how do I use the web calculators", "how do I start the web calculators", "how do I access the web calculators"],
+            "patterns": ["how do I find web calculators", "tell me where is the calculator", "where are the web calculators", "where to find calculators", "how to find calculators", "how do I use the web calculators", "how do I start the web calculators", "how do I access the web calculators", "how do i start web calculators", "find web calculators"],
             "responses": ["At the near top of the homepage, you can find two options to either download and upload the spreadsheet or do the web-based calculators. By clicking on the button 'Use Web Calculators', you will see 13 calculators listed in an overview page.\n Click the start button or click on any calculator you want to start with. Then, on the dashboards page, click the button 'Apply Web Calculators'. This will automatically fill the dashboards based on the values entered in the calculators"],
             "context": [""]
         },
@@ -224,13 +224,7 @@
         {
             "tag": "service",
             "patterns": ["What are your services", "What can you help me with?", "What services do you offer?", "what can you do for me","what is your work","what is your purpose","how can you help me","what can you help me with" ],
-            "responses": ["My work is simple. I offer services like: \nNavigating through the webpage\nExplaining simple terms used accross this webpage\nHelp you with simple questions about this webpage "],
-            "context": [""]
-        },
-                {
-            "tag": "service",
-            "patterns": ["What are your services", "What can you help me with?", "What services do you offer?", "what can you do for me","what is your work","what is your purpose","how can you help me","what can you help me with" ],
-            "responses": ["My work is simple. I offer services like: \nNavigating through the webpage\nExplaining simple terms used accross this webpage\nHelp you with simple questions about this webpage "],
+            "responses": ["My work is simple. I offer services like: \nNavigating through the webpage, \nexplaining simple terms used accross this webpage \nand help you with simple questions about this webpage "],
             "context": [""]
         },
         {
@@ -253,7 +247,7 @@
         },
         {
             "tag": "os",
-            "patterns": ["What operating systems", "what os"],
+            "patterns": ["What operating systems", "what os", "what operating system do you have", "what os do you have", "what os are you working on"],
             "responses": ["My software runs on all operating systems including Windows, Linux and Mac OS.", " Any OS that will run Python."],
             "context": [""]
         },
@@ -277,14 +271,14 @@
         },
         {
             "tag": "bot1",
-            "patterns": ["are you a bot"],
-            "responses": ["Yes. I was programmed to imitate human behaviour, so I can assist you with questions about the Prime Time."],
+            "patterns": ["are you a bot", "are you a robot", "are you AI?", "are you artificial"],
+            "responses": ["Yes, I am a bot. But I was programmed to imitate human behaviour. In that way, I can assist you better."],
             "context": [""]
         },
         {
             "tag": "bot2",
-            "patterns": ["are you real"],
-            "responses": ["No, I was programmed to imitate human behaviour, so I can assits you as good as possible with any questions."],
+            "patterns": ["are you real", "are you human?", "are you alive?"],
+            "responses": ["No, I am not. I was programmed to imitate human behaviour. In that way, I can assist you better."],
             "context": [""]
         },
         {
