@@ -81,46 +81,51 @@
   </div>
 </div>
 
-<template id="rowTemplate">
-  <tr>
+<template id="expenseRowTemplate">
+  <tr class="expense-row">
     <td class="text-center">
-      <button class="btn btn-outline-secondary btn-icon remove-row" title="Remove row" aria-label="Remove row">&times;</button>
+      <button type="button" class="btn btn-outline-secondary btn-icon remove-row" title="Remove row" aria-label="Remove row">&times;</button>
     </td>
+
     <td>
-      <input class="form-control form-control-sm" list="categoryOptions" placeholder="e.g., Housing" />
+      <input class="form-control form-control-sm category" list="categoryOptions" placeholder="e.g., Housing" />
     </td>
+
     <td>
-      <input class="form-control form-control-sm" placeholder="e.g., Building & contents insurance" />
+      <input class="form-control form-control-sm item" placeholder="e.g., Building & contents insurance" />
     </td>
+
     <td>
       <input type="number" min="0" step="0.01" class="form-control form-control-sm amount currency" placeholder="0.00" />
     </td>
+
     <td>
       <select class="form-select form-select-sm frequency">
         <option value="" disabled selected>Choose…</option>
-        <option>Weekly</option>
-        <option>Fortnightly</option>
-        <option>Monthly</option>
-        <option>Quarterly</option>
-        <option>Annually</option>
-        <option>One-off</option>
+        <option value="weekly">Weekly</option>
+        <option value="fortnightly">Fortnightly</option>
+        <option value="monthly">Monthly</option>
+        <option value="quarterly">Quarterly</option>
+        <option value="annually">Annually</option>
+        <option value="one-off">One-off</option>
       </select>
     </td>
+
     <td class="currency annual">$0</td>
     <td class="currency weekly">$0</td>
+
     <td>
       <select class="form-select form-select-sm type">
-        <option>Essential</option>
-        <option>Discretionary</option>
+        <option value="Essential" selected>Essential</option>
+        <option value="Discretionary">Discretionary</option>
       </select>
     </td>
   </tr>
 </template>
-  </template>
-  <button id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>
+  <button type="button" id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>
   <br><br>
 <script>
-  window.expensesPrefill = {{ expenses_data | tojson | default('[]', true) }};
+  window.expensesPrefill = {{ expenses_data | default([], true) | tojson }};
 </script>
 <script src="{{ url_for('static', filename='js/expenses.js') }}"></script>
 {% endblock %}

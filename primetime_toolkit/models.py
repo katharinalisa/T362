@@ -1,5 +1,6 @@
 from . import db
 from werkzeug.security import generate_password_hash
+from datetime import datetime
 from flask_login import UserMixin
 
 
@@ -73,3 +74,75 @@ class Income(db.Model):
     frequency = db.Column(db.String(32))
     notes = db.Column(db.String(128))
     include = db.Column(db.Boolean, default=True)
+
+
+class Expense(db.Model):
+    __tablename__ = 'expenses'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    phase = db.Column(db.String(120), nullable=False)
+    baseline = db.Column(db.Float, default=0.0)
+    lifestyle = db.Column(db.Float, default=0.0)
+    saving_investing = db.Column(db.Float, default=0.0)
+    health_care = db.Column(db.Float, default=0.0)
+    other = db.Column(db.Float, default=0.0)
+
+    total_spending = db.Column(db.Float, default=0.0)     
+    budgeted_amount = db.Column(db.Float, default=0.0)   
+    surplus_deficit = db.Column(db.Float, default=0.0)     
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class Subscription(db.Model):
+    __tablename__ = 'subscriptions'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    name = db.Column(db.String(120), nullable=False)    
+    provider = db.Column(db.String(120))
+    amount = db.Column(db.Float, default=0.0)          
+    frequency = db.Column(db.String(32), default='monthly') 
+    notes = db.Column(db.String(200), default='')
+    include = db.Column(db.Boolean, default=True)
+
+    annual_amount = db.Column(db.Float, default=0.0)
+
+
+class FutureBudget(db.Model):
+    __tablename__ = 'future_budget'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    phase = db.Column(db.String(120), nullable=False)
+    age_range = db.Column(db.String(64))                 
+    years_in_phase = db.Column(db.Integer, default=0)
+
+    baseline_cost = db.Column(db.Float, default=0.0)
+    oneoff_costs = db.Column(db.Float, default=0.0)
+    epic_experiences = db.Column(db.Float, default=0.0)
+    total_annual_budget = db.Column(db.Float, default=0.0)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+
+class EpicExperience(db.Model):
+    __tablename__ = 'epic_experiences'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    item = db.Column(db.String(160), nullable=False)        
+    amount = db.Column(db.Float, default=0.0)               
+    frequency = db.Column(db.String(32), default='Once only')
+    include = db.Column(db.Boolean, default=True)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

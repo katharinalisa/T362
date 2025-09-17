@@ -29,16 +29,16 @@
 
     <!-- Suggestions -->
     <datalist id="epicItems">
-      <option value="3-month sabbatical" />
-      <option value="Caravan trip around Australia" />
-      <option value="Renovate kitchen" />
-      <option value="Round-the-world cruise" />
-      <option value="Family reunion overseas" />
-      <option value="New car purchase" />
-      <option value="Home renovations" />
-      <option value="Major medical expenses" />
-      <option value="Pay off outstanding debts" />
-      <option value="Epic holiday/travel" />
+      <option value="3-month sabbatical"></option>
+      <option value="Caravan trip around Australia"></option>
+      <option value="Renovate kitchen"></option>
+      <option value="Round-the-world cruise"></option>
+      <option value="Family reunion overseas"></option>
+      <option value="New car purchase"></option>
+      <option value="Home renovations"></option>
+      <option value="Major medical expenses"></option>
+      <option value="Pay off outstanding debts"></option>
+      <option value="Epic holiday/travel"></option>
     </datalist>
 
     <div class="table-responsive shadow-sm rounded">
@@ -123,9 +123,12 @@
       <td class="currency total">$0</td>
     </tr>
   </template>
-  <button id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>
+  <button type="button" id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>
   <br><br>
 
-
+  <script>
+    window.epicPrefill = {{ epic_data | default([], true) | tojson }};
+    window.epicYears   = {{ epic_years | default(10, true) | tojson }};
+  </script>
   <script src="{{ url_for('static', filename='js/epic.js') }}"></script>
 {% endblock %}

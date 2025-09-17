@@ -1,133 +1,169 @@
 (() => {
-  const tbody = document.querySelector('#subsTable tbody');
-  const rowTpl = document.getElementById('subsRowTemplate');
+  // ====== DOM ======
+  const table = document.getElementById('subsTable');
+  const tbody = table?.querySelector('tbody');
+  const rowTemplate = document.getElementById('subsRowTemplate');
+  const addRowBtn = document.getElementById('addRowBtn');
+  const clearAllBtn = document.getElementById('clearAllBtn');
+  const saveAndNextBtn = document.getElementById('saveAndNextBtn');
 
-  const addBtn   = document.getElementById('addRowBtn');
-  const clearBtn = document.getElementById('clearAllBtn');
-  const saveBtn  = document.getElementById('saveBtn');
-  const loadBtn  = document.getElementById('loadBtn');
+  // Total label on the page (change the id here if yours is different)
+  const elTotalSubs = document.getElementById('totalSubscription');
 
-  const totalAnnualEl = document.getElementById('totalAnnual');
+  if (!table || !tbody || !rowTemplate) return; // safety
 
-  if (!tbody || !rowTpl) return;
+  // ====== Utils ======
+  const AUD0 = new Intl.NumberFormat(undefined, {
+    style: 'currency', currency: 'AUD',
+    minimumFractionDigits: 0, maximumFractionDigits: 0
+  });
 
-  const AUD = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'AUD', minimumFractionDigits: 0 });
-  const parseNum = (v) => {
-    const n = parseFloat(String(v ?? '').replace(/[^\d.-]/g, ''));
-    return Number.isFinite(n) ? n : 0;
+  const PERIODS_PER_YEAR = {
+    weekly: 52,
+    fortnightly: 26,
+    monthly: 12,
+    quarterly: 4,
+    annually: 1
   };
 
-  const FACTOR_ANNUAL = { weekly: 52, fortnightly: 26, monthly: 12, quarterly: 4, annually: 1 };
+  function parseAmount(v) {
+    if (v == null) return 0;
+    const n = parseFloat(String(v).replace(/[^\d.-]/g, ''));
+    return Number.isFinite(n) ? n : 0;
+  }
+  const normFreq = f => String(f || '').trim().toLowerCase();
 
+  function setCurrency(el, amount) {
+    if (!el) return;
+    el.textContent = AUD0.format(amount || 0);
+  }
+
+  // ====== Row management ======
   function addRow(prefill = {}) {
-    const frag = rowTpl.content.cloneNode(true);
-    const row  = frag.querySelector('tr.subs-row');
+    const frag = rowTemplate.content.cloneNode(true);
+    const row = frag.querySelector('tr.subs-row');
 
-    if (prefill.id) row.dataset.id = prefill.id;
-    row.querySelector('.service').value   = prefill.service   ?? '';        // empty -> placeholder shows
-    row.querySelector('.provider').value  = prefill.provider  ?? '';
-    row.querySelector('.amount').value    = prefill.amount_per_period ?? '';
-    row.querySelector('.freq').value      = prefill.frequency ?? 'Monthly';
-    row.querySelector('.include').checked = prefill.include !== false;
+    // Classes expected in the row markup:
+    // .service .provider .amount .frequency .include-toggle .annual
+    if (prefill.name) row.querySelector('.service').value = prefill.name;
+    if (prefill.provider) row.querySelector('.provider').value = prefill.provider;
+    if (prefill.amount != null) row.querySelector('.amount').value = prefill.amount;
+    if (prefill.frequency) row.querySelector('.frequency').value = normFreq(prefill.frequency) || 'monthly';
+    if (prefill.include !== undefined) row.querySelector('.include-toggle').checked = !!prefill.include;
+
+    // If annual amount came from DB, show it (optional)
+    const annualCell = row.querySelector('.annual');
+    if (annualCell && prefill.annual_amount != null) {
+      setCurrency(annualCell, prefill.annual_amount);
+    }
 
     tbody.appendChild(frag);
   }
 
   function clearAll() {
     tbody.innerHTML = '';
-    // ✅ just one starter row with NO default text
-    addRow(); // CHANGED: removed { service: 'Streaming service (Netflix)' }
-    recalcAll();
+    addRow();
+    recalcTotals();
   }
 
-  function annualFromRow(row) {
-    const amt  = parseNum(row.querySelector('.amount')?.value);
-    const freq = String(row.querySelector('.freq')?.value || '').toLowerCase();
-    const factor = FACTOR_ANNUAL[freq] ?? 0;
-    return amt * factor;
+  // ====== Calculations ======
+  function annualForRow(row) {
+    const include = row.querySelector('.include-toggle')?.checked;
+    if (!include) return 0;
+    const amt = parseAmount(row.querySelector('.amount')?.value);
+    const f = normFreq(row.querySelector('.frequency')?.value || 'monthly');
+    return amt * (PERIODS_PER_YEAR[f] ?? 0);
   }
 
-  function recalcRow(row) {
-    const include = !!row.querySelector('.include')?.checked;
-    const annual  = include ? annualFromRow(row) : 0;
-    row.querySelector('.annual').textContent = AUD.format(annual);
-    return annual;
+  function recalcTotals() {
+    let total = 0;
+    tbody.querySelectorAll('tr.subs-row').forEach(row => {
+      const annual = annualForRow(row);
+      const annualCell = row.querySelector('.annual');
+      if (annualCell) setCurrency(annualCell, annual);
+      total += annual;
+    });
+    setCurrency(elTotalSubs, total);
   }
 
-  function recalcAll() {
-    let sum = 0;
-    tbody.querySelectorAll('tr.subs-row').forEach(row => sum += recalcRow(row));
-    totalAnnualEl.textContent = AUD.format(sum);
+  // ====== Gather payload ======
+  function getSubsRows() {
+    return Array.from(tbody.querySelectorAll('tr.subs-row')).map(row => {
+      const name = row.querySelector('.service')?.value?.trim() || '';
+      const provider = row.querySelector('.provider')?.value?.trim() || '';
+      const amount = parseAmount(row.querySelector('.amount')?.value);
+      const frequency = normFreq(row.querySelector('.frequency')?.value || 'monthly');
+      const include = !!row.querySelector('.include-toggle')?.checked;
+      const annual_amount = include ? amount * (PERIODS_PER_YEAR[frequency] ?? 0) : 0;
+
+      return { name, provider, amount, frequency, notes: '', include, annual_amount };
+    });
   }
 
-  // Delegated events
-  tbody.addEventListener('input', (e) => {
+  // ====== Events ======
+  // Input/change re-calc (like assets.js)
+  function onTbodyInput(e) {
     const t = e.target;
-    if (t && (t.classList.contains('service') || t.classList.contains('provider') || t.classList.contains('amount'))) {
-      recalcAll();
+    if (!t) return;
+    if (
+      t.classList.contains('amount') ||
+      t.classList.contains('frequency') ||
+      t.classList.contains('include-toggle') ||
+      t.classList.contains('service') ||
+      t.classList.contains('provider')
+    ) {
+      recalcTotals();
     }
-  });
-  tbody.addEventListener('change', (e) => {
-    const t = e.target;
-    if (t && (t.classList.contains('freq') || t.classList.contains('include'))) {
-      recalcAll();
-    }
-  });
-  tbody.addEventListener('click', (e) => {
+  }
+
+  function onTbodyClick(e) {
     const btn = e.target.closest('.remove-row');
-    if (btn) {
-      btn.closest('tr.subs-row')?.remove();
-      recalcAll();
-    }
+    if (!btn) return;
+    const row = btn.closest('tr.subs-row');
+    if (row) row.remove();
+    if (!tbody.querySelector('tr.subs-row')) addRow();
+    recalcTotals();
+  }
+
+  addRowBtn?.addEventListener('click', () => { addRow(); recalcTotals(); });
+  clearAllBtn?.addEventListener('click', clearAll);
+  tbody.addEventListener('input', onTbodyInput);
+  tbody.addEventListener('change', onTbodyInput);
+  tbody.addEventListener('click', onTbodyClick);
+
+  // ====== Save & Next ======
+  saveAndNextBtn?.addEventListener('click', () => {
+    const subscriptions = getSubsRows();
+    fetch('/save-subscriptions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subscriptions })
+    })
+      .then(res => {
+        if (res.status === 401) {
+          alert('Please log in to save your subscriptions.');
+          window.location.href = '/login';
+          return null;
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (!data) return;
+        if (data.redirect) {
+          window.location.href = data.redirect; // usually /future_budget
+        } else {
+          alert(data.message || 'Subscriptions saved!');
+        }
+      })
+      .catch(() => alert('Error saving subscriptions.'));
   });
 
-  addBtn?.addEventListener('click', () => { addRow(); recalcAll(); });
-  clearBtn?.addEventListener('click', clearAll);
-
-  // ---- DB I/O ----
-  async function saveAll() {
-    const items = [...tbody.querySelectorAll('tr.subs-row')].map(row => ({
-      id: row.dataset.id || null,
-      service:  row.querySelector('.service')?.value?.trim()  || '',
-      provider: row.querySelector('.provider')?.value?.trim() || '',
-      amount_per_period: parseNum(row.querySelector('.amount')?.value),
-      frequency: row.querySelector('.freq')?.value || 'Monthly',
-      include: !!row.querySelector('.include')?.checked,
-    }));
-    try {
-      const res = await fetch('/api/subscriptions/bulk', {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify({ items })
-      });
-      if (!res.ok) throw new Error();
-      alert('Saved.');
-    } catch {
-      alert('Save failed. Check server logs.');
-    }
+  // ====== Init ======
+  tbody.innerHTML = '';
+  if (Array.isArray(window.subscriptionsPrefill) && window.subscriptionsPrefill.length > 0) {
+    window.subscriptionsPrefill.forEach(row => addRow(row));
+  } else {
+    addRow();
   }
-
-  async function loadAll() {
-    try {
-      const res = await fetch('/api/subscriptions');
-      if (!res.ok) throw new Error();
-      const rows = await res.json();
-      tbody.innerHTML = '';
-      if (!rows.length) { 
-        clearAll(); 
-        return; 
-      }
-      rows.forEach(addRow);
-      recalcAll();
-    } catch {
-      clearAll();
-    }
-  }
-
-  // Optional: if you wire a separate Save button
-  saveBtn?.addEventListener('click', () => { void saveAll(); });
-  loadBtn?.addEventListener('click', () => { void loadAll(); });
-
-  // Init
-  document.addEventListener('DOMContentLoaded', loadAll);
+  recalcTotals();
 })();
