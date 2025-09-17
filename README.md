@@ -29,7 +29,7 @@ reference, linking to her official PrimeTime website.
 ___________________________________________________________________________ 
 # Individual components: 
 
-Web-based calculators: 
+## Web-based calculators: 
 
 ● Web-based calculators replicate the functionality of the downloadable Excel 
 spreadsheet. 
@@ -45,7 +45,7 @@ off upon re-entering the webpage..
 
 
 
-Excel Spreadsheet Download: 
+## Excel Spreadsheet Download: 
 
 ● Users may opt to download the spreadsheet for offline use. 
 
@@ -57,7 +57,7 @@ webpage
 
 
 
-User Authentication: 
+## User Authentication: 
 
 ● Email login is mandatory for saving progress. 
 
@@ -74,7 +74,7 @@ situation.
 
 
 
-Subscription Email Function (Demo Only): 
+## Subscription Email Function (Demo Only): 
 
 ● Users can sign up for Bec’s Newsletters. 
 
@@ -82,7 +82,7 @@ Subscription Email Function (Demo Only):
 
 
 
-Learning Hub: 
+## Learning Hub: 
 
 ● Offers general information about Prime Time concepts. 
 
