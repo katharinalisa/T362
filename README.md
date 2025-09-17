@@ -27,7 +27,7 @@ includes general and relevant information of the Prime Time and explains differe
 throughout the webpage. The Learning Hub also presents several articles of Bec Wilson for 
 reference, linking to her official PrimeTime website.  
 ___________________________________________________________________________ 
-Individual components: 
+# Individual components: 
 
 Web-based calculators: 
 
@@ -43,6 +43,7 @@ off upon re-entering the webpage..
 
 ● A user has to login to access the web-based calculators. 
 
+
 Excel Spreadsheet Download: 
 
 ● Users may opt to download the spreadsheet for offline use. 
@@ -52,6 +53,7 @@ identical to the dashboards overview when completing the web-based calculators
 
 ● A user has to login to save the upload and review the results upon re-entering the 
 webpage 
+
 
 User Authentication: 
 
@@ -68,11 +70,13 @@ Self-Assessment Module (Optional):
 ● Participation is optional but recommended for deeper insights of the current financial 
 situation. 
 
+
 Subscription Email Function (Demo Only): 
 
 ● Users can sign up for Bec’s Newsletters. 
 
 ● This feature is for demonstration purposes and does not require deployment. 
+
 
 Learning Hub: 
 
