@@ -44,6 +44,7 @@ off upon re-entering the webpage..
 ● A user has to login to access the web-based calculators. 
 
 
+
 Excel Spreadsheet Download: 
 
 ● Users may opt to download the spreadsheet for offline use. 
@@ -53,6 +54,7 @@ identical to the dashboards overview when completing the web-based calculators
 
 ● A user has to login to save the upload and review the results upon re-entering the 
 webpage 
+
 
 
 User Authentication: 
@@ -71,11 +73,13 @@ Self-Assessment Module (Optional):
 situation. 
 
 
+
 Subscription Email Function (Demo Only): 
 
 ● Users can sign up for Bec’s Newsletters. 
 
 ● This feature is for demonstration purposes and does not require deployment. 
+
 
 
 Learning Hub: 
@@ -87,6 +91,7 @@ Learning Hub:
 ● Includes articles by Bec Wilson for reference. 
 
 ● External links direct users to Bec Wilson’s official PrimeTime website. 
+
 
 ___________________________________________________________________________ 
 Project hosted by Queensland University of Technology (QUT)
