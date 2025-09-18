@@ -1,3 +1,13 @@
+How to run this project:
+> pip freeze > requirements.txt
+
+> pip install -r requirements.txt
+ 
+> python primetime_toolkit/chatbot/train.py
+
+> python main.py
+
+
 # Technical documentation of the Prime Time Toolkit
 
 ## Overview: 
@@ -31,15 +41,13 @@ ___________________________________________________________________________
 
 ## Web-based calculators: 
 
-● Web-based calculators replicate the functionality of the downloadable Excel 
-spreadsheet. 
+● Web-based calculators replicate the functionality of the downloadable Excel spreadsheet. 
 
 ● Users can input data directly on the webpage. 
 
 ● Calculations are equivalent to those found in the Excel spreadsheet for consistency. 
 
-● Users can save progress, can safely exit the webpage and continue where they have left 
-off upon re-entering the webpage.. 
+● Users can save progress, can safely exit the webpage and continue where they have left off upon re-entering the webpage.
 
 ● A user has to login to access the web-based calculators. 
 
@@ -47,13 +55,11 @@ off upon re-entering the webpage..
 
 ## Excel Spreadsheet Download: 
 
-● Users may opt to download the spreadsheet for offline use. 
+● Users may opt to download the Excel spreadsheet for offline use, instead of using the web calculators. 
 
-● Spreadsheets can be uploaded and values are displayed in a dashboard overview 
-identical to the dashboards overview when completing the web-based calculators 
+● Spreadsheets can be uploaded and values are displayed in a dashboard overview identical to the dashboards overview when completing the web-based calculators.
 
-● A user has to login to save the upload and review the results upon re-entering the 
-webpage 
+● A user has to login to save the upload and review the results upon re-entering the webpage.
 
 
 
@@ -71,8 +77,7 @@ webpage
 
 ● Provides personalized feedback and instructionable guidance. 
 
-● Participation is optional but recommended for deeper insights of the current financial 
-situation. 
+● Participation is optional but recommended for deeper insights of the current financial situation. 
 
 
 
