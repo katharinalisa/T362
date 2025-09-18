@@ -14,8 +14,9 @@
           We are helping Australians aged 47–65 plan smarter for retirement.<br>
           Take control of your financial future and join thousands of Australians taking the first step toward confident retirement planning.<br><hr>
           <p>We recommend to start with a self-assessment to identify your financial strengths and areas for improvement.</p>
-        </p>
-        <a href="{{ url_for('views.assessment_intro') }}" class="btn-login btn-lg rounded-pill shadow">
+        </p><br>
+        <a href="{{ url_for('views.assessment_intro') }}" class="btn-login btn-lg rounded-pill shadow"
+          style="font-size:1.5rem; padding: 1rem 2rem;">
           Start with a Self-Assessment
         </a>
       </div>
@@ -36,10 +37,10 @@
         <div class="card-soft p-4 text-center h-100" style="box-shadow: 0 8px 32px rgba(34,60,80,0.12); border: 1.5px solid #eaf1fe; border-radius: 18px;">
           <span class="fs-1 text-primary mb-3"><i class="bi bi-file-earmark-arrow-down"></i></span>
           <h3>Get Spreadsheet by Email</h3>
-          <p class="lead-p mb-3">Receive our Excel tool via email, fill it out offline, and return to upload it for instant analysis.</p>
+          <p style="color:#787878">Receive our Excel tool via email, fill it out offline, and return to upload it for instant analysis.</p>
           <form id="spreadsheetForm" action="{{ url_for('views.send_email') }}" method="POST" class="mb-2">
             <input type="email" name="email" class="form-control mb-2 rounded-pill" placeholder="Your email" required>
-            <button type="submit" class="btn btn-outline-primary rounded-pill px-4">Send Spreadsheet</button>
+            <button type="submit" class="btn btn-success rounded-pill px-4" disabled>Send Spreadsheet</button>
             <div id="loadingSpinner" style="display:none; margin-top:10px;">
               <div class="spinner-border text-info" role="status">
                 <span class="visually-hidden">Sending...</span>
@@ -61,8 +62,8 @@
         <div class="card-soft p-4 text-center h-100" style="box-shadow: 0 8px 32px rgba(34,60,80,0.12); border: 1.5px solid #eaf1fe; border-radius: 18px;">
           <span class="fs-1 text-success mb-3"><i class="bi bi-calculator"></i></span>
           <h3>Use Web Calculators</h3>
-          <p class="lead-p mb-3">Enter your financial details online using our calculators for instant results.</p><br>
-          <a href="{{ url_for('views.tracker') }}" class="btn btn-outline-primary rounded-pill px-4 text-decoration-none" style="margin-top:19.5px">Start Web Calculators</a>
+          <p style="color:#787878">Enter your financial details online using our calculators for instant results.</p><br>
+          <a href="{{ url_for('views.tracker') }}" class="btn btn-success rounded-pill px-4" style="margin-top:19.5px">Start Web Calculators</a>
         </div>
       </div>
     </div>
@@ -70,14 +71,16 @@
 </section>
 
 <!-- Upload Spreadsheet Section -->
-<section style="background-color:#eafffe; width: 100vw; margin-left: calc(-50vw + 50%);"><br><br>
+<section style="background-color:#eafffe; width: 100vw; margin-left: calc(-50vw + 50%);"><br><br><br>
   <div>
     <div class="text-center">
       <h5>Upload Your Completed Excel Spreadsheet on the Next Page</h5>
       <p class="lead-p mb-3">Go to Dashboards to upload your spreadsheet and view your results.</p>
-      <a href="{{ url_for('views.dashboard') }}"  class="btn-login btn-lg rounded-pill shadow" style="text-decoration:none;">Go to Dashboards</a>
-    </div>
-  </div><br><br>
+        <a href="{{ url_for('views.dashboard') }}" class="btn-login btn-lg rounded-pill shadow"
+          style="font-size:1.5rem; padding: 1rem 2rem;">
+          Go to Dashboards
+        </a>
+  </div><br><br><br>
 </section><br><br><br>
 
 <!-- Newsletter Subscription Section -->
