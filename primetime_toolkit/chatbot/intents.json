@@ -80,7 +80,7 @@
         {
             "tag": "name",
             "patterns": ["my name is ", "I'm ","I am"],
-            "responses": ["Nice to meet you!. How can I assist you?"],
+            "responses": ["Nice to meet you! How can I assist you?"],
             "context": [""]
         },
         {
@@ -211,7 +211,7 @@
         },
         {
             "tag": "sense",
-            "patterns": ["You are not making sense", "You don't make sense", "thats weird", "doesnt make sense", "That makes no sense", "I did not understand", "That's not true", "i didnt understand", "What?"],
+            "patterns": ["You are not making sense", "You don't make sense", "thats weird", "doesnt make sense", "That makes no sense", "I did not understand", "That's not true", "i didnt understand", "What?", "youre weird"],
             "responses": ["I am sorry I could not help you. I am still learning. Please ask me something else.", "I am sorry, I am within the limits of my training."],
             "context": [""]
         },
@@ -222,9 +222,27 @@
             "context": [""]
         },
         {
+            "tag": "sad",
+            "patterns": ["I am sad", "what can I do when im sad?", "im sad", "im feeling unwell", "i dont feel good", "im not feeling good", "im not good", "i feel sad", "i am feeling sad", "i feel unwell", "i feel bad", "i am feeling bad", "i am not good", "i am not well", "i am unhappy", "i feel unhappy", "i am depressed", "i feel depressed"],
+            "responses": ["I am sorry to hear that you are feeling that way. Life is hard sometimes, but remember that you are not alone. If you need someone to talk to, consider reaching out to a trusted friend, family member, or a mental health professional."],
+            "context": [""]
+        },
+        {
+            "tag": "alone",
+            "patterns": ["I am alone", "what can I do when im alone?", "im alone", "im feeling lonely", "i feel alone", "i am feeling alone", "i feel lonely"],
+            "responses": ["I am sorry to hear that you are feeling that way. Life is hard sometimes, but remember that you are not alone. If you need someone to talk to, consider reaching out to a trusted friend, family member, or a mental health professional."],
+            "context": [""]
+        },
+        {
+            "tag": "scared",
+            "patterns": ["I am scared of the future", "what can I do when im scared?", "im scared", "I feel scared", "i am feeling scared", "I am afraid", "I feel afraid", "i am feeling afraid", "i feel anxious", "i am feeling anxious", "i am worried", "i feel worried","i am worried about future", "i am feeling worried", "I am nervous", "I feel nervous", "i am feeling nervous about the future"],
+            "responses": ["It's normal to feel scared or anxious about the future, especially when it is about your financial situation. This is why we developed this self-help tool. We provide a range of resources to help you get a better understanding of your future and prepare for your financial journey approaching retirement. If you need tailored support, Bec Wilson is here to help and assist you. However, if you feel overwhelmed in general, consider talking to someone who can help you process these feelings, like a mental health professional."],
+            "context": [""]
+        },
+        {
             "tag": "service",
-            "patterns": ["What are your services", "What can you help me with?", "What services do you offer?", "what can you do for me","what is your work","what is your purpose","how can you help me","what can you help me with" ],
-            "responses": ["My work is simple. I offer services like: \nNavigating through the webpage, \nexplaining simple terms used accross this webpage \nand help you with simple questions about this webpage "],
+            "patterns": ["What are your services", "What can you help me with?", "What services do you offer?", "what can you do for me","what is your work","what is your purpose","how can you help me","what can you help me with", "how can you help"],
+            "responses": ["My work is simple. I offer services like: \nNavigating through this webpage, \nexplaining simple terms used accross this webpage \nand help you with simple questions about this webpage "],
             "context": [""]
         },
         {
