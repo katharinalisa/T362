@@ -7,16 +7,15 @@ def extract_items_auto(path, sheet_name, max_header_check=5):
         try:
             df = pd.read_excel(path, sheet_name=sheet_name, header=header_row)
             if df.shape[1] < 2:
-                continue  # not enough columns
-
-            df = df.dropna(how="all")  # drop empty rows
+                continue 
+            df = df.dropna(how="all")
             cols = [str(c).strip() for c in df.columns]
 
-            # Detect value column
+    
             value_candidates = [c for c in cols if any(x in c.lower() for x in ["$", "value", "amount", "balance"])]
             value_col = value_candidates[0] if value_candidates else cols[-1]
 
-            # Detect label column
+            
             label_candidates = [c for c in cols if c != value_col]
             label_col = label_candidates[0] if label_candidates else cols[0]
 
@@ -30,8 +29,7 @@ def extract_items_auto(path, sheet_name, max_header_check=5):
 
                 label_str = str(label).strip()
                 if label_str.lower().startswith("total"):
-                    continue  # skip total rows
-
+                    continue 
                 try:
                     value = float(value)
                 except (ValueError, TypeError):
@@ -40,8 +38,8 @@ def extract_items_auto(path, sheet_name, max_header_check=5):
                 items.append({"label": label_str, "value": value})
                 total += value
 
-            if items:  # success
-                print(f"✅ {sheet_name}: header_row={header_row}, label_col='{label_col}', value_col='{value_col}'")
+            if items:
+                print(f"{sheet_name}: header_row={header_row}, label_col='{label_col}', value_col='{value_col}'")
                 return items, total
 
         except Exception as e:
@@ -56,16 +54,16 @@ def find_sheet(sheets, keywords):
     for name in sheets:
         lname = name.lower().strip()
         if any(k in lname for k in keywords):
-            print(f"✅ Found sheet: {name} (matched {keywords})")
+            print(f"Found sheet: {name} (matched {keywords})")
             return name
-    print(f"⚠️ No sheet found for {keywords}")
+    print(f"No sheet found for {keywords}")
     return None
 
 
 def parse_excel(path):
     sheets = pd.ExcelFile(path).sheet_names
-    print(f"\n📂 Parsing Excel file: {path}")
-    print(f"📑 Sheets found: {sheets}\n")
+    print(f"\nParsing Excel file: {path}")
+    print(f"Sheets found: {sheets}\n")
 
     # --- Assets ---
     assets_name = find_sheet(sheets, ["asset"])
@@ -76,7 +74,7 @@ def parse_excel(path):
     liab_items, liab_total = extract_items_auto(path, liab_name) if liab_name else ([], 0)
 
     net_worth = assets_total - liab_total
-    print(f"💰 Net Worth = {net_worth}\n")
+    print(f"Net Worth = {net_worth}\n")
 
     # --- Expenses ---
     exp_name = find_sheet(sheets, ["expense", "spending"])
@@ -91,9 +89,9 @@ def parse_excel(path):
     inc_items, inc_total = extract_items_auto(path, inc_name) if inc_name else ([], 0)
     if inc_total == 0:
         inc_total = 5000
-        print("⚠️ No income found, using fallback=5000")
+        print("No income found, using fallback=5000")
     monthly_savings = max(0, inc_total - exp_total)
-    print(f"💵 Monthly Savings = {monthly_savings}\n")
+    print(f"Monthly Savings = {monthly_savings}\n")
 
     # --- Emergency Fund ---
     ef_name = find_sheet(sheets, ["emergency"])
@@ -103,9 +101,9 @@ def parse_excel(path):
         try:
             ef_goal = float(df.iloc[0, 1])
             ef_current = float(df.iloc[1, 1])
-            print(f"🛡️ Emergency Fund: goal={ef_goal}, current={ef_current}")
+            print(f"Emergency Fund: goal={ef_goal}, current={ef_current}")
         except Exception:
-            print("⚠️ Could not parse Emergency Fund sheet")
+            print("Could not parse Emergency Fund sheet")
 
     # --- Superannuation Growth ---
     super_name = find_sheet(sheets, ["super"])
@@ -116,7 +114,7 @@ def parse_excel(path):
     else:
         super_years = list(range(2025, 2035))
         super_values = [10000 * (1.05**i) for i in range(len(super_years))]
-    print(f"📈 Superannuation Growth: {len(super_years)} years\n")
+    print(f"Superannuation Growth: {len(super_years)} years\n")
 
     # --- Savings Over Time ---
     months = list(range(0, 12 * 10 + 1))
@@ -135,7 +133,7 @@ def parse_excel(path):
         bal = bal * (1 + rate_monthly) - withdrawal
         drawdown_values.append(max(0, round(bal, 2)))
 
-    print("✅ Finished parsing Excel\n")
+    print("Finished parsing Excel\n")
 
     return {
         "net_worth": net_worth,

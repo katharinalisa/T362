@@ -1,9 +1,24 @@
 {% extends 'layout.html' %} {% block content %}
+
+<style>
+    .dashboard-chart {
+      box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18);
+      transition: box-shadow 0.2s, transform 0.2s;
+      border-radius: 30px;
+      border: none;
+      background: #fff;
+    }
+    .dashboard-chart:hover {
+      box-shadow: 0 16px 48px rgba(34, 60, 80, 0.32);
+      transform: translateY(-8px) scale(1.04);
+      z-index: 2;
+    }
+</style>
+
 <section
   class="hero-section text-center py-4"
-  style="background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%);"
->
-  <div class="container">
+  style="background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%); width: 100vw; margin-left: calc(-50vw + 50%); margin-top: -28px">
+  <div class="container"><br>
     <h1
       class="display-1 section-title mb-2"
       style="font-size: 3rem; font-weight: 800; letter-spacing: 1px;"
@@ -12,51 +27,89 @@
     </h1>
     <p class="lead-p mb-4" style="font-size: 1.2rem; color: #2d3e50;">
       View your financial insights and track your progress over time.
-    </p>
+    </p><br>
   </div>
 </section>
 <br />
 
 <!-- Upload Spreadsheet Section -->
-<div class="container" style="margin-bottom: 0.5rem;">
-  <div
-    class="card mx-auto shadow-lg border-0 rounded-4 p-4 mb-2"
-    style="
-      max-width: 400px;
-      border: 2.5px solid #1a7f8c;
-      background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%);
-    "
-  >
-    <div class="card-body text-center">
-      <span class="fs-1 text-primary mb-2"><i class="bi bi-upload"></i></span>
-      <h6><strong>Upload Completed Spreadsheet</strong></h6>
-      <br />
-      <form
-        action="{{ url_for('views.upload_excel') }}"
-        method="POST"
-        enctype="multipart/form-data"
-      >
-        <input
-          type="file"
-          name="budget_file"
-          class="form-control mb-2 rounded-pill"
-          accept=".xlsx,.xls"
-          required
-        />
-        <button type="submit" class="btn btn-outline-primary rounded-pill px-4">
-          Upload Spreadsheet
-        </button>
-      </form>
+<div class="container" style="margin-bottom: 0.5rem">
+  <div class="row justify-content-center align-items-center">
+    <div class="col-md-6">
+      <div
+        class="card mx-auto shadow-lg border-0 rounded-4 p-4 mb-2"
+        style="
+          max-width: 400px;
+          background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%);
+          max-height: 200px; min-height: 200px;">
+        <div class="card-body text-center">
+          <span class="fs-1 text-primary mb-2"><i class="bi bi-upload"></i></span>
+          <h6><strong>Upload Completed Spreadsheet</strong></h6>
+          <br />
+          <form
+            action="{{ url_for('views.upload_excel') }}"
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            <input
+              type="file"
+              name="budget_file"
+              id="budget_file"
+              class="form-control mb-2 rounded-pill"
+              accept=".xlsx,.xls"
+              required
+            />
+            <button type="submit" id="uploadBtn" class="btn btn-success rounded-pill px-4" disabled>
+              Upload Spreadsheet
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6" style="margin-left: -10px">
+      <div
+        class="card mx-auto shadow-lg border-0 rounded-4 p-4 mb-2"
+        style="
+          max-width: 400px;
+          background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%);
+          max-height: 200px; min-height: 200px;">
+        <div class="card-body text-center">
+          <span class="fs-1 text-success mb-2"><i class="bi bi-calculator"></i></span>
+          <h6><strong>Use Web Calculator</strong></h6>
+          <br />
+          <a href="#" class="btn btn-success rounded-pill px-4 py-2">
+            Use Web Calculator
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const fileInput = document.getElementById('budget_file');
+  const uploadBtn = document.getElementById('uploadBtn');
+  fileInput.addEventListener('change', function() {
+    if (fileInput.files.length > 0) {
+      uploadBtn.disabled = false;
+      uploadBtn.classList.remove('btn-outline-primary');
+      uploadBtn.classList.add('btn-success');
+    } else {
+      uploadBtn.disabled = true;
+      uploadBtn.classList.remove('btn-success');
+      uploadBtn.classList.add('btn-outline-primary');
+    }
+  });
+});
+</script>
 
 <div class="container-fluid py-4">
   <!-- First row: three charts -->
   <div class="row g-4 mb-5">
     <div class="col-md-4">
-      <div class="dashboard-chart card-soft p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 style="margin-top: -35px" class="mb-2">Current Net Worth</h5><br>
         <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
           ${{ "{:,.2f}".format(data.net_worth) }}
@@ -66,21 +119,20 @@
       </div>
     </div>
     <div class="col-md-4 ">
-      <div class="dashboard-chart card-soft p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Assets vs Liabilities</h5>
         <canvas id="assetsLiabilitiesChart" style="max-width: 100%; max-height: 220px;"></canvas>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="dashboard-chart card-soft p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Monthly Savings</h5>
         <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
           ${{ "{:,.2f}".format(data.monthly_savings) }}
         </div>
         <span class="text-muted mt-2">Income minus expenses</span>
-
       </div>
     </div>
   </div>
@@ -88,39 +140,39 @@
   <!-- Second row: two wide charts -->
   <div class="row g-4 mb-5">
     <div class="col-md-6">
-      <div class="dashboard-chart card-soft p-3 text-center"
-        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Subscription Amount ($)</h5>
         <canvas id="debtPaydownChart" style="max-width: 100%; max-height: 320px;"></canvas>
       </div>
     </div>
     <div class="col-md-6">
-      <div class="dashboard-chart card-soft p-3 text-center"
-        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Monthly Expenses</h5>
-        <canvas style="font-size:2.5rem; font-weight:700; color:#3bb3c3;" id="monthlyExpensesChart" style="max-width: 100%; max-height: 320px;"></canvas>
+        <canvas id="monthlyExpensesChart" style="max-width: 100%; max-height: 320px;"></canvas>
       </div>
     </div>
   </div>
   <!-- Third row: three charts -->
   <div class="row g-4 mb-5">
     <div class="col-md-4">
-      <div class="dashboard-chart card-soft p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Superannuation Growth</h5>
         <canvas id="superGrowthChart" style="max-width: 100%; max-height: 220px;"></canvas>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="dashboard-chart card-soft p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Expense Breakdown</h5>
         <canvas id="expenseBreakdownChart" style="max-width: 100%; max-height: 220px;"></canvas>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="dashboard-chart card-soft p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Drawdown Over Time</h5>
         <canvas id="drawdownChart" style="max-width: 100%; max-height: 220px;"></canvas>
       </div>
@@ -129,15 +181,15 @@
   <!-- Fourth row: two wide charts -->
   <div class="row g-4 mb-5">
     <div class="col-md-6">
-      <div class="dashboard-chart card-soft p-3 text-center"
-        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Income Sources</h5>
         <canvas id="incomeSourcesChart" style="max-width: 100%; max-height: 320px;"></canvas>
       </div>
     </div>
     <div class="col-md-6">
-      <div class="dashboard-chart card-soft p-3 text-center"
-        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18); border: 2px solid #3bb3c3; border-radius: 18px; background: #fff;">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">???</h5>
         <canvas id="???" style="max-width: 100%; max-height: 320px;"></canvas>
       </div>
@@ -281,7 +333,7 @@ var incomeSourcesChart = new Chart(ctxIncomeSources, {
 });
 
 // something
-var ctxInsuranceCoverage = document.getElementById('insuranceCoverageChart').getContext('2d');
+var ctxInsuranceCoverage = document.getElementById('').getContext('2d');
 var insuranceCoverageChart = new Chart(ctxInsuranceCoverage, {
   type: 'bar',
   data: {

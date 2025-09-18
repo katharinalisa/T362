@@ -161,16 +161,16 @@
         <ul class="navbar-nav align-items-center">
           <li class="nav-item"><a class="nav-link" href="{{ url_for('views.home') }}">Home</a></li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Money Management Tools</a>
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Overview</a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{{ url_for('views.assessment_intro') }}">Self-Assessment</a></li>
               <li><a class="dropdown-item" href="{{ url_for('views.dashboard') }}">Dashboard</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('views.learninghub') }}">LearningHub</a></li>
               <li><a class="dropdown-item" href="{{ url_for('views.superannuation') }}">Superannuation</a></li>
-              <li><a class="dropdown-item" href="#">Investment Tools</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('views.tracker') }}">Web Calculators</a></li>
             </ul>
           </li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('views.learninghub') }}">Learning Hub</a></li>
-
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('views.home') }}">About Bec Wilson</a></li>
           {% if current_user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('auth.profile') }}">Welcome, {{ current_user.name }}</a>
