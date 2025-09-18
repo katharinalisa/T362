@@ -1,4 +1,8 @@
 How to run this project:
+> pip freeze > requirements.txt
+
+> pip install -r requirements.txt
+ 
 > python primetime_toolkit/chatbot/train.py
 
 > python main.py
