@@ -61,20 +61,20 @@
         },
                 {
             "tag": "noanswer2",
-            "patterns": ["What is the", "why do i", "why is", "whats", "Do i have to do", "i", "do", ",", "."],
+            "patterns": ["What is the", "why do i", "why is", "can you", "how do I access", "whats", "how do i find", "Do i have to do", "where is", "what is", "i", "do", ",", ".", "why"],
             "responses": ["Please give me more info."],
             "context": [""]
         },
         {
             "tag": "stopanswer",
-            "patterns": ["Oh", "wait", "hm", "hmmm", "let me think", "let me see", "let me check", "lets see", "Ill see", "let me have a look", "ok", "okk", "okkk", "okayy", "okay", "okey", "alright", "alriteee", "alrighty", "alrightyyy"],
+            "patterns": ["Oh", "wait", "hm", "hmmm", "let me think", "let me see", "let me check", "lets see", "Ill see", "let me have a look", "ok", "okk", "okkk", "okayy", "okay", "okey", "alright", "alrighty", "alrightyyy"],
             "responses": ["Let me know if you need more assistance."],
             "context": [""]
         },
         {
             "tag": "name1",
-            "patterns": ["What's your name?","Who are you?", "Do you have a name", "your name?"],
-            "responses": ["I'm PrimePal, your personal chatbot. I can help you with navigating this webpage and answering simple questions about it. For more complex questions or inquiries, please reach out to our service support team at {link email address}."],
+            "patterns": ["What's your name?","Who are you?", "Do you have a name", "your name?", "tell me your name"],
+            "responses": ["I'm PrimePal, your personal assistant.", "I'm PrimePal, nice to meet you!", "My name is PrimePal. How can I assist you?"],
             "context": [""]
         },
         {
@@ -97,7 +97,7 @@
         },
         {
             "tag": "Learninghub",
-            "patterns": ["Where do I find the learninghub?", "help me find learninghub", "where is the learninghub" ],
+            "patterns": ["Where do I find the learninghub?", "help me find learninghub", "where is the learninghub", "how do i access learninghub" ],
             "responses": ["You can find the LearningHub at the bottom of the homepage. You can also follow this link: {link to learninghub}"],
             "context": [""]
         },
@@ -193,20 +193,14 @@
         },
         {
             "tag": "calculator2",
-            "patterns": ["Are the calculators better than excel?", "Which option do you recommend", "spreadsheet or calculators", "spreadsheet or web", "web calculator or spreadsheet"],
+            "patterns": ["Are the calculators better than excel?", "Which option do you recommend", "spreadsheet or calculators", "spreadsheet or web", "web calculator or spreadsheet", "spreadsheet better than web calculators"],
             "responses": ["Both options offer distinct advantages over each other. For example, the spreadsheet offers offline functionality, while the web-based calculators are more accessible and user-friendly."],
             "context": [""]
         },
         {
             "tag": "artificial",
-            "patterns": ["How can you work", "How are you so smart", "Why are you so smart", "How are you able to find answers so quickly", "How can you answer so quickly"],
+            "patterns": ["How can you work", "How are you so smart", "Why are you so smart", "How are you able to find answers so quickly", "How can you answer so quickly", "How do you know everything"],
             "responses": ["I am programmed to find the best answers to your questions. This was done by writing complex code that enables me to learn from conversations."],
-            "context": [""]
-        },
-        {
-            "tag": "imortal",
-            "patterns": ["imortal", "Are you imortal?"],
-            "responses": ["As long as I am backed up, I am."],
             "context": [""]
         },
         {
