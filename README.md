@@ -1,3 +1,8 @@
+## How to run this project:
+> python primetime_toolkit/chatbot/train.py
+> python main.py
+
+
 # Technical documentation of the Prime Time Toolkit
 
 ## Overview: 
