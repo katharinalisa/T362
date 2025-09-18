@@ -116,7 +116,7 @@ a:hover { text-decoration: underline; }
   font-family: 'Poppins', sans-serif;
   padding: 10px 20px;
   border: none;
-  border-radius: 15px;
+  border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: background 0.3s, box-shadow 0.3s, color 0.3s;
   display: inline-block;
