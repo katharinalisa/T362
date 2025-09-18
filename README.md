@@ -1,4 +1,4 @@
-## How to run this project:
+How to run this project:
 > python primetime_toolkit/chatbot/train.py
 
 > python main.py
