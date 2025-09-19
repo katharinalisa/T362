@@ -3,13 +3,13 @@
 :root {
   --primary-color: #000000;
   --accent-color: #be9200;
-  --nav-color: #fafffe; 
+  --nav-color: #ffffff; 
   --text-color: #131313;
   --jade: #ecf6f7; 
   --green: #e6f5f3;
   --blue: #e9f0f7;
   --brand: #009687;
-  --soft-bg: #fbfffe;      /* overall background color */
+  --soft-bg: #ffffff;      /* overall background color */
   --heading-color: #0a1f2c;
   --link-color: #009687;
   --darker-blue: #021f2f;
@@ -33,7 +33,6 @@
 .prime-bg {
   position: relative;
   overflow: hidden;
-  width: 100vw;
   margin-left: calc(-50vw + 50%);
   height: 650px;
 }
@@ -56,7 +55,7 @@
   background-color: rgba(255, 255, 255, 0.7);
   z-index: 2;
 }
-.prime-bg > * { position: relative; z-index: 3; }
+.prime-bg > * { position: relative; z-index: 3; width: 100vw; }
 
 /* === Base Typography === */
 body {
@@ -143,14 +142,14 @@ a:hover { text-decoration: underline; }
 /* === Navbar === */
 .navbar {
   background-color: var(--nav-color);
-  padding-top: 1.8rem;
-  padding-bottom: 1.8rem;
+  padding-top: 2.2rem;
+  padding-bottom: 2.2rem;
   position: sticky;   /* works with Bootstrap .sticky-top too */
   top: 0;
-  z-index: 1020;      /* under the sidebar (which is 1300) */
+  z-index: 1020;
 }
 .navbar-brand img { height: 60px; }
-.logo-img { max-height: 30px !important; width: auto; }
+.logo-img { max-height: 25px !important; width: auto; }
 .nav-link { font-weight: 500; font-size: 0.9rem; color: var(--text-color); }
 .navbar-nav { gap: 1rem; }
 .nav-link:hover { color: var(--brand); text-decoration: none; }
@@ -158,8 +157,44 @@ a:hover { text-decoration: underline; }
 .dropdown-menu { background-color: #fefefe; border: 1px solid var(--primary-color); }
 .dropdown-item { font-size: 0.9rem; }
 
+
+
+.back-img {
+  position: relative;
+  background-image: url('/static/img/Bec-Wilson.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 700px;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-top: -28px;
+  overflow: hidden;
+}
+
+.back-img::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 40%, rgba(0,0,0,0.0) 60%),
+    /* Vignette */
+    linear-gradient(rgba(17, 17, 17, 0.15), rgba(11, 11, 11, 0.15)),
+    radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.7) 100%);
+  z-index: 1;
+  pointer-events: none;
+
+}
+
+.back-img > * {
+  position: relative;
+  z-index: 2;
+}
+
+
+
 /* === Sections === */
-.hero-section { padding: 4rem 0; text-align: center; }
+.hero-section { padding: 4rem 0; text-align: center;}
 
 .feature-box {
   background: #fff;
@@ -172,8 +207,7 @@ a:hover { text-decoration: underline; }
 .feature-box h3 { color: var(--brand); font-weight: 600; }
 
 .gradient-section {
-  background: linear-gradient(to right, var(--blue), var(--jade), var(--green));
-  width: 100vw; 
+  background: linear-gradient(to right, var(--blue), var(--jade), var(--green)); 
   margin-left: calc(-50vw + 50%);
   color: #fff;
   margin-top: 1cm;
@@ -205,7 +239,6 @@ a:hover { text-decoration: underline; }
   background: linear-gradient(to right, #111640, #0e2350, #00142d);
   color: #fff;
   margin-top: 1cm;
-  width: 100vw; 
   margin-left: calc(-50vw + 50%);
   padding-top: 0.5rem;
   padding-bottom: 1.8rem;
@@ -443,6 +476,7 @@ input:checked + .slider:before { transform: translateX(24px); }
   .tablinks { scroll-snap-align: start; }
 }
 
+
 /* Tab content defaults */
 .tabcontent {
   display: none;
@@ -459,7 +493,6 @@ body:not(:target) #Summary { display: block; }
       Learning Hub
 -------------------------- */
 
-.full-bleed{ margin-inline: calc(50% - 50vw); width:100vw; }
 .slice.white-bg{ background:#FFFFFF; }
 .white-bg.full-bleed{ background:#FFFFFF; border-radius:0 !important; box-shadow:none !important; }
 

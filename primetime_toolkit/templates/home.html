@@ -2,29 +2,29 @@
 
 {% block content %}
 
-<section class="cta-book full-bleed" style="background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%); padding-top: 40px; padding-bottom: 0px; margin-top: -26px">
-  <div class="cta-inner"><br><br>
+<section class="back-img">
+  <div class="cta-inner"><br><br><br><br>
     <div class="cta-grid align-items-center" style="min-height: 340px;">
       <div>
-      <h1 class="display-1 section-title mb-2" style="font-size:3rem; font-weight:800;">
+      <h1 class="display-1 section-title mb-2" style="font-size:3rem; font-weight:800; color:#ffffff">
         Welcome to The Prime Time Toolkit
       </h1>
-        <p class="cta-text mb-4" style="color:#18191a">
+        <p class="cta-text mb-4" style="color:#ffffff; font-size:19px">
           This website is based on Bec Wilson's book <strong>The Prime Time: 27 Lessons for the new midlife</strong>.<br>
           We are helping Australians aged 47–65 plan smarter for retirement.<br>
-          Take control of your financial future and join thousands of Australians taking the first step toward confident retirement planning.<br><hr>
-          <p>We recommend to start with a self-assessment to identify your financial strengths and areas for improvement.</p>
+          Take control of your financial future and join thousands of Australians taking the first step toward confident retirement planning.<br><hr style="color:#ffffff; border-width: 2px">
+          <p class="cta-text mb-4" style="color:#ffffff; font-size:19px">We recommend to start with a self-assessment to identify your financial strengths and areas for improvement.</p>
         </p><br>
         <a href="{{ url_for('views.assessment_intro') }}" class="btn-login btn-lg shadow"
-          style="font-size:1.5rem; padding: 1rem 2rem;">
+          style="font-size:1.3rem; padding: 1rem 2rem;">
           Start with a Self-Assessment
         </a>
       </div>
-      <div class="book-wrap d-none d-md-block">
+      <!-- <div class="book-wrap d-none d-md-block">
         <img class="book" src="{{ url_for('static', filename='img/primetime_book.png') }}"
              alt="Prime Time book by Bec Wilson" loading="lazy"
              style="max-width:350px; filter: drop-shadow(0 8px 32px rgba(34,60,80,0.18)); border-radius: 12px;">
-      </div>
+      </div> -->
     </div>
   </div><br><br>
 </section>
@@ -40,7 +40,7 @@
           <p style="color:#787878">Receive our Excel tool via email, fill it out offline, and return to upload it for instant analysis.</p>
           <form id="spreadsheetForm" action="{{ url_for('views.send_email') }}" method="POST" class="mb-2">
             <input type="email" name="email" class="form-control mb-2 rounded-pill" placeholder="Your email" required>
-            <button type="submit" class="btn btn-success px-4">Send Spreadsheet</button>
+            <button type="submit" class="btn btn-warning px-4">Send Spreadsheet</button>
             <div id="loadingSpinner" style="display:none; margin-top:10px;">
               <div class="spinner-border text-info" role="status">
                 <span class="visually-hidden">Sending...</span>
@@ -63,7 +63,7 @@
           <span class="fs-1 text-success mb-3"><i class="bi bi-calculator"></i></span>
           <h3>Use Web Calculators</h3>
           <p style="color:#787878">Enter your financial details online using our calculators for instant results.</p><br>
-          <a href="{{ url_for('views.tracker') }}" class="btn btn-success px-4" style="margin-top:19.5px">Start Web Calculators</a>
+          <a href="{{ url_for('views.tracker') }}" class="btn btn-warning px-4" style="margin-top:19.5px">Start Web Calculators</a>
         </div>
       </div>
     </div>
@@ -77,7 +77,7 @@
       <h5>Upload Your Completed Excel Spreadsheet on the Next Page</h5>
       <p class="lead-p mb-3">Go to Dashboards to upload your spreadsheet and view your results.</p>
         <a href="{{ url_for('views.dashboard') }}" class="btn-login btn-lg shadow"
-          style="font-size:1.5rem; padding: 1rem 2rem;">
+          style="font-size:1.3rem; padding: 1rem 2rem;">
           Go to Dashboards
         </a>
   </div><br><br><br>
