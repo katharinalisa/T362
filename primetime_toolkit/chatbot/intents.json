@@ -186,6 +186,12 @@
             "context": [""]
         },
         {
+            "tag": "start",
+            "patterns": ["where do i start", "how do i start", "how to start", "where to start", "how do i begin", "where do i begin", "how to begin", "where to begin", "how do i get started", "where do i get started", "how to get started", "where to get started", "where to start in this webpage", "how do i start in this webpage", "how to start in this webpage", "where to begin in this webpage", "how do i begin in this webpage", "how to begin in this webpage", "where to get started in this webpage", "how do i get started in this webpage", "how to get started in this webpage"],
+            "responses": ["To get started, you can either upload your completed Excel spreadsheet or use the web-based calculators. Choose the option that works best for you! We recommend to do the Self-Assessment first."],
+            "context": [""]
+        },
+        {
             "tag": "calculator",
             "patterns": ["how do I find web calculators", "tell me where is the calculator", "where are the web calculators", "where to find calculators", "how to find calculators", "how do I use the web calculators", "how do I start the web calculators", "how do I access the web calculators", "how do i start web calculators", "find web calculators"],
             "responses": ["At the near top of the homepage, you can find two options to either download and upload the spreadsheet or do the web-based calculators. By clicking on the button 'Use Web Calculators', you will see 13 calculators listed in an overview page.\n Click the start button or click on any calculator you want to start with. Then, on the dashboards page, click the button 'Apply Web Calculators'. This will automatically fill the dashboards based on the values entered in the calculators"],
