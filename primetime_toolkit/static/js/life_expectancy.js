@@ -1,5 +1,5 @@
+
 (() => {
-  // DOM
   const genderEl = document.getElementById('leGender');
   const pctEl = document.getElementById('lePercentile');
   const ageEl = document.getElementById('leAge');
@@ -8,10 +8,10 @@
   const remainingEl = document.getElementById('leRemaining');
   const yearEl = document.getElementById('leYear');
   const resetBtn = document.getElementById('leReset');
+  const saveAndNextBtn = document.getElementById('saveAndNextBtn');
 
-  if (!genderEl || !pctEl || !ageEl) return;
+  if (!genderEl || !pctEl || !ageEl || !expectedEl || !remainingEl || !yearEl) return;
 
-  // Percentile → expected lifespan (years), by gender
   const TABLE = {
     male: {
       '25th percentile': 85,
@@ -34,16 +34,14 @@
   };
 
   const nowYear = () => new Date().getFullYear();
-
-  function toNum(v) {
+  const toNum = v => {
     const n = parseFloat(v);
     return Number.isFinite(n) ? n : NaN;
-  }
-
-  function setVal(el, value) {
+  };
+  const setVal = (el, value) => {
     el.textContent = value ?? '—';
     el.classList.toggle('placeholder', value == null);
-  }
+  };
 
   function compute() {
     const genderKey = (genderEl.value || '').trim().toLowerCase();
@@ -76,13 +74,52 @@
     setVal(yearEl, '—');
   }
 
-  // Events
-  [genderEl, pctEl, ageEl].forEach((el) => {
+  function getEstimateData() {
+    return {
+      gender: genderEl.value,
+      percentile: pctEl.value,
+      current_age: toNum(ageEl.value),
+      expected_lifespan: expectedEl.textContent,
+      years_remaining: remainingEl.textContent,
+      estimated_year_of_death: yearEl.textContent
+    };
+  }
+
+  saveAndNextBtn?.addEventListener('click', () => {
+    const data = getEstimateData();
+    if (!data.gender || !data.percentile || !Number.isFinite(data.current_age) || data.expected_lifespan === '—') {
+      alert("Please complete all fields before saving.");
+      return;
+    }
+
+    fetch('/save-lifeexpectancy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(res => {
+      if (res.status === 401) {
+        alert('Please log in to save your estimate.');
+        window.location.href = '/login';
+        return;
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (data?.redirect) {
+        window.location.href = data.redirect;
+      } else {
+        alert(data?.message || 'Life Expectancy estimate saved!');
+      }
+    })
+    .catch(() => alert('Error saving life expectancy estimate.'));
+  });
+
+  [genderEl, pctEl, ageEl].forEach(el => {
     el.addEventListener('input', compute);
     el.addEventListener('change', compute);
   });
   resetBtn?.addEventListener('click', reset);
 
-  // Init
-  reset();
+  reset(); // initialize on load
 })();

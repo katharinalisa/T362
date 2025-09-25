@@ -97,7 +97,7 @@
         },
         {
             "tag": "Learninghub",
-            "patterns": ["Where do I find the learninghub?", "help me find learninghub", "where is the learninghub", "how do i access learninghub" ],
+            "patterns": ["Where do I find the learninghub?", "help me find learninghub","Where is the Learning Hub", "Where do I find Learning Hub", "where is the learninghub", "where is the leaninghub", "how do i access learninghub", "how do i find learninghub" ],
             "responses": ["You can find the LearningHub at the bottom of the homepage. You can also follow this link: {link to learninghub}"],
             "context": [""]
         },

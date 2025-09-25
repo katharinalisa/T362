@@ -6,9 +6,9 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
 import json
-from primetime_toolkit.models import db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience
-
+from primetime_toolkit.models import db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience, LifeExpectancy
 from .excel_parser import parse_excel
+
 
 views = Blueprint('views', __name__)
 
@@ -288,10 +288,51 @@ def send_email():
 
     return redirect(url_for('views.home'))
 
-#------------------------------------------------------
-# Assets block
 
-# views.py
+
+#----------------------------------------------------
+# Web Calculators -----------------------------------
+#-----------------------------------------------------
+
+
+#--------------------------------------------------
+# Life Expectancy
+
+
+
+###############################################
+#----------------TO DO-------------------------
+
+@views.route('/life')
+@login_required
+def life():
+    return render_template('diagnostic/life_expectancy.html')
+
+
+###############################################
+
+@views.route("/save-lifeexpectancy", methods=["POST"])
+@login_required
+def save_life_expectancy():
+        data = request.get_json()
+        estimate = LifeExpectancy(
+            gender=data["gender"],
+            percentile=data["percentile"],
+            current_age=int(data["current_age"]),
+            expected_lifespan=int(data["expected_lifespan"]),
+            years_remaining=int(data["years_remaining"]),
+            estimated_year_of_death=int(data["estimated_year_of_death"])
+        )
+        db.session.add(estimate)
+        db.session.commit()
+        flash("Life expectancy saved successfully!", "success")
+        return jsonify({'redirect': url_for('views.assets')})
+
+
+
+#------------------------------------------------------
+# Assets
+
 @views.route('/assets')
 @login_required
 def assets():
@@ -314,7 +355,7 @@ def assets():
 def save_assets():
     data = request.get_json()
     assets = data.get('assets', [])
-    # Delete old assets for this user first
+    # Delete old assets
     Asset.query.filter_by(user_id=current_user.id).delete()
     for a in assets:
         asset = Asset(
@@ -331,8 +372,9 @@ def save_assets():
     return jsonify({'redirect': url_for('views.liabilities')})
 
 
-#-------------------------------------------------------
-# ---- Liabilities ----
+#----------------------------------------------------
+# Liabilities
+
 @views.route('/liabilities')
 @login_required
 def liabilities():
@@ -371,8 +413,10 @@ def save_liabilities():
     flash("Liabilities saved successfully!", "success")
     return jsonify({'redirect': url_for('views.income')})
 
+
 #------------------------------------------------------
-# ---- Income ----
+# Income
+
 @views.route('/income')
 @login_required
 def income():
@@ -407,10 +451,13 @@ def save_income():
         ))
     db.session.commit()
     flash("Income saved successfully!", "success")
-    # Next step in your flow → Expenses
     return jsonify({'redirect': url_for('views.expenses')})
+
+
+
 #---------------------------------------------------
-# ---- Expenses ----
+# Expenses
+
 @views.route('/expenses')
 @login_required
 def expenses():
@@ -440,7 +487,7 @@ def save_expenses():
         data = request.get_json() or {}
         expenses = data.get('expenses', [])
 
-        # Clear old ones
+        # Clear old entries
         Expense.query.filter_by(user_id=current_user.id).delete()
 
         for e in expenses:
@@ -459,7 +506,6 @@ def save_expenses():
 
         db.session.commit()
         flash("Expenses saved successfully!", "success")
-        # Next step in flow → Subscriptions
         return jsonify({'redirect': url_for('views.subscriptions')})
 
     except Exception as e:
@@ -468,11 +514,9 @@ def save_expenses():
         return jsonify({'error': str(e)}), 500
     
 
-
-
-
 #---------------------------------------------------
-# ---- Subscriptions ----
+# Subscriptions
+
 @views.route('/subscriptions')
 @login_required
 def subscriptions():
@@ -526,7 +570,8 @@ def save_subscriptions():
 
 
 #---------------------------------------------------
- # ---- Future Budget ----
+# Future Budget
+
 @views.route('/future_budget')
 @login_required
 def future_budget():
@@ -580,7 +625,6 @@ def save_future_budget():
             ))
         db.session.commit()
         flash("Future Budget saved successfully!", "success")
-        # end of chain, stay on same page or redirect to Epic if needed
         return jsonify({'redirect': url_for('views.epic')})
     except Exception as e:
         db.session.rollback()
@@ -590,6 +634,8 @@ def save_future_budget():
 
     
 #---------------------------------------------------
+# Epic Experiences
+
 @views.route('/epic')
 @login_required
 def epic():
@@ -602,10 +648,11 @@ def epic():
             "include": r.include,
         } for r in rows
     ]
-    epic_years = 10  # adjust if you persist years separately
+    epic_years = 10     # HARDCODED (could be dynamic)
     return render_template('diagnostic/epic.html',
                            epic_data=epic_data or [],
                            epic_years=epic_years)
+
 
 @views.route('/save-epic', methods=['POST'])
 @login_required
@@ -613,7 +660,7 @@ def save_epic():
     try:
         payload = request.get_json(silent=True) or {}
         items = payload.get('items', [])
-        # settings = payload.get('settings', {})  # contains {"years": N} if you decide to persist it
+        # settings = payload.get('settings', {})  # contains {"years": N}
 
         EpicExperience.query.filter_by(user_id=current_user.id).delete()
 
@@ -633,20 +680,16 @@ def save_epic():
             ))
         db.session.commit()
         flash('Epic experiences saved successfully!', 'success')
-        # after Epic, your flow goes to Spending Allocation
         return jsonify({'redirect': url_for('views.spending')})
     except Exception as e:
         db.session.rollback()
         import traceback; traceback.print_exc()
         return jsonify({'error': str(e)}), 500
+    
+
+
 #---------------------------------------------------
-
-
-
-@views.route('/life')
-def life():
-    return render_template('diagnostic/life_expectancy.html')
-
+# Need to be completed 
 
 
 @views.route('/calculator')                
@@ -655,12 +698,11 @@ def calculator():
 
 
 
-
-
-
 @views.route('/income_layers')
 def income_layers():
     return render_template('diagnostic/income_layers.html')
+
+
 
 @views.route('/spending')
 def spending():

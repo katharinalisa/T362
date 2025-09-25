@@ -73,7 +73,6 @@
       </div>
     </div>
 
-    <!-- Reference table (matches your sheet) -->
     <div class="table-responsive shadow-sm rounded">
       <table class="table table-bordered mb-0 align-middle">
         <thead>
@@ -92,10 +91,11 @@
         </tbody>
       </table>
     </div>
-
     <div class="small-note mt-2">
       These figures mirror the percentiles shown in your workbook. Results are indicative only.
     </div>
+    <br>
+    <button type="button" id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>  
   </div>
 
   <script src="{{ url_for('static', filename='js/life_expectancy.js') }}"></script>

@@ -24,6 +24,7 @@ class Assessment(db.Model):
         self.q6 = q6
         self.q7 = q7
 
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(150), nullable=False)
@@ -35,7 +36,6 @@ class User(db.Model, UserMixin):
         self.email = email
         self.pword = generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
 
-
     
 class Subscriber(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -43,6 +43,26 @@ class Subscriber(db.Model):
     name = db.Column(db.String(120))
 
 
+#----------------------
+# Web Calculator Models
+
+class LifeExpectancy(db.Model):
+    __tablename__ = 'life_expectancy'
+
+    id = db.Column(db.Integer, primary_key=True)
+    gender = db.Column(db.String(10), nullable=False)  # Male, Female, Couple
+    percentile = db.Column(db.String(20), nullable=False)  # which percentile (50th percentile, 75th percentile etc.'
+    current_age = db.Column(db.Integer, nullable=False)
+
+    expected_lifespan = db.Column(db.Integer, nullable=False)
+    years_remaining = db.Column(db.Integer, nullable=False)
+    estimated_year_of_death = db.Column(db.Integer, nullable=False)
+
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<LifeExpectancy {self.gender}, {self.percentile}, age {self.current_age}>"
+    
 
 class Asset(db.Model):
     id = db.Column(db.Integer, primary_key=True)
