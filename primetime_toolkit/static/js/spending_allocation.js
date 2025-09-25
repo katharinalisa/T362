@@ -5,7 +5,7 @@
   const addBtn   = document.getElementById('addRowBtn');
   const clearBtn = document.getElementById('clearAllBtn');
   const loadBtn  = document.getElementById('loadBtn');
-  const saveBtn  = document.getElementById('saveBtn');
+  const saveAndNextBtn  = document.getElementById('saveAndNextBtn'); 
   const refreshBudgetBtn = document.getElementById('refreshBudgetBtn');
 
   if (!tbody || !rowTpl) return;
@@ -54,7 +54,6 @@
 
   function clearAll() {
     tbody.innerHTML = '';
-    // ✅ Just one blank starter row
     addRow();
     recalcAll();
   }
@@ -127,9 +126,10 @@
         body: JSON.stringify({ items })
       });
       if (!res.ok) throw new Error();
-      alert('Saved.');
+      return true; // success
     } catch {
       alert('Save failed. Check server logs.');
+      throw new Error('Save failed');
     }
   }
 
@@ -147,7 +147,22 @@
     }
   }
 
-  saveBtn?.addEventListener('click', () => { void saveAll(); });
+  // Save and Next: save then redirect
+  saveAndNextBtn?.addEventListener('click', async () => {
+    const original = saveAndNextBtn.textContent;
+    saveAndNextBtn.disabled = true;
+    saveAndNextBtn.textContent = 'Saving…';
+    try {
+      await saveAll();
+      window.location.href = '/super_projection'; // 
+    } catch (e) {
+      // alert already handled in saveAll()
+    } finally {
+      saveAndNextBtn.disabled = false;
+      saveAndNextBtn.textContent = original;
+    }
+  });
+
   loadBtn?.addEventListener('click', () => { void loadAll(); });
 
   // init: load data then budget
