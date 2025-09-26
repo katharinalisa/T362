@@ -6,9 +6,9 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
 import json
-from primetime_toolkit.models import db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience, LifeExpectancy
+from primetime_toolkit.models import db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience
+from sqlalchemy import func, case
 from .excel_parser import parse_excel
-
 
 views = Blueprint('views', __name__)
 
@@ -288,51 +288,10 @@ def send_email():
 
     return redirect(url_for('views.home'))
 
-
-
-#----------------------------------------------------
-# Web Calculators -----------------------------------
-#-----------------------------------------------------
-
-
-#--------------------------------------------------
-# Life Expectancy
-
-
-
-###############################################
-#----------------TO DO-------------------------
-
-@views.route('/life')
-@login_required
-def life():
-    return render_template('diagnostic/life_expectancy.html')
-
-
-###############################################
-
-@views.route("/save-lifeexpectancy", methods=["POST"])
-@login_required
-def save_life_expectancy():
-        data = request.get_json()
-        estimate = LifeExpectancy(
-            gender=data["gender"],
-            percentile=data["percentile"],
-            current_age=int(data["current_age"]),
-            expected_lifespan=int(data["expected_lifespan"]),
-            years_remaining=int(data["years_remaining"]),
-            estimated_year_of_death=int(data["estimated_year_of_death"])
-        )
-        db.session.add(estimate)
-        db.session.commit()
-        flash("Life expectancy saved successfully!", "success")
-        return jsonify({'redirect': url_for('views.assets')})
-
-
-
 #------------------------------------------------------
-# Assets
+# Assets block
 
+# views.py
 @views.route('/assets')
 @login_required
 def assets():
@@ -355,7 +314,7 @@ def assets():
 def save_assets():
     data = request.get_json()
     assets = data.get('assets', [])
-    # Delete old assets
+    # Delete old assets for this user first
     Asset.query.filter_by(user_id=current_user.id).delete()
     for a in assets:
         asset = Asset(
@@ -372,9 +331,8 @@ def save_assets():
     return jsonify({'redirect': url_for('views.liabilities')})
 
 
-#----------------------------------------------------
-# Liabilities
-
+#-------------------------------------------------------
+# ---- Liabilities ----
 @views.route('/liabilities')
 @login_required
 def liabilities():
@@ -413,10 +371,8 @@ def save_liabilities():
     flash("Liabilities saved successfully!", "success")
     return jsonify({'redirect': url_for('views.income')})
 
-
 #------------------------------------------------------
-# Income
-
+# ---- Income ----
 @views.route('/income')
 @login_required
 def income():
@@ -451,13 +407,10 @@ def save_income():
         ))
     db.session.commit()
     flash("Income saved successfully!", "success")
+    # Next step in your flow → Expenses
     return jsonify({'redirect': url_for('views.expenses')})
-
-
-
 #---------------------------------------------------
-# Expenses
-
+# ---- Expenses ----
 @views.route('/expenses')
 @login_required
 def expenses():
@@ -487,7 +440,7 @@ def save_expenses():
         data = request.get_json() or {}
         expenses = data.get('expenses', [])
 
-        # Clear old entries
+        # Clear old ones
         Expense.query.filter_by(user_id=current_user.id).delete()
 
         for e in expenses:
@@ -506,6 +459,7 @@ def save_expenses():
 
         db.session.commit()
         flash("Expenses saved successfully!", "success")
+        # Next step in flow → Subscriptions
         return jsonify({'redirect': url_for('views.subscriptions')})
 
     except Exception as e:
@@ -514,9 +468,11 @@ def save_expenses():
         return jsonify({'error': str(e)}), 500
     
 
-#---------------------------------------------------
-# Subscriptions
 
+
+
+#---------------------------------------------------
+# ---- Subscriptions ----
 @views.route('/subscriptions')
 @login_required
 def subscriptions():
@@ -570,8 +526,7 @@ def save_subscriptions():
 
 
 #---------------------------------------------------
-# Future Budget
-
+ # ---- Future Budget ----
 @views.route('/future_budget')
 @login_required
 def future_budget():
@@ -625,6 +580,7 @@ def save_future_budget():
             ))
         db.session.commit()
         flash("Future Budget saved successfully!", "success")
+        # end of chain, stay on same page or redirect to Epic if needed
         return jsonify({'redirect': url_for('views.epic')})
     except Exception as e:
         db.session.rollback()
@@ -634,8 +590,6 @@ def save_future_budget():
 
     
 #---------------------------------------------------
-# Epic Experiences
-
 @views.route('/epic')
 @login_required
 def epic():
@@ -648,11 +602,10 @@ def epic():
             "include": r.include,
         } for r in rows
     ]
-    epic_years = 10     # HARDCODED (could be dynamic)
+    epic_years = 10  # adjust if you persist years separately
     return render_template('diagnostic/epic.html',
                            epic_data=epic_data or [],
                            epic_years=epic_years)
-
 
 @views.route('/save-epic', methods=['POST'])
 @login_required
@@ -660,7 +613,7 @@ def save_epic():
     try:
         payload = request.get_json(silent=True) or {}
         items = payload.get('items', [])
-        # settings = payload.get('settings', {})  # contains {"years": N}
+        # settings = payload.get('settings', {})  # contains {"years": N} if you decide to persist it
 
         EpicExperience.query.filter_by(user_id=current_user.id).delete()
 
@@ -680,16 +633,20 @@ def save_epic():
             ))
         db.session.commit()
         flash('Epic experiences saved successfully!', 'success')
+        # after Epic, your flow goes to Spending Allocation
         return jsonify({'redirect': url_for('views.spending')})
     except Exception as e:
         db.session.rollback()
         import traceback; traceback.print_exc()
         return jsonify({'error': str(e)}), 500
-    
-
-
 #---------------------------------------------------
-# Need to be completed 
+
+
+
+@views.route('/life')
+def life():
+    return render_template('diagnostic/life_expectancy.html')
+
 
 
 @views.route('/calculator')                
@@ -698,11 +655,12 @@ def calculator():
 
 
 
+
+
+
 @views.route('/income_layers')
 def income_layers():
     return render_template('diagnostic/income_layers.html')
-
-
 
 @views.route('/spending')
 def spending():
@@ -712,3 +670,147 @@ def spending():
 @views.route('/super')
 def super():
     return render_template('diagnostic/super_projection.html')
+
+
+
+
+@views.route('/summary')
+@login_required
+def summary():
+    uid = current_user.id
+
+    # ---------- Assets (included only) ----------
+    assets_total = db.session.query(
+        func.coalesce(func.sum(Asset.amount), 0.0)
+    ).filter(Asset.user_id == uid, Asset.include == True).scalar()
+
+    # ---------- Liabilities ----------
+    liabilities_total = db.session.query(
+        func.coalesce(func.sum(Liability.amount), 0.0)
+    ).filter(Liability.user_id == uid).scalar()
+
+    # ---------- Income: annualise amount * factor(frequency) ----------
+    income_factor = case(
+        (Income.frequency.ilike('weekly'),      52),
+        (Income.frequency.ilike('fortnightly'), 26),
+        (Income.frequency.ilike('monthly'),     12),
+        (Income.frequency.ilike('quarterly'),    4),
+        (Income.frequency.ilike('annually'),     1),
+        else_=12
+    )
+    income_annual = db.session.query(
+        func.coalesce(func.sum(func.coalesce(Income.amount, 0.0) * income_factor), 0.0)
+    ).filter(Income.user_id == uid, Income.include == True).scalar()
+
+    # Income breakdown by source (for donut chart)
+    income_breakdown_rows = db.session.query(
+        Income.source,
+        func.coalesce(func.sum(func.coalesce(Income.amount, 0.0) * income_factor), 0.0)
+    ).filter(Income.user_id == uid, Income.include == True).group_by(Income.source).all()
+    income_breakdown = [
+        {"label": src or 'Other', "value": float(total or 0.0)}
+        for src, total in income_breakdown_rows
+    ]
+
+    # ---------- Subscriptions: prefer stored annual_amount, else amount * factor ----------
+    sub_factor = case(
+        (Subscription.frequency.ilike('weekly'),      52),
+        (Subscription.frequency.ilike('fortnightly'), 26),
+        (Subscription.frequency.ilike('monthly'),     12),
+        (Subscription.frequency.ilike('quarterly'),    4),
+        (Subscription.frequency.ilike('annually'),     1),
+        else_=12
+    )
+    subs_fallback = func.coalesce(Subscription.amount, 0.0) * sub_factor
+    subs_annual = db.session.query(
+        func.coalesce(func.sum(
+            case(
+                (Subscription.annual_amount.isnot(None), Subscription.annual_amount),
+                else_=subs_fallback
+            )
+        ), 0.0)
+    ).filter(Subscription.user_id == uid, Subscription.include == True).scalar()
+
+    # ---------- Spending Allocation (Expense buckets) ----------
+    expense_buckets_sum = db.session.query(
+        func.coalesce(func.sum(
+            func.coalesce(Expense.baseline, 0.0) +
+            func.coalesce(Expense.lifestyle, 0.0) +
+            func.coalesce(Expense.saving_investing, 0.0) +
+            func.coalesce(Expense.health_care, 0.0) +
+            func.coalesce(Expense.other, 0.0)
+        ), 0.0)
+    ).filter(Expense.user_id == uid).scalar()
+
+    # ---------- Epic Experiences: annualise (spread 'Once only' across 10 years) ----------
+    # You can later persist years; using 10 as default to match /epic view.
+    epic_years = 10
+    epic_factor = case(
+        (EpicExperience.frequency.ilike('weekly'),      52),
+        (EpicExperience.frequency.ilike('fortnightly'), 26),
+        (EpicExperience.frequency.ilike('monthly'),     12),
+        (EpicExperience.frequency.ilike('quarterly'),    4),
+        (EpicExperience.frequency.ilike('annually'),     1),
+        (EpicExperience.frequency.ilike('once only'),    0),  # handled below
+        else_=0
+    )
+    # Regular epics (not one-off)
+    epic_regular = db.session.query(
+        func.coalesce(func.sum(func.coalesce(EpicExperience.amount, 0.0) * epic_factor), 0.0)
+    ).filter(EpicExperience.user_id == uid, EpicExperience.include == True,
+             ~EpicExperience.frequency.ilike('once only')).scalar()
+    # One-off epics spread across epic_years
+    epic_oneoff = db.session.query(
+        func.coalesce(func.sum(func.coalesce(EpicExperience.amount, 0.0)), 0.0)
+    ).filter(EpicExperience.user_id == uid, EpicExperience.include == True,
+             EpicExperience.frequency.ilike('once only')).scalar()
+    epic_annual = (epic_regular or 0.0) + ( (epic_oneoff or 0.0) / float(epic_years or 1) )
+
+    # ---------- Future Budget (targets) ----------
+    fb_rows = FutureBudget.query.filter_by(user_id=uid).all()
+    fb_baseline  = sum(float(r.baseline_cost or 0.0) for r in fb_rows)
+    fb_oneoff    = sum(float(r.oneoff_costs or 0.0) for r in fb_rows)
+    fb_epic      = sum(float(r.epic_experiences or 0.0) for r in fb_rows)
+    fb_total     = sum(float(r.total_annual_budget or 0.0) for r in fb_rows)
+
+    # ---------- Totals & KPIs ----------
+    # Treat Subscriptions as recurring bills; Expense buckets cover other living costs; Epics are separate
+    expenses_annual = (subs_annual or 0.0) + (expense_buckets_sum or 0.0) + (epic_annual or 0.0)
+    net_worth       = (assets_total or 0.0) - (liabilities_total or 0.0)
+    surplus_annual  = (income_annual or 0.0) - expenses_annual
+    surplus_monthly = surplus_annual / 12.0
+
+    actual_breakdown = [
+        {"label": "Bills/Subscriptions", "value": float(subs_annual or 0.0)},
+        {"label": "Expenses",             "value": float(expense_buckets_sum or 0.0)},
+        {"label": "Epic Experiences",     "value": float(epic_annual or 0.0)},
+    ]
+
+    budget_targets = {
+        "baseline": float(fb_baseline),
+        "oneoff":   float(fb_oneoff),
+        "epic":     float(fb_epic),
+        "total":    float(fb_total),
+    }
+
+    return render_template(
+        'diagnostic/summary.html',
+        # Point-in-time
+        net_worth=float(net_worth or 0.0),
+        assets_total=float(assets_total or 0.0),
+        liabilities_total=float(liabilities_total or 0.0),
+        # Inflows
+        income_annual=float(income_annual or 0.0),
+        income_breakdown=income_breakdown,
+        # Outflows (actuals)
+        subs_annual=float(subs_annual or 0.0),
+        expense_buckets_sum=float(expense_buckets_sum or 0.0),
+        epic_annual=float(epic_annual or 0.0),
+        expenses_annual=float(expenses_annual or 0.0),
+        actual_breakdown=actual_breakdown,
+        # Budgets (targets)
+        budget_targets=budget_targets,
+        # Surplus
+        surplus_annual=float(surplus_annual or 0.0),
+        surplus_monthly=float(surplus_monthly or 0.0)
+    )
