@@ -24,7 +24,6 @@ class Assessment(db.Model):
         self.q6 = q6
         self.q7 = q7
 
-
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(150), nullable=False)
@@ -36,6 +35,7 @@ class User(db.Model, UserMixin):
         self.email = email
         self.pword = generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
 
+
     
 class Subscriber(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -43,26 +43,6 @@ class Subscriber(db.Model):
     name = db.Column(db.String(120))
 
 
-#----------------------
-# Web Calculator Models
-
-class LifeExpectancy(db.Model):
-    __tablename__ = 'life_expectancy'
-
-    id = db.Column(db.Integer, primary_key=True)
-    gender = db.Column(db.String(10), nullable=False)  # Male, Female, Couple
-    percentile = db.Column(db.String(20), nullable=False)  # which percentile (50th percentile, 75th percentile etc.'
-    current_age = db.Column(db.Integer, nullable=False)
-
-    expected_lifespan = db.Column(db.Integer, nullable=False)
-    years_remaining = db.Column(db.Integer, nullable=False)
-    estimated_year_of_death = db.Column(db.Integer, nullable=False)
-
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def __repr__(self):
-        return f"<LifeExpectancy {self.gender}, {self.percentile}, age {self.current_age}>"
-    
 
 class Asset(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -166,3 +146,26 @@ class EpicExperience(db.Model):
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class SpendingAllocation(db.Model):
+    __tablename__ = 'spending_allocation'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    # e.g., "Lifestyle", "Set-up", "Part-timing", etc.
+    phase = db.Column(db.String(120), nullable=False)
+
+    # Buckets (per-annum amounts)
+    cost_base   = db.Column(db.Float, default=0.0)   # Cost of living baseline
+    cost_life   = db.Column(db.Float, default=0.0)   # Lifestyle discretionary
+    cost_save   = db.Column(db.Float, default=0.0)   # Saving & investing
+    cost_health = db.Column(db.Float, default=0.0)   # Health & care
+    cost_other  = db.Column(db.Float, default=0.0)   # Other
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    @property
+    def total_spending(self) -> float:
+        return (self.cost_base or 0) + (self.cost_life or 0) + (self.cost_save or 0) + (self.cost_health or 0) + (self.cost_other or 0)
