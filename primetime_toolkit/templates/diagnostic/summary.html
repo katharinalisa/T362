@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% include 'diagnostic/subnav.html' %}
+<div class="container py-4">
+  <h1 class="text-center mb-4" style="color:#9E2A2B;font-family:'Playfair Display',serif">
+    Summary
+  </h1>
+
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="p-3 border rounded bg-light">
+        <div class="fw-semibold text-muted">Net Worth</div>
+        <div class="fs-3">{{ "${:,.0f}".format(net_worth|default(0)) }}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="p-3 border rounded bg-light">
+        <div class="fw-semibold text-muted">Assets</div>
+        <div class="fs-3">{{ "${:,.0f}".format(assets_total|default(0)) }}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="p-3 border rounded bg-light">
+        <div class="fw-semibold text-muted">Liabilities</div>
+        <div class="fs-3">{{ "${:,.0f}".format(liabilities_total|default(0)) }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mt-3">
+    <div class="col-md-4">
+      <div class="p-3 border rounded bg-light">
+        <div class="fw-semibold text-muted">Annual Income</div>
+        <div class="fs-3">{{ "${:,.0f}".format(income_annual|default(0)) }}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="p-3 border rounded bg-light">
+        <div class="fw-semibold text-muted">Annual Expenses</div>
+        <div class="fs-3">{{ "${:,.0f}".format(expenses_annual|default(0)) }}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="p-3 border rounded bg-light">
+        <div class="fw-semibold text-muted">Monthly Surplus / Deficit</div>
+        <div class="fs-3 {{ 'text-success' if (surplus_annual|default(0)) >= 0 else 'text-danger' }}">
+          {{ "${:,.0f}".format(surplus_monthly|default(0)) }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a href="/money_tools" class="btn btn-outline-secondary">Back to Tools</a>
+  </div>
+</div>
+{% endblock %}
