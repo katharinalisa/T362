@@ -6,6 +6,7 @@
   const addRowBtn = document.getElementById('addRowBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
+  const saveBtn = document.getElementById('saveFutureBudgetBtn');
 
   const totalYearsEl = document.getElementById('totalYears');
   const lifetimeTotalEl = document.getElementById('lifetimeTotal');
@@ -138,31 +139,60 @@
   tbody.addEventListener('change', onTbodyInput);
   tbody.addEventListener('click', onTbodyClick);
 
-  // ===== Save & Next =====
-  saveAndNextBtn?.addEventListener('click', () => {
+  // ===== Save helpers =====
+  async function saveAll() {
     const budgets = collectRows();
-    fetch('/save-future-budget', {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json' },
-      body: JSON.stringify({ budgets })
-    })
-      .then(res => {
-        if (res.status === 401) {
-          alert('Please log in to save your Future Budget.');
-          window.location.href = '/login';
-          return null;
-        }
-        return res.json();
-      })
-      .then(data => {
-        if (!data) return;
-        if (data.redirect) {
-          window.location.href = data.redirect; // next step (we set this to /epic in the route)
-        } else {
-          alert(data.message || 'Future Budget saved!');
-        }
-      })
-      .catch(() => alert('Error saving Future Budget.'));
+    try {
+      const res = await fetch('/save-future-budget', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify({ budgets })
+      });
+      if (res.status === 401) {
+        alert('Please log in to save your Future Budget.');
+        window.location.href = '/login';
+        return null;
+      }
+      if (!res.ok) throw new Error();
+      return await res.json(); // { message, redirect? }
+    } catch {
+      alert('Error saving Future Budget.');
+      return null;
+    }
+  }
+
+  // Save & Next: redirects only if backend provides `redirect`
+  saveAndNextBtn?.addEventListener('click', async () => {
+    const original = saveAndNextBtn.textContent;
+    saveAndNextBtn.disabled = true;
+    saveAndNextBtn.textContent = 'Saving…';
+    try {
+      const data = await saveAll();
+      if (data?.redirect) {
+        window.location.href = data.redirect; // e.g., /epic or next step
+      } else if (data) {
+        alert(data.message || 'Future Budget saved!');
+      }
+    } finally {
+      saveAndNextBtn.disabled = false;
+      saveAndNextBtn.textContent = original;
+    }
+  });
+
+  // Top Save button: save without navigation
+  saveBtn?.addEventListener('click', async () => {
+    const original = saveBtn.textContent;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+    try {
+      const data = await saveAll();
+      if (data && !data.redirect) {
+        alert(data.message || 'Future Budget saved!');
+      }
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = original;
+    }
   });
 
   // ===== Init (prefill like assets/subscriptions) =====
