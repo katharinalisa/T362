@@ -1,7 +1,6 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<!-- Minimal inline CSS so students can copy/paste and edit easily -->
 <style>
   :root{
     --accent:#2b6cb0;
@@ -275,13 +274,12 @@
   </div>
 </div>
 
-<!-- Minimal JS for sidebar active link tracking -->
 <script>
   (function(){
     const navLinks = document.querySelectorAll('#page-nav a');
     const sections = Array.from(navLinks).map(a => document.querySelector(a.getAttribute('href')));
     function onScroll(){
-      const offset = window.scrollY + 140; // adjust to header height
+      const offset = window.scrollY + 140;
       sections.forEach((sec, i) => {
         if(!sec) return;
         const top = sec.offsetTop;
@@ -293,9 +291,7 @@
       });
     }
     window.addEventListener('scroll', onScroll);
-    // initial highlight
     setTimeout(onScroll,200);
-    // smooth scroll for clicks
     navLinks.forEach(a=>{
       a.addEventListener('click', e=>{
         e.preventDefault();
