@@ -1,0 +1,86 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container py-4">
+  <h1 class="text-center mb-3" style="font-family:'Playfair Display', serif; color:#9E2A2B;">
+    Debt Paydown Planner
+  </h1>
+  <p class="text-center text-muted">
+    Enter principal, annual interest rate and monthly payment to estimate how many years it will take to repay.
+  </p>
+
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
+    <button id="clearAllBtn" class="btn btn-outline-danger" type="button">Clear All</button>
+    <button id="saveDebtBtn" class="btn btn-outline-primary" type="button">Save</button>
+  </div>
+
+  <div class="table-responsive shadow-sm rounded">
+    <table id="debtTable" class="table table-bordered align-middle mb-0">
+      <thead class="table-light text-center">
+        <tr>
+          <th style="min-width:180px;">Debt name</th>
+          <th style="min-width:160px;">Principal ($)</th>
+          <th style="min-width:190px;">Annual interest rate (%)</th>
+          <th style="min-width:190px;">Monthly payment ($)</th>
+          <th style="min-width:150px;">Years to repay</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Starter rows -->
+        <tr class="debt-row">
+          <td><input class="form-control name" value="Mortgage"></td>
+          <td><input class="form-control principal" type="number" min="0" step="0.01" placeholder="$"></td>
+          <td><input class="form-control rate" type="number" step="0.01" value="5.00"></td>
+          <td><input class="form-control payment" type="number" min="0" step="0.01" placeholder="$"></td>
+          <td class="years text-center">-</td>
+        </tr>
+        <tr class="debt-row">
+          <td><input class="form-control name" value="Car loan"></td>
+          <td><input class="form-control principal" type="number" min="0" step="0.01" placeholder="$"></td>
+          <td><input class="form-control rate" type="number" step="0.01" value="6.00"></td>
+          <td><input class="form-control payment" type="number" min="0" step="0.01" placeholder="$"></td>
+          <td class="years text-center">-</td>
+        </tr>
+        <tr class="debt-row">
+          <td><input class="form-control name" value="Credit card"></td>
+          <td><input class="form-control principal" type="number" min="0" step="0.01" placeholder="$"></td>
+          <td><input class="form-control rate" type="number" step="0.01" value="18.00"></td>
+          <td><input class="form-control payment" type="number" min="0" step="0.01" placeholder="$"></td>
+          <td class="years text-center">-</td>
+        </tr>
+        <tr class="debt-row">
+          <td><input class="form-control name" value="Personal loan"></td>
+          <td><input class="form-control principal" type="number" min="0" step="0.01" placeholder="$"></td>
+          <td><input class="form-control rate" type="number" step="0.01" value="10.00"></td>
+          <td><input class="form-control payment" type="number" min="0" step="0.01" placeholder="$"></td>
+          <td class="years text-center">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Row template (hidden) -->
+  <template id="rowTpl">
+    <tr class="debt-row">
+      <td><input class="form-control name" placeholder="Debt name"></td>
+      <td><input class="form-control principal" type="number" min="0" step="0.01" placeholder="$"></td>
+      <td><input class="form-control rate" type="number" step="0.01" placeholder="%"></td>
+      <td><input class="form-control payment" type="number" min="0" step="0.01" placeholder="$"></td>
+      <td class="years text-center">-</td>
+    </tr>
+  </template>
+</div>
+
+  <div class="d-flex justify-content-between align-items-center gap-2 mt-3">
+    <button type="button" id="backBtn" class="btn btn-outline-secondary">Back</button>
+    <div class="ms-auto d-flex gap-2">
+      <button id="saveAndNextBtn" class="btn btn-primary" type="button">Save &amp; Next</button>
+    </div>
+  </div>
+  <br><br>
+
+<script>
+  document.getElementById('backBtn')?.addEventListener('click', () => history.back());
+</script>
+<script src="{{ url_for('static', filename='js/debt_paydown.js') }}"></script>
+{% endblock %}
