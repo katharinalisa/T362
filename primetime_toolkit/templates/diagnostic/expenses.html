@@ -10,6 +10,7 @@
     <div class="d-flex flex-wrap gap-2 mb-3">
       <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
       <button id="clearAllBtn" class="btn btn-outline-danger" type="button">Clear All</button>
+      <button id="saveExpensesBtn" class="btn btn-outline-primary" type="button">Save</button>
     </div>
 
 
@@ -122,10 +123,18 @@
     </td>
   </tr>
 </template>
-  <button type="button" id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>
+  <div class="d-flex justify-content-between align-items-center gap-2 mt-3">
+    <button type="button" id="backBtn" class="btn btn-outline-secondary">Back</button>
+    <div class="ms-auto d-flex gap-2">
+      <button type="button" id="saveAndNextBtn" class="btn btn-primary">Save &amp; Next</button>
+    </div>
+  </div>
   <br><br>
 <script>
   window.expensesPrefill = {{ expenses_data | default([], true) | tojson }};
+</script>
+<script>
+  document.getElementById('backBtn')?.addEventListener('click', () => history.back());
 </script>
 <script src="{{ url_for('static', filename='js/expenses.js') }}"></script>
 {% endblock %}
