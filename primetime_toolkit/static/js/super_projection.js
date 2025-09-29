@@ -174,6 +174,13 @@
   }
 
   async function saveAssumptions() {
+    const btn = $('sp_save');
+    const original = btn?.textContent;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Saving…';
+    }
+
     const a = readAssumptions();
     a.years = Math.max(1, Math.floor(a.endAge - a.startAge + 1));
     try {
@@ -183,9 +190,14 @@
         body: JSON.stringify(a)
       });
       if (!res.ok) throw new Error();
-      alert('Saved.');
+      alert('Super Projection saved successfully!');
     } catch {
       alert('Save failed. Check server logs.');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = original;
+      }
     }
   }
 
