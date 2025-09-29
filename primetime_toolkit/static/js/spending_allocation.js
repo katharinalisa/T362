@@ -6,7 +6,7 @@
   const addBtn   = document.getElementById('addRowBtn');
   const clearBtn = document.getElementById('clearAllBtn');
   const loadBtn  = document.getElementById('loadBtn');
-  const saveBtn  = document.getElementById('saveBtn');
+  const saveBtn  = document.getElementById('saveSpendingBtn');
   const saveAndNextBtn  = document.getElementById('saveAndNextBtn');
   const refreshBudgetBtn = document.getElementById('refreshBudgetBtn');
 
