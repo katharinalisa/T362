@@ -112,7 +112,7 @@ def upload_excel():
     flash("Invalid file format", "error")
     return redirect(request.url)
 
-@views.route('/download-budget')
+@views.route('/download_budget')
 def download_budget():
     from flask import send_from_directory
     file_path = os.path.join(current_app.root_path, 'static', 'files')
