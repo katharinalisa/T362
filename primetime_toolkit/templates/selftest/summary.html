@@ -98,7 +98,7 @@
   <div class="section-title">
     <h3>Category Score Breakdown</h3>
   </div>
-  <p class="muted">Here’s how you scored in each area. ⚠ means this area needs focus (score below 40%).</p>
+  <p class="muted">Here’s how you scored in each area. ⚠ means this area needs focus.</p>
   <table style="width:100%; border-collapse:collapse; margin-top:14px">
     <thead>
       <tr style="border-bottom:1px solid #ddd; text-align:left">
@@ -124,7 +124,7 @@
             {% if score < 40 %}
               ⚠ Needs Focus
             {% elif score < 75 %}
-              🟡 Moderate
+               Moderate
             {% else %}
               ✅ Strong
             {% endif %}
@@ -264,7 +264,7 @@
           <form method="POST" action="{{ url_for('views.send_email') }}">
             <button class="btn btn-primary" type="submit">Email full report</button>
           </form>
-          <a class="btn btn-outline" href="{{ url_for('views.budget') }}">Download Budget Template</a>
+          <a class="btn btn-outline" href="{{ url_for('views.future_budget') }}">Download Budget Template</a>
         </div>
       </section>
 
