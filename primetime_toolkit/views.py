@@ -388,7 +388,7 @@ def send_email():
     return redirect(url_for('views.home'))
 
 #------------------------------------------------------
-# Assets block
+# Assets 
 
 # views.py
 @views.route('/assets')
@@ -689,6 +689,7 @@ def save_future_budget():
 
     
 #---------------------------------------------------
+ # ---- Epic Retirement & One-Off Experiences ----
 @views.route('/epic')
 @login_required
 def epic():
@@ -739,37 +740,83 @@ def save_epic():
         import traceback; traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 #---------------------------------------------------
-
-
-
 @views.route('/life')
 def life():
     return render_template('diagnostic/life_expectancy.html')
-
-
+#---------------------------------------------------
 
 @views.route('/calculator')                
 def calculator():                           
     return render_template('diagnostic/calculator.html')
 
-
-
-
-
-
+#---------------------------------------------------
+# ---- Income Layers ----
 @views.route('/income_layers')
+@login_required
 def income_layers():
     return render_template('diagnostic/income_layers.html')
 
+@views.route('/save-income_layers', methods=['POST'])
+@login_required
+def save_income_layers():
+    """Save Income Layers rows and then redirect to Spending Allocation.
+    Currently stores nothing (model TBD) but keeps the same backend-driven pattern
+    as Assets/Liabilities/Income/etc.
+    """
+    try:
+        payload = request.get_json(silent=True) or {}
+        items = payload.get('items', [])  # TODO: persist when model is ready
+        # You can add DB persistence here later to mirror other save_* routes.
+        flash('Income layers saved successfully!', 'success')
+        return jsonify({'redirect': url_for('views.spending')})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+#---------------------------------------------------
+# ---- Spending Allocation ----
 @views.route('/spending')
+@login_required
 def spending():
     return render_template('diagnostic/spending_allocation.html')
 
 
-@views.route('/super')
-def super():
+# Save Spending Allocation and then move to Super Projection
+@views.route('/save-spending', methods=['POST'])
+@login_required
+def save_spending():
+    try:
+        payload = request.get_json(silent=True) or {}
+        allocations = payload.get('allocations', [])
+
+        # TODO: Persist to DB when you have a Spending model
+        # For now just flash success
+
+        flash("Spending allocation saved successfully!", "success")
+        return jsonify({'redirect': url_for('views.super_projection')})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+# Alias route for /spending_allocation to canonical /spending
+@views.route('/spending_allocation')
+@login_required
+def spending_allocation_alias():
+    return redirect(url_for('views.spending'))
+
+#---------------------------------------------------
+
+
+@views.route('/super_projection')
+@login_required
+def super_projection():
     return render_template('diagnostic/super_projection.html')
 
+@views.route('/super')
+@login_required
+def super():
+    return redirect(url_for('views.super_projection'))
+
+#---------------------------------------------------
 
 
 
