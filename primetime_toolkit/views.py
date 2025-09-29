@@ -182,41 +182,140 @@ def subscribe():
 
     return redirect(url_for('views.home'))
 
-
-#--------------------------------------------------------
 # submit self assessment block
-
 @views.route('/submit-assessment', methods=['POST'])
 def submit_assessment():
-    """Process 24 Likert questions (1–5 each), produce 0–120 total,
-    and classify as Inactive / Reactive / Proactive."""
-    TOTAL_QUESTIONS = 24
+    # 1) Find all question keys like 'q1','q2',... and sort them
+    q_keys = [k for k in request.form.keys() if k.startswith('q')]
+    q_nums = []
+    for k in q_keys:
+        try:
+            n = int(k.lstrip('q'))
+            q_nums.append(n)
+        except Exception:
+            continue
+    q_nums = sorted(set(q_nums))
 
+   
+    if not q_nums:
+        max_q = 24
+        q_nums = list(range(1, max_q + 1))
+    else:
+        max_q = max(q_nums)
+
+    # 2) Compute total_score and max_total from actual answered questions
     total_score = 0
-    for i in range(1, TOTAL_QUESTIONS + 1):
-        answer = request.form.get(f'q{i}')
-        if answer:
+    max_total = 0
+    for n in q_nums:
+        val = request.form.get(f'q{n}')
+        if val is not None and val != '':
             try:
-                total_score += int(answer)
+                iv = int(val)
+                total_score += iv
+                max_total += 5  # Each question is out of 5
             except ValueError:
-                pass
+                continue
+    total_percent = int(round((total_score / max_total) * 100)) if max_total > 0 else 0
 
-    # Map total_score (0–120) to bands
-    if total_score <= 50:
+    # 3) Build category buckets (we need keys: purpose, spending, saving, debt, super, protection)
+
+    if max_q >= 60:
+        cat_ranges = {
+            "purpose": range(1, 11),
+            "spending": range(11, 21),
+            "saving": range(21, 31),
+            "debt": range(31, 41),
+            "super": range(41, 51),
+            "protection": range(51, 61),
+        }
+    else:
+
+        nums = q_nums[:] 
+        L = len(nums)
+        chunks = []
+        base = L // 6
+        rem = L % 6
+        idx = 0
+        for i in range(6):
+            size = base + (1 if i < rem else 0)
+            if size > 0:
+                chunks.append(nums[idx: idx + size])
+            else:
+                chunks.append([])
+            idx += size
+        # assign names in order
+        cat_ranges = {
+            "purpose": chunks[0],
+            "spending": chunks[1],
+            "saving": chunks[2],
+            "debt": chunks[3],
+            "super": chunks[4],
+            "protection": chunks[5],
+        }
+
+    # 4) Calculate category scores as percent (0-100) for each category
+    category_scores = {}
+    for cat, rng in cat_ranges.items():
+        q_list = list(rng)
+        if not q_list:
+            category_scores[cat] = 0
+            continue
+        cat_sum = 0
+        answered = 0
+        for n in q_list:
+            val = request.form.get(f'q{n}')
+            if val is None or val == '':
+                continue
+            try:
+                iv = int(val)
+                cat_sum += iv
+                answered += 1
+            except Exception:
+                continue
+        # If none answered in this category, compute relative to full bucket size
+        bucket_len = len(q_list)
+        max_cat_total = bucket_len * 5 if bucket_len > 0 else 1
+        cat_percent = int(round((cat_sum / max_cat_total) * 100)) if max_cat_total > 0 else 0
+        category_scores[cat] = cat_percent
+
+    category_names = {
+        "purpose": "Purpose & Direction",
+        "spending": "Spending & Cashflow",
+        "saving": "Saving & Emergency",
+        "debt": "Debt & Financial Stress",
+        "super": "Superannuation & Retirement Readiness",
+        "protection": "Protecting & Preparing"
+    }
+
+    key_strengths = [
+        category_names[cat] for cat in cat_ranges.keys()
+        if category_scores.get(cat, 0) >= 75
+    ]
+
+    key_weaknesses = [
+        category_names[cat] for cat in cat_ranges.keys()
+        if category_scores.get(cat, 0) < 40
+    ]
+
+    # 5) Determine band based on overall percent (0-100)
+    if total_percent <= 50:
         band = "Inactive"
-    elif total_score <= 90:
+    elif total_percent <= 89:
         band = "Reactive"
     else:
         band = "Proactive"
 
-    result_message = f"You are classified as {band}."
+    result_message = band  
 
+    # 6) Render template with required context (category_scores always present)
     return render_template(
         'selftest/summary.html',
         result_message=result_message,
         band=band,
-        total_score=total_score,
-    )
+        total_score=total_percent,            
+        category_scores=category_scores,
+        key_strengths=key_strengths,
+        key_weaknesses=key_weaknesses
 
 #-------------------------------------------
 
