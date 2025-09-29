@@ -316,7 +316,7 @@ def submit_assessment():
         category_scores=category_scores,
         key_strengths=key_strengths,
         key_weaknesses=key_weaknesses
-
+    )
 #-------------------------------------------
 
 
