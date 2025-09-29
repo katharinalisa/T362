@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+<!-- Minimal inline CSS so students can copy/paste and edit easily -->
 <style>
   :root{
     --accent:#2b6cb0;
@@ -71,7 +72,7 @@
   <div class="container-summary">
     <div class="main-col">
 
-      <!-- Overall result card -->
+      <!-- Overall result card (refreshed to match personality-style layout) -->
       <section id="overview" style="text-align:center;margin:40px 0">
         <h2 style="font-size:22px;font-weight:600;color:#64748b;margin-bottom:12px">Your Prime Time Readiness Type is:</h2>
         {% if result_message == "Proactive" %}
@@ -292,7 +293,9 @@
       });
     }
     window.addEventListener('scroll', onScroll);
+    // initial highlight
     setTimeout(onScroll,200);
+    // smooth scroll for clicks
     navLinks.forEach(a=>{
       a.addEventListener('click', e=>{
         e.preventDefault();
