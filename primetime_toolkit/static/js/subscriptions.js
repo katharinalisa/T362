@@ -5,10 +5,8 @@
   const rowTemplate = document.getElementById('subsRowTemplate');
   const addRowBtn = document.getElementById('addRowBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
+  const saveBtn = document.getElementById('saveSubscriptionsBtn');
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
-
-  // Total label on the page (change the id here if yours is different)
-  const elTotalSubs = document.getElementById('totalSubscription');
 
   if (!table || !tbody || !rowTemplate) return; // safety
 
@@ -131,31 +129,58 @@
   tbody.addEventListener('change', onTbodyInput);
   tbody.addEventListener('click', onTbodyClick);
 
-  // ====== Save & Next ======
-  saveAndNextBtn?.addEventListener('click', () => {
+  // ====== Save helper ======
+  async function saveAll() {
     const subscriptions = getSubsRows();
-    fetch('/save-subscriptions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ subscriptions })
-    })
-      .then(res => {
-        if (res.status === 401) {
-          alert('Please log in to save your subscriptions.');
-          window.location.href = '/login';
-          return null;
-        }
-        return res.json();
-      })
-      .then(data => {
-        if (!data) return;
-        if (data.redirect) {
-          window.location.href = data.redirect; // usually /future_budget
-        } else {
-          alert(data.message || 'Subscriptions saved!');
-        }
-      })
-      .catch(() => alert('Error saving subscriptions.'));
+    try {
+      const res = await fetch('/save-subscriptions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subscriptions })
+      });
+      if (res.status === 401) {
+        alert('Please log in to save your subscriptions.');
+        window.location.href = '/login';
+        return null;
+      }
+      if (!res.ok) throw new Error();
+      return await res.json(); // { message, redirect? }
+    } catch {
+      alert('Error saving subscriptions.');
+      return null;
+    }
+  }
+
+  saveAndNextBtn?.addEventListener('click', async () => {
+    const original = saveAndNextBtn.textContent;
+    saveAndNextBtn.disabled = true;
+    saveAndNextBtn.textContent = 'Saving…';
+    try {
+      const data = await saveAll();
+      if (data?.redirect) {
+        window.location.href = data.redirect; // e.g., /future_budget or next step
+      } else if (data) {
+        alert(data.message || 'Subscriptions saved!');
+      }
+    } finally {
+      saveAndNextBtn.disabled = false;
+      saveAndNextBtn.textContent = original;
+    }
+  });
+
+  saveBtn?.addEventListener('click', async () => {
+    const original = saveBtn.textContent;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+    try {
+      const data = await saveAll();
+      if (data && !data.redirect) {
+        alert(data.message || 'Subscriptions saved!');
+      }
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = original;
+    }
   });
 
   // ====== Init ======
