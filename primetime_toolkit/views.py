@@ -224,7 +224,7 @@ def submit_assessment():
 
     # 3) Build category buckets (we need keys: purpose, spending, saving, debt, super, protection)
 
-    if max_q >= 60:
+    if max_q >= 24:
         cat_ranges = {
             "purpose": range(1, 11),
             "spending": range(11, 21),
