@@ -112,6 +112,11 @@ def upload_excel():
     flash("Invalid file format", "error")
     return redirect(request.url)
 
+@views.route('/download-budget')
+def download_budget():
+    from flask import send_from_directory
+    file_path = os.path.join(current_app.root_path, 'static', 'files')
+    return send_from_directory(file_path, 'Budget_Template.xlsx', as_attachment=True)
 
 # ---------------------------------------------------------------------
 # Subscribe to newsletter block 
@@ -317,12 +322,14 @@ def submit_assessment():
         key_strengths=key_strengths,
         key_weaknesses=key_weaknesses
     )
+    
+@views.route('/tracker')
+@login_required
+def tracker():
+    return render_template('diagnostic/tracker.html')
 #-------------------------------------------
 
 
-@views.route('/tracker')
-def tracker():
-    return render_template('diagnostic/tracker.html')
 
 @views.route('/submit-tracker', methods=["POST"])
 def submit_tracker():
