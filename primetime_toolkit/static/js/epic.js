@@ -6,7 +6,8 @@
   const yearsEl = document.getElementById('yearsPeriod');
   const addBtn  = document.getElementById('addRowBtn');
   const clearBtn= document.getElementById('clearAllBtn');
-  const saveBtn = document.getElementById('saveBtn');
+  const saveBtn = document.getElementById('saveEpicBtn');
+  const backBtn = document.getElementById('backBtn');
   const loadBtn = document.getElementById('loadBtn');
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
 
@@ -140,9 +141,47 @@
     }
   }
 
-  saveBtn?.addEventListener('click', () => { void saveAll({ redirectAfter: false }); });
-  loadBtn?.addEventListener('click', () => { void loadAll(); });
-  saveAndNextBtn?.addEventListener('click', () => { void saveAll({ redirectAfter: true }); });
+  // Back button
+  backBtn?.addEventListener('click', () => history.back());
+
+  // Save (no navigation)
+  saveBtn?.addEventListener('click', async () => {
+    const original = saveBtn.textContent;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+    try {
+      await saveAll({ redirectAfter: false });
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = original;
+    }
+  });
+
+  // Load
+  loadBtn?.addEventListener('click', async () => {
+    const original = loadBtn.textContent;
+    loadBtn.disabled = true;
+    loadBtn.textContent = 'Loading…';
+    try {
+      await loadAll();
+    } finally {
+      loadBtn.disabled = false;
+      loadBtn.textContent = original;
+    }
+  });
+
+  // Save & Next (redirect if backend provides redirect)
+  saveAndNextBtn?.addEventListener('click', async () => {
+    const original = saveAndNextBtn.textContent;
+    saveAndNextBtn.disabled = true;
+    saveAndNextBtn.textContent = 'Saving…';
+    try {
+      await saveAll({ redirectAfter: true });
+    } finally {
+      saveAndNextBtn.disabled = false;
+      saveAndNextBtn.textContent = original;
+    }
+  });
 
   function initFromPrefill() {
     const pre = (window && Array.isArray(window.epicPrefill)) ? window.epicPrefill : null;
