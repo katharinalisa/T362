@@ -15,7 +15,7 @@
     <div class="d-flex flex-wrap gap-2 mb-3">
       <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
       <button id="clearAllBtn" class="btn btn-outline-danger" type="button">Clear All</button>
-      <button id="refreshBudgetBtn" class="btn btn-outline-secondary" type="button">Refresh Budget</button>
+      <button id="saveSpendingBtn" class="btn btn-outline-primary" type="button">Save</button>
     </div>
 
     <!-- Phase suggestions -->
@@ -67,9 +67,16 @@
     </tr>
   </template>
 
-  <!-- Save and Next -->
-  <button id="saveAndNextBtn" class="btn btn-primary" type="button">Save and Next</button>
+  <div class="d-flex justify-content-between align-items-center gap-2 mt-3">
+    <button type="button" id="backBtn" class="btn btn-outline-secondary">Back</button>
+    <div class="ms-auto d-flex gap-2">
+      <button id="saveAndNextBtn" class="btn btn-primary" type="button">Save &amp; Next</button>
+    </div>
+  </div>
   <br><br>
 
+  <script>
+    document.getElementById('backBtn')?.addEventListener('click', () => history.back());
+  </script>
   <script src="{{ url_for('static', filename='js/spending_allocation.js') }}"></script>
 {% endblock %}
