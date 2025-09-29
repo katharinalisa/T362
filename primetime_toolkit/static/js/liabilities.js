@@ -5,6 +5,7 @@
   const rowTemplate = document.getElementById('liabilityRowTemplate');
   const addRowBtn = document.getElementById('addRowBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
+  const saveBtn = document.getElementById('saveLiabilitiesBtn');
 
   const elTotalLiabilities = document.getElementById('totalLiabilities');
   const elTotalAnnualOutgoings = document.getElementById('totalAnnualOutgoings');
@@ -54,12 +55,15 @@
       const include = row.querySelector('.include-toggle')?.checked;
       if (!include) return;
 
-      const typeStr = (row.querySelector('.type')?.value || '').trim().toLowerCase();
+      const rawType = (row.querySelector('.type')?.value || '').trim();
+      const typeStr = rawType.toLowerCase();
       const amount = parseNum(row.querySelector('.amount')?.value);
       const monthly = parseNum(row.querySelector('.monthly')?.value);
 
       totalAnnualOutgoings += monthly * 12;
-      if (LIABILITY_TYPES.has(row.querySelector('.type')?.value)) totalLiabilities += amount;
+      if (LIABILITY_TYPES.has(rawType) || LIABILITY_TYPES.has(typeStr.charAt(0).toUpperCase() + typeStr.slice(1)) || LIABILITY_TYPES.has(typeStr)) {
+        totalLiabilities += amount;
+      }
     });
 
     setCurrency(elTotalLiabilities, totalLiabilities);
@@ -100,9 +104,6 @@
   tbody.addEventListener('click', handleTbodyClick);
 
 
-
-  const saveAndNextBtn = document.getElementById('saveAndNextBtn');
-
   function getLiabilityRows() {
     return Array.from(tbody.querySelectorAll('tr.liability-row')).map(row => ({
       category: row.querySelector('.category')?.value || '',
@@ -114,29 +115,59 @@
     }));
   }
 
-  saveAndNextBtn?.addEventListener('click', () => {
+  async function saveAll() {
     const liabilities = getLiabilityRows();
-    fetch('/save-liabilities', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ liabilities })
-    })
-    .then(res => {
+    try {
+      const res = await fetch('/save-liabilities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ liabilities })
+      });
       if (res.status === 401) {
         alert('Please log in to save your liabilities.');
         window.location.href = '/login';
-        return;
+        return null;
       }
-      return res.json();
-    })
-    .then(data => {
+      if (!res.ok) throw new Error();
+      return await res.json(); // { message, redirect? }
+    } catch {
+      alert('Error saving liabilities.');
+      return null;
+    }
+  }
+
+  const saveAndNextBtn = document.getElementById('saveAndNextBtn');
+
+  saveAndNextBtn?.addEventListener('click', async () => {
+    const original = saveAndNextBtn.textContent;
+    saveAndNextBtn.disabled = true;
+    saveAndNextBtn.textContent = 'Saving…';
+    try {
+      const data = await saveAll();
       if (data?.redirect) {
         window.location.href = data.redirect;
-      } else {
-        alert(data?.message || 'Liabilities saved!');
+      } else if (data) {
+        alert(data.message || 'Liabilities saved!');
       }
-    })
-    .catch(() => alert('Error saving liabilities.'));
+    } finally {
+      saveAndNextBtn.disabled = false;
+      saveAndNextBtn.textContent = original;
+    }
+  });
+
+  saveBtn?.addEventListener('click', async () => {
+    const original = saveBtn.textContent;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+    try {
+      const data = await saveAll();
+      if (data && !data.redirect) {
+        alert(data.message || 'Liabilities saved!');
+      }
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = original;
+    }
   });
 
 
