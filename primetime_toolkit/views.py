@@ -811,8 +811,7 @@ def spending_allocation_alias():
     return redirect(url_for('views.spending'))
 
 #---------------------------------------------------
-
-
+# ---- Super Projection  ----
 @views.route('/super_projection')
 @login_required
 def super_projection():
@@ -823,6 +822,31 @@ def super_projection():
 def super():
     return redirect(url_for('views.super_projection'))
 
+#---------------------------------------------------
+# ---- Debt Paydown  ----
+@views.route('/debt_paydown')
+@login_required
+def debt_paydown():
+    return render_template('diagnostic/debt_paydown.html')
+
+
+@views.route('/save-debt_paydown', methods=['POST'])
+@login_required
+def save_debt_paydown():
+    try:
+        payload = request.get_json(silent=True) or {}
+        debts = payload.get('debts', [])
+
+        # TODO: save debts to DB when you create a Debt model
+        # Example fields per row: name, principal, rate, payment, years
+
+        flash("Debt paydown data saved successfully!", "success")
+        return jsonify({
+            "message": "Debt paydown data saved successfully!",
+            "redirect": url_for('views.summary')  # or the next step in your flow
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 #---------------------------------------------------
 
 
