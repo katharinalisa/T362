@@ -1,36 +1,326 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<section class="hero-section text-center py-4">
-  <div class="container">
-    <h1>Assessment Summary</h1>
+<style>
+  :root{
+    --accent:#2b6cb0;
+    --muted:#6b7280;
+    --card-bg:#ffffff;
+    --page-bg:#f7f7f7;
+  }
+  .summary-page {
+    background: none;
+    padding: 0;
+  }
+  .container-summary {
+    max-width: 100%;
+    margin: 0;
+    display: flex;
+    gap: 28px;
+    padding: 0;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .main-col{flex:1}
+  .card{background:var(--card-bg);border-radius:10px;padding:22px;box-shadow:0 6px 18px rgba(20,20,40,0.06);margin-bottom:18px}
+  h1.page-title{margin:0 0 8px;font-size:28px}
+  p.lead{color:var(--muted);margin:6px 0 0}
+  .band-badge{display:inline-block;padding:6px 12px;border-radius:999px;font-weight:600}
+  .band-proactive{background:#e6f6ff;color:#075985}
+  .band-reactive{background:#fff7ed;color:#92400e}
+  .band-inactive{background:#fff1f2;color:#9f1239}
+
+  /* Sidebar */
+  .sidebar{width:320px;position:sticky;top:110px;height:calc(100vh - 120px);overflow:auto;padding-left:8px}
+  .side-box{position:relative;background:#fff;border-radius:8px;padding:16px;box-shadow:0 6px 18px rgba(20,20,40,0.06)}
+  .side-box h4{margin:0 0 8px;font-size:14px}
+  .nav-list{list-style:none;padding:0;margin:8px 0 0}
+  .nav-list li{margin:8px 0}
+  .nav-list a{color:#0f172a;text-decoration:none;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+  .nav-list a.active {
+    font-weight: 700;
+    color: #ffffff;
+    background-color: var(--accent);
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
+
+  /* Section styles */
+  section.summary-section{margin-bottom:20px;padding-top:6px}
+  .section-title{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .section-title h3{margin:0;font-size:22px;font-weight:700}
+  .progress-row{display:flex;gap:12px;align-items:center;margin:12px 0}
+  .progress-bar{flex:1;height:10px;background:#eef2f7;border-radius:999px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#2b2d42);border-radius:999px}
+
+  /* CTA area */
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+  .btn{display:inline-block;padding:10px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-outline{background:#fff;border:1px solid #e6e9ee;color:#0f172a}
+
+  /* small */
+  .muted{color:var(--muted);font-size:14px}
+  .meta{font-size:13px;color:#64748b;margin-top:8px}
+  pre.small-code{background:#0f172a;color:#fff;padding:8px;border-radius:6px;font-size:13px;overflow:auto}
+  /* responsive */
+  @media(max-width:980px){.container-summary{flex-direction:column;padding:0 14px}.sidebar{position:static;height:auto;width:100%}}
+</style>
+
+<div class="summary-page">
+  <div class="container-summary">
+    <div class="main-col">
+
+      <!-- Overall result card -->
+      <section id="overview" style="text-align:center;margin:40px 0">
+        <h2 style="font-size:22px;font-weight:600;color:#64748b;margin-bottom:12px">Your Prime Time Readiness Type is:</h2>
+        {% if result_message == "Proactive" %}
+          <h1 style="font-size:48px;color:#075985;margin:0">Proactive</h1>
+          <p class="meta" style="max-width:700px;margin:16px auto 0">
+            You’ve demonstrated a high level of financial awareness and proactive planning. Whether it’s managing your spending, saving regularly, understanding your super, or protecting your future. your habits show consistency and confidence. You are likely someone who takes initiative, seeks out resources, and follows through with actions that align with your long-term goals. While there may still be areas to refine, you’re in a strong position to maintain momentum and build wealth with intention. Keep leveraging your strengths and explore advanced strategies like investment planning, mentoring others, or fine-tuning your retirement vision.
+          </p>
+        {% elif result_message == "Reactive" %}
+          <h1 style="font-size:48px;color:#92400e;margin:0">Reactive</h1>
+          <p class="meta" style="max-width:700px;margin:16px auto 0">
+            You’ve started your financial journey with some strong habits in place. Perhaps you’re budgeting, saving, or beginning to understand your superannuation, but your planning may still be inconsistent or reactive rather than intentional. You might rely on short-term fixes or find it hard to follow through on your plans. That’s okay you’re not starting from scratch. The next step is to focus on clarity, build consistency, and strengthen your financial foundation. With a few practical tools and routines, you can move from reacting to challenges to confidently leading your financial future.
+          </p>
+        {% else %}
+          <h1 style="font-size:48px;color:#9f1239;margin:0">Inactive</h1>
+          <p class="meta" style="max-width:700px;margin:16px auto 0">
+            You’re likely just beginning your financial journey or have not yet built strong habits around saving, budgeting, or planning for the future. You may feel uncertain, avoid financial tasks, or lack confidence in money decisions — and that’s okay. Everyone starts somewhere. This is your opportunity to take small, manageable steps: track your spending, build a basic emergency fund, or explore how superannuation works. Remember, progress is not about perfection. it’s about building one positive habit at a time. With the right support, you can gain control and start moving toward financial independence.
+          </p>
+        {% endif %}
+        <p class="muted" style="margin-top:10px">Total Score: <strong>{{ total_score }}</strong> / 100</p>
+      </section>
+
+      <!-- Detailed sections: Strengths / Gaps / Next steps -->
+      <section class="card summary-section" id="strengths">
+        <div class="section-title">
+          <h3>Key strengths</h3>
+        </div>
+        {% if strength_keys %}
+          <p style="font-size:16px;margin-top:6px;font-weight:500">
+            {% for s in strength_keys %}
+              {% if s.label == "Purpose & Direction" %}
+                You have a clear sense of financial direction and goals.
+              {% elif s.label == "Spending & Cashflow" %}
+                You're in control of your daily finances and spending habits.
+              {% elif s.label == "Saving & Emergency" %}
+                You’ve built strong savings habits and are prepared for the unexpected.
+              {% elif s.label == "Superannuation" %}
+                You're actively engaged with your super and understand its role.
+              {% elif s.label == "Protection" %}
+                You’ve taken steps to safeguard your future through insurance or estate planning.
+              {% elif s.label == "Planning Confidence" %}
+                You feel confident making financial decisions and planning ahead.
+              {% endif %}
+              {% if not loop.last %} <br> {% endif %}
+            {% endfor %}
+          </p>
+        {% endif %}
+        <p class="muted">Based on your answers, here are the areas you scored <strong>75% or higher</strong> in.</p>
+
+  <div style="margin-top:12px">
+    {% set strength_keys = [] %}
+    {% for label, key in [
+      ("Purpose & Direction","purpose"),
+      ("Spending & Cashflow","spending"),
+      ("Saving & Emergency","saving"),
+      ("Superannuation","super"),
+      ("Protection","protection"),
+      ("Planning Confidence","confidence")
+    ] %}
+      {% if category_scores[key]|default(0) >= 75 %}
+        {% set _ = strength_keys.append({'label': label, 'score': category_scores[key]}) %}
+      {% endif %}
+    {% endfor %}
+
+    {% if strength_keys %}
+      {% for s in strength_keys %}
+        <strong>{{ s.label }}</strong>
+        <div class="progress-row" aria-hidden>
+          <div class="progress-bar" role="progressbar" aria-valuenow="{{ s.score }}">
+            <div class="progress-fill" style="width:{{ s.score }}%"></div>
+          </div>
+          <div style="width:56px;text-align:right;font-weight:600">{{ s.score }}%</div>
+          {% if s.label == "Purpose & Direction" %}
+            <p class="muted" style="margin-top:4px;font-size:14px">You have a clear sense of financial direction and goals.</p>
+          {% elif s.label == "Spending & Cashflow" %}
+            <p class="muted" style="margin-top:4px;font-size:14px">You're in control of your daily finances and spending habits.</p>
+          {% elif s.label == "Saving & Emergency" %}
+            <p class="muted" style="margin-top:4px;font-size:14px">You’ve built strong savings habits and are prepared for the unexpected.</p>
+          {% elif s.label == "Superannuation" %}
+            <p class="muted" style="margin-top:4px;font-size:14px">You're actively engaged with your super and understand its role.</p>
+          {% elif s.label == "Protection" %}
+            <p class="muted" style="margin-top:4px;font-size:14px">You’ve taken steps to safeguard your future through insurance or estate planning.</p>
+          {% elif s.label == "Planning Confidence" %}
+            <p class="muted" style="margin-top:4px;font-size:14px">You feel confident making financial decisions and planning ahead.</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p><em>No categories reached the strength threshold of 75% or higher.</em></p>
+    {% endif %}
+  </div>
+      </section>
+
+      <section class="card summary-section" id="gaps">
+        <div class="section-title">
+          <h3>Areas to improve</h3>
+        </div>
+        <p class="muted">We recommend focusing on the categories below — these scored <strong>below 40%</strong> and may have the biggest impact on your retirement confidence.</p>
+
+  {% set gaps = [] %}
+  {% for label, key in [
+    ("Purpose & Direction","purpose"),
+    ("Spending & Cashflow","spending"),
+    ("Saving & Emergency","saving"),
+    ("Superannuation","super"),
+    ("Protection","protection"),
+    ("Planning Confidence","confidence")
+  ] %}
+    {% set score = category_scores[key]|default(0) %}
+    {% if score < 40 %}
+      {% set _ = gaps.append({'label': label, 'key': key, 'score': score}) %}
+    {% endif %}
+  {% endfor %}
+
+  {% if not gaps %}
+    <p><em>No significant weaknesses detected. Great job!</em></p>
+  {% else %}
+    {% for g in gaps %}
+      {% if g.key == 'purpose' %}
+        <p>Purpose & Direction needs attention. It is important to revisit your financial goals and clarify what financial independence means to you. Setting a long-term vision that aligns with your values will help guide your planning and decision-making.</p>
+      {% elif g.key == 'spending' %}
+        <p>Spending & Cashflow needs attention. Tracking your spending and identifying consistent patterns is essential. Building a realistic budget that prioritises essentials and sets achievable savings goals can help improve financial stability.</p>
+      {% elif g.key == 'saving' %}
+        <p>Saving & Emergency requires focus. Aim to save at least three months of essential expenses and establish automatic transfers to build consistency. This approach will strengthen your financial resilience in case of emergencies.</p>
+      {% elif g.key == 'super' %}
+        <p>Superannuation should be reviewed. Checking your account balance, understanding your fees, and considering consolidating multiple super accounts can enhance your retirement savings and reduce unnecessary costs.</p>
+      {% elif g.key == 'protection' %}
+        <p>Protection is an important area to address. Ensure you have basic insurance coverage and review your estate planning documents, such as a will or power of attorney, to safeguard your financial future and that of your loved ones.</p>
+      {% elif g.key == 'confidence' %}
+        <p>Planning Confidence can be improved by learning the basics of money management and setting simple weekly financial tasks. Building confidence in your financial decisions will support long-term success.</p>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+      </section>
+
+      <section class="card summary-section" id="next-steps">
+        <div class="section-title">
+          <h3>Recommended next steps</h3>
+        </div>
+        <p class="muted">Actionable, practical tasks you can complete in the next 30–90 days.</p>
+
+        <ol style="margin-top:12px">
+          <li><strong>Track one month of spending</strong> — use our Budget Planner template to capture where money actually goes.</li>
+          <li><strong>Find your super</strong> — use your super fund lookup and set a quarterly check reminder.</li>
+          <li><strong>Build a starter emergency fund</strong> — set up an automatic transfer (even 2–5% of income helps).</li>
+        </ol>
+
+        <div class="cta-row">
+          <form method="POST" action="{{ url_for('views.send_email') }}">
+            <button class="btn btn-primary" type="submit">Email full report</button>
+          </form>
+          <a class="btn btn-outline" href="{{ url_for('views.download_budget') }}">Download Budget Template</a>
+        </div>
+      </section>
+
+      <section class="card summary-section" id="resources">
+        <div class="section-title">
+          <h3>Selected resources for you</h3>
+        </div>
+        <ul class="muted" style="margin-top:8px">
+          <li><strong>Prime Time Quick Start</strong> — 5 steps to kickstart your plan.</li>
+          <li><strong>Super Starter Guide</strong> — how to check and improve your super.</li>
+          <li><strong>Retirement simulator</strong> — project simple scenarios for 5 & 10 years.</li>
+        </ul>
+      </section>
+
+    </div>
+
+    <!-- Sidebar: sticky nav and short summary -->
+    <aside class="sidebar">
+      <div class="side-box">
+        <h4>Your result</h4>
+        <p style="margin:6px 0 10px">
+          {% if result_message == "Proactive" %}
+            <strong style="color:#075985">{{ result_message }}</strong><br>
+          {% elif result_message == "Reactive" %}
+            <strong style="color:#92400e">{{ result_message }}</strong><br>
+          {% else %}
+            <strong style="color:#9f1239">{{ result_message }}</strong><br>
+          {% endif %}
+          <span class="muted">Score: {{ total_score }}/100</span>
+        </p>
+
+        <div style="margin-top:8px">
+          <strong>On this page</strong>
+          <ul class="nav-list" id="page-nav">
+            <li><a href="#overview">Overview <span>&#9654;</span></a></li>
+            <li><a href="#strengths">Key strengths <span>&#9654;</span></a></li>
+            <li><a href="#gaps">Areas to improve <span>&#9654;</span></a></li>
+            <li><a href="#next-steps">Next steps <span>&#9654;</span></a></li>
+            <li><a href="#resources">Resources <span>&#9654;</span></a></li>
+          </ul>
+        </div>
+
+        <div style="margin-top:14px">
+          <a class="btn btn-outline" href="#" style="display:block;margin-bottom:8px;text-align:center;">Share results</a>
+          <a class="btn btn-outline" href="mailto:?subject=My%20Prime%20Time%20Results&body=Check%20out%20my%20Prime%20Time%20Readiness%20results!" style="display:block;text-align:center;">Email results</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- Minimal JS for sidebar active link tracking -->
+<script>
+  (function(){
+    const navLinks = document.querySelectorAll('#page-nav a');
+    const sections = Array.from(navLinks).map(a => document.querySelector(a.getAttribute('href')));
+    function onScroll(){
+      const offset = window.scrollY + 140; // adjust to header height
+      sections.forEach((sec, i) => {
+        if(!sec) return;
+        const top = sec.offsetTop;
+        const bottom = top + sec.offsetHeight;
+        if(offset >= top && offset < bottom){
+          navLinks.forEach(n => n.classList.remove('active'));
+          navLinks[i].classList.add('active');
+        }
+      });
+    }
+    window.addEventListener('scroll', onScroll);
+    setTimeout(onScroll,200);
+    navLinks.forEach(a=>{
+      a.addEventListener('click', e=>{
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if(target) window.scrollTo({top: target.offsetTop - 80, behavior: 'smooth'});
+      });
+    });
+  })();
+</script>
+
+<section class="cta-book full-bleed" style="background:#e0f2fe;padding:40px 0;margin-top:60px;color:#0f172a;border-radius:16px;">
+  <div class="cta-inner" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;max-width:1140px;margin:0 auto;padding:0 20px">
+    <div style="flex:1 1 460px;min-width:300px">
+      <p style="font-weight:600;color:#047857;margin-bottom:6px">UNLOCK NOW</p>
+      <h2 style="font-size:28px;font-weight:700;margin-bottom:14px">Your journey isn’t complete yet</h2>
+      <p style="font-size:16px;margin-bottom:12px">
+        Explore the full Tick framework and how it supports confident planning in the <em>Prime Time</em> book series.
+        Learn practical steps, case studies, and expert strategies for retirement confidence.
+      </p>
+      <p style="font-size:16px;margin-bottom:20px">
+        It's your next step toward building clarity, control, and confidence in your financial future.
+      </p>
+      <a class="btn btn-cta" href="https://www.primetimers.net/" target="_blank" style="background:#047857;color:white;padding:14px 22px;border-radius:8px;font-weight:600;text-decoration:none;display:inline-block;font-size:16px;">Explore Prime Time &rarr;</a>
+      <p style="font-size:13px;color:#64748b;margin-top:12px">30-day money-back guarantee if you’re not satisfied.</p>
+    </div>
+    <div style="flex:0 1 320px;text-align:center;margin-top:20px">
+      <img src="{{ url_for('static', filename='img/primetime_book.png') }}" alt="Prime Time book by Bec Wilson" loading="lazy" style="max-width:240px;width:100%">
+    </div>
   </div>
 </section>
-  <div class="card shadow-sm mx-auto mt-2" style="max-width: 600px;">
-    <div class="card-body text-center">
-      <h4 class="card-title" style="color: #2B2D42;">Your Retirement Readiness Result</h4>
-      <p class="card-text lead mt-3">{{ result_message }}</p>
-      {% if result_message == "You are classified as Proactive." %}
-        <p class="mt-3 text-success">
-          You have demonstrated a strong understanding of your financial situation and have taken proactive steps towards securing your retirement. Your awareness of superannuation, budgeting, and emergency planning is commendable. Continue to monitor your progress regularly, adjust your goals as needed, and consider exploring advanced strategies to optimize your retirement outcomes.
-        </p>
-      {% elif result_message == "You are classified as Reactive." %}
-        <p class="mt-3 text-warning">
-          You are making positive strides in managing your finances, though there are areas that require further attention. You have some knowledge of key financial concepts but may benefit from setting clearer goals, establishing a detailed budget, and reviewing your superannuation options more thoroughly. Taking these steps will help you gain greater control and confidence in your retirement planning journey.
-        </p>
-      {% elif result_message == "You are classified as Inactive." %}
-        <p class="mt-3 text-danger">
-          You are at the early stages of your retirement planning and may not have fully engaged with important financial aspects yet. This is a crucial time to start tracking your expenses, learn about your superannuation, and consider how much income you will need in retirement. Taking small but consistent actions now will build a solid foundation for your financial future.
-        </p>
-      {% endif %}
-    </div>
-  </div>
-  <div class="card shadow-sm mx-auto mt-2" style="max-width: 600px;">
-    <div class="card-footer text-muted text-center">
-      <p>Thank you for completing the assessment! For a full summary of your assessment, please click the below button to receive an email from us.</p>
-      <form method="POST" action="/send-email">
-  <button class="btn btn-primary" type="submit">Send Email</button>
-</form>
-    </div>
-  </div>
 {% endblock %}
