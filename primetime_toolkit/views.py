@@ -326,7 +326,7 @@ def submit_assessment():
 @views.route('/tracker')
 @login_required
 def tracker():
-    return render_template('diagnostic/tracker.html')
+    return render_template('calculators/tracker.html')
 #-------------------------------------------
 
 
@@ -412,7 +412,7 @@ def assets():
         }
         for a in user_assets
     ]
-    return render_template('diagnostic/assets.html', assets_data=assets_data)
+    return render_template('calculators/assets.html', assets_data=assets_data)
 
 
 @views.route('/save-assets', methods=['POST'])
@@ -454,7 +454,7 @@ def liabilities():
         }
         for l in user_liabilities
     ]
-    return render_template('diagnostic/liabilities.html', liabilities_data=liabilities_data)
+    return render_template('calculators/liabilities.html', liabilities_data=liabilities_data)
 
 @views.route('/save-liabilities', methods=['POST'])
 @login_required
@@ -493,7 +493,7 @@ def income():
         }
         for inc in user_incomes
     ]
-    return render_template('diagnostic/income.html', income_data=income_data)
+    return render_template('calculators/income.html', income_data=income_data)
 
 
 @views.route('/save-income', methods=['POST'])
@@ -535,7 +535,7 @@ def expenses():
         }
         for e in user_expenses
     ]
-    return render_template('diagnostic/expenses.html',
+    return render_template('calculators/expenses.html',
                            expenses_data=expenses_data or [])
 
 
@@ -593,7 +593,7 @@ def subscriptions():
             "annual_amount": r.annual_amount,
         } for r in rows
     ]
-    return render_template('diagnostic/subscriptions.html',
+    return render_template('calculators/subscriptions.html',
                            subscriptions_data=subscriptions_data or [])
 
 
@@ -648,7 +648,7 @@ def future_budget():
             "total_annual_budget": r.total_annual_budget,
         } for r in rows
     ]
-    return render_template('diagnostic/future_budget.html',
+    return render_template('calculators/future_budget.html',
                            future_budget_data=future_budget_data or [])
 
 
@@ -710,7 +710,7 @@ def epic():
         } for r in rows
     ]
     epic_years = 10  # adjust if you persist years separately
-    return render_template('diagnostic/epic.html',
+    return render_template('calculators/epic.html',
                            epic_data=epic_data or [],
                            epic_years=epic_years)
 
@@ -749,19 +749,19 @@ def save_epic():
 #---------------------------------------------------
 @views.route('/life')
 def life():
-    return render_template('diagnostic/life_expectancy.html')
+    return render_template('calculators/life_expectancy.html')
 #---------------------------------------------------
 
 @views.route('/calculator')                
 def calculator():                           
-    return render_template('diagnostic/calculator.html')
+    return render_template('calculators/calculator.html')
 
 #---------------------------------------------------
 # ---- Income Layers ----
 @views.route('/income_layers')
 @login_required
 def income_layers():
-    return render_template('diagnostic/income_layers.html')
+    return render_template('calculators/income_layers.html')
 
 @views.route('/save-income_layers', methods=['POST'])
 @login_required
@@ -784,7 +784,7 @@ def save_income_layers():
 @views.route('/spending')
 @login_required
 def spending():
-    return render_template('diagnostic/spending_allocation.html')
+    return render_template('calculators/spending_allocation.html')
 
 
 # Save Spending Allocation and then move to Super Projection
@@ -815,7 +815,7 @@ def spending_allocation_alias():
 @views.route('/super_projection')
 @login_required
 def super_projection():
-    return render_template('diagnostic/super_projection.html')
+    return render_template('claculators/super_projection.html')
 
 @views.route('/super')
 @login_required
@@ -827,7 +827,7 @@ def super():
 @views.route('/debt_paydown')
 @login_required
 def debt_paydown():
-    return render_template('diagnostic/debt_paydown.html')
+    return render_template('calculators/debt_paydown.html')
 
 
 @views.route('/save-debt_paydown', methods=['POST'])
@@ -971,7 +971,7 @@ def summary():
     }
 
     return render_template(
-        'diagnostic/summary.html',
+        'calculators/summary.html',
         # Point-in-time
         net_worth=float(net_worth or 0.0),
         assets_total=float(assets_total or 0.0),

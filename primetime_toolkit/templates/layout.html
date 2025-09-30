@@ -132,69 +132,6 @@
           height: 1px;
           overflow: hidden;
       }
-      .navbar-custom {
-          background: linear-gradient(90deg, #021f2f, #009687);
-          padding: 0.75rem 1rem;
-      }
-      .navbar-custom .nav-link, .navbar-custom .navbar-brand {
-          color: #fff !important;
-          font-weight: 500;
-      }
-      .navbar-custom .nav-link:hover {
-          color: #be9200 !important;
-      }
-      .navbar-custom .dropdown-menu {
-          border-radius: 8px;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      }
-      /* === Mega menu like the screenshot === */
-      .mega-menu {
-        min-width: 480px;
-        max-width: 560px;
-        border: 0;
-        padding: 0.75rem;
-        border-radius: 16px;
-        box-shadow: 0 10px 28px rgba(0,0,0,0.25);
-        background: #ffffff;
-      }
-      .mega-item {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.85rem 0.75rem;
-        border-radius: 12px;
-        text-decoration: none;
-        transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
-        color: #0b1e2d;
-      }
-      .mega-item:hover { 
-        background: #f6f6f6; 
-        transform: translateY(-1px);
-        box-shadow: 0 4px 10px rgba(0,0,0,.06) inset;
-      }
-      .mega-item .title { font-weight: 700; font-size: 1.05rem; }
-      .mega-item .desc  { font-size: .9rem; color: #51697A; margin: .15rem 0 0; }
-      .mega-item .thumb {
-        flex: 0 0 140px; height: 86px; border-radius: 10px; overflow: hidden;
-        background: linear-gradient(135deg, #173451, #009687);
-      }
-      .mega-item .thumb img { width: 100%; height: 100%; object-fit: cover; display:block; }
-
-      /* underline accent on active/hovered top-level link */
-      .navbar-custom .nav-link {
-        position: relative;
-      }
-      .navbar-custom .nav-link::after {
-        content: ""; position: absolute; left: .75rem; right: .75rem; bottom: -12px; height: 3px;
-        background: transparent; border-radius: 3px; transition: background .2s ease;
-      }
-      .navbar-custom .nav-link:hover::after,
-      .navbar-custom .nav-item.show > .nav-link::after { background: #be9200; }
-
-      /* open dropdown on hover for desktops only, keep click on mobile */
-      @media (min-width: 992px) {
-        .navbar .dropdown:hover > .dropdown-menu { display: block; }
-      }
   </style>
   
   <meta charset="UTF-8" />
