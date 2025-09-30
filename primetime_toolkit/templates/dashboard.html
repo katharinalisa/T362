@@ -190,8 +190,8 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="col-md-6">
       <div class="dashboard-chart p-3 text-center"
         style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">???</h5>
-        <canvas id="???" style="max-width: 100%; max-height: 320px;"></canvas>
+        <h5 class="mb-2">Income vs Expenses</h5>
+        <canvas id="incomeExpensesChart" style="max-width: 100%; max-height: 220px;"></canvas>
       </div>
     </div>
   </div>
@@ -276,48 +276,27 @@ var superGrowthChart = new Chart(ctxSuperGrowth, {
   options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
 });
 
-  var ctxDrawdown = document.getElementById('drawdownChart').getContext('2d');
-  var drawdownChart = new Chart(ctxDrawdown, {
-    type: 'line',
-    data: { labels: ['Retirement Drawdown'], datasets: [{ label: 'Retirement Drawdown', data: [dashboardData.drawdown_over_time], backgroundColor: 'rgba(26,127,140,0.15)', borderColor: '#1a7f8c', borderWidth: 2 }] },
-    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-  });
-
-  /*var ctxSavingsOverTime = document.getElementById('savingsOverTimeChart').getContext('2d');
-  var savingsOverTimeChart = new Chart(ctxSavingsOverTime, {
-    type: 'pie',
-    data: {
-      labels: [dashboardData.savings_over_time.months],
-      datasets: [{
-        label: 'Savings Over Time',
-        data: [dashboardData.savings_over_time.values],
-        backgroundColor: ['#1a7f8c', '#3bb3c3', '#ffe066', '#dc3545', '#6c757d']
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: true } }
-    }
-  });*/
-
-  // Additional charts
-  /*var ctxExpenseBreakdown = document.getElementById('expenseBreakdownChart').getContext('2d');
-  var expenseBreakdownChart = new Chart(ctxExpenseBreakdown, {
-    type: 'pie',
-    data: {
-      labels: [],
-      datasets: [{
-        label: 'Expenses',
-        data: [dashboardData.expenses],
-        backgroundColor: ['#1a7f8c', '#3bb3c3', '#ffe066', '#dc3545', '#6c757d']
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: true } }
+// Expense Breakdown Chart
+/*var ctxExpenseBreakdown = document.getElementById('expenseBreakdownChart').getContext('2d');
+var expenseBreakdownChart = new Chart(ctxExpenseBreakdown, {
+  type: 'bar',
+  data: {
+    labels: expenseLabels,
+    datasets: [{
+      label: 'Expenses',
+      data: expenseValues,
+      backgroundColor: '#dc3545'
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true },
+      x: { title: { display: true, text: 'Expense Category' } }
     }
   }
-});
+});*/
 
 // Drawdown Over Time Chart
 var ctxDrawdownOverTime = document.getElementById('drawdownChart').getContext('2d');
@@ -351,6 +330,21 @@ var incomeSourcesChart = new Chart(ctxIncomeSources, {
     }]
   },
   options: { responsive: true, plugins: { legend: { display: true } } }
+});
+
+// Income vs EXpenses Chart
+var ctxIncomeExpenses = document.getElementById('incomeExpensesChart').getContext('2d');
+var incomeExpensesChart = new Chart(ctxIncomeExpenses, {
+  type: 'bar',
+  data: {
+    labels: ['Income', 'Expenses'],
+    datasets: [{
+      label: 'Amount',
+      data: [dashboardData.income.total, dashboardData.expenses.total],
+      backgroundColor: ['#3bb3c3', '#1a7f8c']
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
 });
 
 // something
