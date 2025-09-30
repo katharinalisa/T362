@@ -1,57 +1,327 @@
 {% extends 'layout.html' %}
 {% block content %}
-{% include 'diagnostic/subnav.html' %}
 <div class="container py-4">
-  <h1 class="text-center mb-4" style="color:#9E2A2B;font-family:'Playfair Display',serif">
+  <h1 class="text-center mb-4 no-print" style="color:#9E2A2B;font-family:'Playfair Display',serif">
     Summary
   </h1>
+  <div class="d-flex justify-content-end gap-2 mb-3 no-print">
+    <button id="printSummaryBtn" class="btn btn-success">Download PDF</button>
+  </div>
 
-  <div class="row g-3">
-    <div class="col-md-4">
-      <div class="p-3 border rounded bg-light">
-        <div class="fw-semibold text-muted">Net Worth</div>
-        <div class="fs-3">{{ "${:,.0f}".format(net_worth|default(0)) }}</div>
-      </div>
+  <!-- KPI grid (2 x 3) -->
+  <style>
+    .kpi-card{border:1px solid #e5e7eb;border-radius:12px;padding:16px;background:#fff;display:flex;gap:14px;align-items:center;height:100%}
+    .kpi-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e6f0e6;color:#2f6b2f;font-size:26px;flex:0 0 56px}
+    .kpi-title{margin:0;font-weight:600;color:#6b7280;font-size:14px}
+    .kpi-value{margin:0;color:#2f6b2f;font-weight:800;letter-spacing:.5px;font-size:32px;line-height:1}
+    .kpi-sub{margin:0;color:#9ca3af;font-size:12px}
+    .kpi-danger .kpi-value{color:#b91c1c}
+  </style>
+
+  <!-- Print styles for PDF export -->
+  <style>
+    @media print {
+      @page { size: A4 portrait; margin: 10mm; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      /* Hide non-essential UI */
+      nav, .no-print, footer { display:none !important; }
+      .no-print, a.btn { display:none !important; }
+
+      /* Container & spacing tweaks */
+      .container { max-width: 100% !important; padding: 0 !important; }
+      .row { --bs-gutter-x: .6rem; --bs-gutter-y: .6rem; }
+      .mt-1, .mt-2, .mt-3, .mt-4, .mb-1, .mb-2, .mb-3, .mb-4 { margin-top: .3rem !important; margin-bottom: .3rem !important; }
+      h1 { margin: 0 0 .5rem 0 !important; font-size: 20px !important; }
+
+      /* Print header */
+      .print-header { display:flex !important; align-items:center; justify-content:space-between; margin-bottom:8px; padding-bottom:6px; border-bottom:2px solid #e5e7eb; }
+      .print-brand { display:flex; align-items:center; gap:8px; }
+      .print-title { font-size:18px; font-weight:700; color:#9E2A2B; margin:0; }
+
+      /* KPI cards downsized */
+      .kpi-card { border:1px solid #d1d5db; border-radius:10px; padding:10px; gap:10px; }
+      .kpi-icon { width:44px; height:44px; font-size:20px; background:#e6f0e6 !important; }
+      .kpi-title { font-size:12px; }
+      .kpi-value { font-size:24px; }
+      .kpi-sub { display:none; }
+
+      /* Force a 3-column grid on print */
+      .col-lg-4 { width: 33.3333% !important; float:left !important; }
+      .col-md-6, .col-12 { width: 33.3333% !important; float:left !important; }
+      .row::after { content:""; display:block; clear:both; }
+
+      .print-footer { display:block !important; }
+    }
+    /* default: hide print header on screen */
+    .print-header { display:none; }
+    .print-footer { display:none; }
+  </style>
+
+  <div class="print-header" style="flex-direction:column; align-items:center; text-align:center;">
+    <div class="print-brand" style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+      <img src="{{ url_for('static', filename='img/primetime_image.png') }}" alt="PrimeTime Toolkit" style="height:32px;"/>
     </div>
-    <div class="col-md-4">
-      <div class="p-3 border rounded bg-light">
-        <div class="fw-semibold text-muted">Assets</div>
-        <div class="fs-3">{{ "${:,.0f}".format(assets_total|default(0)) }}</div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="p-3 border rounded bg-light">
-        <div class="fw-semibold text-muted">Liabilities</div>
-        <div class="fs-3">{{ "${:,.0f}".format(liabilities_total|default(0)) }}</div>
-      </div>
+    <div style="width:100%; margin-top:6px;">
+      <h2 class="print-title" style="text-align:center;">Financial Statement</h2>
     </div>
   </div>
 
-  <div class="row g-3 mt-3">
-    <div class="col-md-4">
-      <div class="p-3 border rounded bg-light">
-        <div class="fw-semibold text-muted">Annual Income</div>
-        <div class="fs-3">{{ "${:,.0f}".format(income_annual|default(0)) }}</div>
+  <div class="row g-3 mt-1">
+    <!-- Total Assets -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="kpi-card">
+        <div class="kpi-icon" aria-hidden="true">📦</div>
+        <div>
+          <p class="kpi-title mb-1">Total Assets</p>
+          <p class="kpi-value mb-1">{{ "${:,.0f}".format(assets_total|default(0)) }}</p>
+          <p class="kpi-sub">annual snapshot</p>
+        </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="p-3 border rounded bg-light">
-        <div class="fw-semibold text-muted">Annual Expenses</div>
-        <div class="fs-3">{{ "${:,.0f}".format(expenses_annual|default(0)) }}</div>
+
+    <!-- Revenue / Income -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="kpi-card">
+        <div class="kpi-icon" aria-hidden="true">💰</div>
+        <div>
+          <p class="kpi-title mb-1">Annual Income</p>
+          <p class="kpi-value mb-1">{{ "${:,.0f}".format(income_annual|default(0)) }}</p>
+          <p class="kpi-sub">per year</p>
+        </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="p-3 border rounded bg-light">
-        <div class="fw-semibold text-muted">Monthly Surplus / Deficit</div>
-        <div class="fs-3 {{ 'text-success' if (surplus_annual|default(0)) >= 0 else 'text-danger' }}">
-          {{ "${:,.0f}".format(surplus_monthly|default(0)) }}
+
+    <!-- Total Tax Paid (use Expenses as proxy if tax not tracked) -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="kpi-card">
+        <div class="kpi-icon" aria-hidden="true">🧾</div>
+        <div>
+          <p class="kpi-title mb-1">Annual Expenses</p>
+          <p class="kpi-value mb-1">{{ "${:,.0f}".format(expenses_annual|default(0)) }}</p>
+          <p class="kpi-sub">per year</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deposits (Net Worth proxy) -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="kpi-card">
+        <div class="kpi-icon" aria-hidden="true">🏦</div>
+        <div>
+          <p class="kpi-title mb-1">Net Worth</p>
+          <p class="kpi-value mb-1">{{ "${:,.0f}".format(net_worth|default(0)) }}</p>
+          <p class="kpi-sub">assets − liabilities</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loans / Liabilities -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="kpi-card">
+        <div class="kpi-icon" aria-hidden="true">🏛️</div>
+        <div>
+          <p class="kpi-title mb-1">Liabilities</p>
+          <p class="kpi-value mb-1">{{ "${:,.0f}".format(liabilities_total|default(0)) }}</p>
+          <p class="kpi-sub">current total</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Net Income / Surplus Monthly -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="kpi-card {{ 'kpi-danger' if (surplus_annual|default(0)) < 0 else '' }}">
+        <div class="kpi-icon" aria-hidden="true">🐷</div>
+        <div>
+          <p class="kpi-title mb-1">Monthly Surplus / Deficit</p>
+          <p class="kpi-value mb-1">{{ "${:,.0f}".format(surplus_monthly|default(0)) }}</p>
+          <p class="kpi-sub">income − expenses ÷ 12</p>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="mt-4">
-    <a href="/money_tools" class="btn btn-outline-secondary">Back to Tools</a>
+  <!-- Category totals only (KPI style) -->
+  <div class="row g-3 mt-3">
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="kpi-card">
+        <div class="kpi-icon" aria-hidden="true">💰</div>
+        <div>
+          <p class="kpi-title mb-1">Total Income</p>
+          <p class="kpi-value mb-1">{{ "${:,.0f}".format(income_annual|default(0)) }}</p>
+          <p class="kpi-sub">per year</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="kpi-card">
+        <div class="kpi-icon" aria-hidden="true">🧾</div>
+        <div>
+          <p class="kpi-title mb-1">Total Expenses</p>
+          <p class="kpi-value mb-1">{{ "${:,.0f}".format(expenses_annual|default(0)) }}</p>
+          <p class="kpi-sub">per year</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="kpi-card">
+        <div class="kpi-icon" aria-hidden="true">📊</div>
+        <div>
+          <p class="kpi-title mb-1">Total Balance</p>
+          <p class="kpi-value mb-1">{{ "${:,.0f}".format((income_annual|default(0)) - (expenses_annual|default(0))) }}</p>
+          <p class="kpi-sub">income − expenses</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Savings Calculator (compact widget) -->
+  <div class="card mt-4 no-print">
+    <div class="card-body">
+      <div class="d-flex align-items-center mb-3">
+        <h5 class="mb-0">Savings Calculator</h5>
+        <a href="{{ url_for('views.calculator') }}" class="btn btn-link ms-auto p-0">
+          Open full calculator →
+        </a>
+      </div>
+
+      <div class="row g-3 align-items-center">
+        <div class="col-md-4 text-center">
+          <img src="{{ url_for('static', filename='img/pig.jpg') }}" alt="Piggy bank" width="140" height="auto" style="max-width:100%; height:auto;"/>
+          <div class="text-muted mt-2 small">End balance</div>
+          <div id="sumPigOut" class="fs-4 fw-semibold">$0.00</div>
+        </div>
+
+        <div class="col-md-8">
+          <form id="sumPigForm" class="row g-2">
+            <div class="col-6">
+              <label class="form-label mb-1">Starting balance</label>
+              <input id="sumPigStart" type="number" class="form-control form-control-sm" value="10000" min="0" step="0.01">
+            </div>
+            <div class="col-6">
+              <label class="form-label mb-1">Monthly contribution</label>
+              <input id="sumPigMonthly" type="number" class="form-control form-control-sm" value="1500" min="0" step="0.01">
+            </div>
+            <div class="col-4">
+              <label class="form-label mb-1">Period</label>
+              <input id="sumPigPeriod" type="number" class="form-control form-control-sm" value="2" min="0" step="1">
+            </div>
+            <div class="col-4">
+              <label class="form-label mb-1 d-block">Unit</label>
+              <div class="btn-group btn-group-sm" role="group">
+                <input type="radio" class="btn-check" name="sumPigUnit" id="sumPigYears" value="years" checked>
+                <label class="btn btn-outline-secondary" for="sumPigYears">Years</label>
+                <input type="radio" class="btn-check" name="sumPigUnit" id="sumPigMonths" value="months">
+                <label class="btn btn-outline-secondary" for="sumPigMonths">Months</label>
+              </div>
+            </div>
+            <div class="col-4">
+              <label class="form-label mb-1">Annual rate (%)</label>
+              <input id="sumPigRate" type="number" class="form-control form-control-sm" value="12" step="0.01">
+            </div>
+            <div class="col-12">
+              <button class="btn btn-success btn-sm">Calculate</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const btn = document.getElementById('downloadSummaryBtn');
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        const rows = [];
+        const fmt = (n) => {
+          try { return new Intl.NumberFormat(undefined, { style:'currency', currency:'AUD' }).format(Number(n||0)); }
+          catch { return `$${Number(n||0).toFixed(2)}`; }
+        };
+        const today = new Date().toISOString().slice(0,10);
+        const data = {
+          Brand: "PrimeTime Toolkit",
+          Date: today,
+          'Total Assets': {{ (assets_total|default(0))|float }},
+          'Annual Income': {{ (income_annual|default(0))|float }},
+          'Annual Expenses': {{ (expenses_annual|default(0))|float }},
+          'Net Worth': {{ (net_worth|default(0))|float }},
+          'Liabilities': {{ (liabilities_total|default(0))|float }},
+          'Monthly Surplus/Deficit': {{ (surplus_monthly|default(0))|float }},
+          'Total Income': {{ (income_annual|default(0))|float }},
+          'Total Expenses': {{ (expenses_annual|default(0))|float }},
+          'Total Balance (Income - Expenses)': {{ ((income_annual|default(0)) - (expenses_annual|default(0)))|float }}
+        };
+        // Header
+        rows.push(Object.keys(data).join(','));
+        // Values (currency formatted where appropriate)
+        rows.push([
+          data['Date'],
+          fmt(data['Total Assets']),
+          fmt(data['Annual Income']),
+          fmt(data['Annual Expenses']),
+          fmt(data['Net Worth']),
+          fmt(data['Liabilities']),
+          fmt(data['Monthly Surplus/Deficit']),
+          fmt(data['Total Income']),
+          fmt(data['Total Expenses']),
+          fmt(data['Total Balance (Income - Expenses)'])
+        ].join(','));
+
+        const csv = rows.join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `summary_${today}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 0);
+      });
+    })();
+  </script>
+
+  <script>
+    (function(){
+      const printBtn = document.getElementById('printSummaryBtn');
+      if (!printBtn) return;
+      printBtn.addEventListener('click', () => {
+        window.print();
+      });
+    })();
+  </script>
+
+  <!-- include the widget js -->
+  <script src="{{ url_for('static', filename='js/pig_savings_summary.js') }}"></script>
+
+  <div class="mt-4 no-print">
+    <button id="backToToolsBtn" type="button" class="btn btn-outline-secondary">Back to Tools</button>
+  </div>
+
+  <script>
+    (function(){
+      const btn = document.getElementById('backToToolsBtn');
+      if (!btn) return;
+      btn.addEventListener('click', async () => {
+        const candidates = [
+          '{{ url_for('views.tracker') }}',
+          '/money_tools',
+          '/tools'
+        ];
+        for (const url of candidates) {
+          try {
+            const res = await fetch(url, { method: 'HEAD' });
+            if (res.ok) { window.location.href = url; return; }
+          } catch (e) { /* skip */ }
+        }
+        // last resort: go home
+        window.location.href = '/';
+      });
+    })();
+  </script>
+
+  <div class="print-footer" style="width:100%; text-align:right; font-size:12px; color:#6b7280; margin-top:20px;">
+    Generated on <script>document.write(new Date().toLocaleDateString())</script>
   </div>
 </div>
 {% endblock %}
