@@ -211,5 +211,41 @@
   document.addEventListener('DOMContentLoaded', () => {
     recomputeYears();
     loadAssumptions();
+
+    // Wire buttons after DOM is ready
+    $('sp_back')?.addEventListener('click', () => {
+      window.location.href = '/spending';
+    });
+
+    $('sp_and_next')?.addEventListener('click', async () => {
+      const btn = $('sp_and_next');
+      const original = btn?.textContent;
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Saving…';
+      }
+
+      const a = readAssumptions();
+      a.years = Math.max(1, Math.floor(a.endAge - a.startAge + 1));
+      let ok = false;
+      try {
+        const res = await fetch('/api/super_projection/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(a)
+        });
+        ok = res.ok;
+        if (!ok) throw new Error();
+      } catch (e) {
+        alert('Save failed. Redirecting to Debt Paydown anyway.');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = original;
+        }
+        // Always go to Debt Paydown as requested
+        window.location.href = '/debt_paydown';
+      }
+    });
   });
 })();
