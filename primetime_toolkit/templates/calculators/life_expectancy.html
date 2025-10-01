@@ -2,6 +2,16 @@
 {% block content %}
   {% include 'calculators/subnav.html' %}
 
+  {% if life_expectancy %}
+  <script>
+    window.lifeExpectancyPrefill = {
+      gender: "{{ life_expectancy.gender }}",
+      percentile: "{{ life_expectancy.percentile }}",
+      current_age: "{{ life_expectancy.current_age }}"
+    };
+  </script>
+  {% endif %}
+
   <div class="container py-4">
     <div class="mb-3">
       <h1 class="text-center mb-4" style="color:#9E2A2B; font-family:'Playfair Display', serif;">
@@ -67,12 +77,14 @@
           </div>
         </div>
       </div>
-
-      <div class="mt-3 d-flex gap-2">
-        <button id="leReset" class="btn btn-outline-secondary" type="button">Reset</button>
+    </div>
+    <div class="d-flex justify-content-between align-items-center gap-2 mt-3">
+      <a href="{{ url_for('views.tracker') }}" class="btn btn-outline-secondary">Back</a>
+      <div class="ms-auto d-flex gap-2">
+        <button id="saveAndNextBtn" class="btn btn-primary" type="button">Save &amp; Next</button>
       </div>
     </div>
-
+    <br><br>
     <div class="table-responsive shadow-sm rounded">
       <table class="table table-bordered mb-0 align-middle">
         <thead>
@@ -94,8 +106,6 @@
     <div class="small-note mt-2">
       These figures mirror the percentiles shown in your workbook. Results are indicative only.
     </div>
-    <br>
-    <button type="button" id="saveAndNextBtn" class="btn btn-primary">Save and Next</button>  
   </div>
 
   <script src="{{ url_for('static', filename='js/life_expectancy.js') }}"></script>
