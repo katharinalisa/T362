@@ -190,8 +190,8 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="col-md-6">
       <div class="dashboard-chart p-3 text-center"
         style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">???</h5>
-        <canvas id="???" style="max-width: 100%; max-height: 320px;"></canvas>
+        <h5 class="mb-2">Income vs Expenses</h5>
+        <canvas id="incomeExpensesChart" style="max-width: 100%; max-height: 220px;"></canvas>
       </div>
     </div>
   </div>
@@ -277,7 +277,7 @@ var superGrowthChart = new Chart(ctxSuperGrowth, {
 });
 
 // Expense Breakdown Chart
-var ctxExpenseBreakdown = document.getElementById('expenseBreakdownChart').getContext('2d');
+/*var ctxExpenseBreakdown = document.getElementById('expenseBreakdownChart').getContext('2d');
 var expenseBreakdownChart = new Chart(ctxExpenseBreakdown, {
   type: 'bar',
   data: {
@@ -296,7 +296,7 @@ var expenseBreakdownChart = new Chart(ctxExpenseBreakdown, {
       x: { title: { display: true, text: 'Expense Category' } }
     }
   }
-});
+});*/
 
 // Drawdown Over Time Chart
 var ctxDrawdownOverTime = document.getElementById('drawdownChart').getContext('2d');
@@ -330,6 +330,21 @@ var incomeSourcesChart = new Chart(ctxIncomeSources, {
     }]
   },
   options: { responsive: true, plugins: { legend: { display: true } } }
+});
+
+// Income vs EXpenses Chart
+var ctxIncomeExpenses = document.getElementById('incomeExpensesChart').getContext('2d');
+var incomeExpensesChart = new Chart(ctxIncomeExpenses, {
+  type: 'bar',
+  data: {
+    labels: ['Income', 'Expenses'],
+    datasets: [{
+      label: 'Amount',
+      data: [dashboardData.income.total, dashboardData.expenses.total],
+      backgroundColor: ['#3bb3c3', '#1a7f8c']
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
 });
 
 // something
