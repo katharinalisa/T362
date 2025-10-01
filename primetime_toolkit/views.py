@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
 import json
-from primetime_toolkit.models import db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience
+from primetime_toolkit.models import LifeExpectancy, db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience
 from sqlalchemy import func, case
 from .excel_parser import parse_excel
 
@@ -394,10 +394,50 @@ def send_email():
 
     return redirect(url_for('views.home'))
 
+
+
+
+#--------------------------------------------------------
+#-------------------------------------------------------
+# Calculators
+
+#-----------------------------------------------------
+# life expectancy
+
+@views.route('/life')
+@login_required
+def life():
+    latest_estimate = LifeExpectancy.query.filter_by(user_id=current_user.id)\
+        .order_by(LifeExpectancy.timestamp.desc())\
+        .first()
+
+    return render_template(
+        'calculators/life_expectancy.html',
+        life_expectancy=latest_estimate
+    )
+
+
+@views.route("/save-lifeexpectancy", methods=["POST"])
+@login_required
+def save_life_expectancy():
+    data = request.get_json()
+    estimate = LifeExpectancy(
+        user_id=current_user.id,
+        gender=data["gender"],
+        percentile=data["percentile"],
+        current_age=int(data["current_age"]),
+        expected_lifespan=int(data["expected_lifespan"]),
+        years_remaining=int(data["years_remaining"]),
+        estimated_year_of_death=int(data["estimated_year_of_death"])
+    )
+    db.session.add(estimate)
+    db.session.commit()
+    flash("Life expectancy saved successfully!", "success")
+    return jsonify({'redirect': url_for('views.assets')})
+
 #------------------------------------------------------
 # Assets 
 
-# views.py
 @views.route('/assets')
 @login_required
 def assets():
@@ -437,8 +477,10 @@ def save_assets():
     return jsonify({'redirect': url_for('views.liabilities')})
 
 
+
 #-------------------------------------------------------
 # ---- Liabilities ----
+
 @views.route('/liabilities')
 @login_required
 def liabilities():
@@ -477,8 +519,10 @@ def save_liabilities():
     flash("Liabilities saved successfully!", "success")
     return jsonify({'redirect': url_for('views.income')})
 
+
 #------------------------------------------------------
 # ---- Income ----
+
 @views.route('/income')
 @login_required
 def income():
@@ -515,23 +559,22 @@ def save_income():
     flash("Income saved successfully!", "success")
     # Next step in your flow → Expenses
     return jsonify({'redirect': url_for('views.expenses')})
+
+
 #---------------------------------------------------
 # ---- Expenses ----
+
 @views.route('/expenses')
 @login_required
 def expenses():
     user_expenses = Expense.query.filter_by(user_id=current_user.id).all()
     expenses_data = [
         {
-            "phase": e.phase,
-            "baseline": e.baseline,
-            "lifestyle": e.lifestyle,
-            "saving_investing": e.saving_investing,
-            "health_care": e.health_care,
-            "other": e.other,
-            "total_spending": e.total_spending,
-            "budgeted_amount": e.budgeted_amount,
-            "surplus_deficit": e.surplus_deficit,
+            "category": e.category,
+            "item": e.item,
+            "amount": e.amount,
+            "frequency": e.frequency,
+            "type": e.type
         }
         for e in user_expenses
     ]
@@ -546,39 +589,34 @@ def save_expenses():
         data = request.get_json() or {}
         expenses = data.get('expenses', [])
 
-        # Clear old ones
+        # Clear old expenses for this user
         Expense.query.filter_by(user_id=current_user.id).delete()
 
         for e in expenses:
-            db.session.add(Expense(
+            expense = Expense(
                 user_id=current_user.id,
-                phase=e.get("phase", ""),
-                baseline=float(e.get("baseline") or 0),
-                lifestyle=float(e.get("lifestyle") or 0),
-                saving_investing=float(e.get("saving_investing") or 0),
-                health_care=float(e.get("health_care") or 0),
-                other=float(e.get("other") or 0),
-                total_spending=float(e.get("total_spending") or 0),
-                budgeted_amount=float(e.get("budgeted_amount") or 0),
-                surplus_deficit=float(e.get("surplus_deficit") or 0),
-            ))
+                category=e.get("category", ""),
+                item=e.get("item", ""),
+                amount=float(e.get("amount") or 0),
+                frequency=e.get("frequency", "monthly"),
+                type=e.get("type", "Essential")
+            )
+            db.session.add(expense)
 
         db.session.commit()
         flash("Expenses saved successfully!", "success")
-        # Next step in flow → Subscriptions
         return jsonify({'redirect': url_for('views.subscriptions')})
 
     except Exception as e:
         db.session.rollback()
         import traceback; traceback.print_exc()
         return jsonify({'error': str(e)}), 500
-    
-
 
 
 
 #---------------------------------------------------
 # ---- Subscriptions ----
+
 @views.route('/subscriptions')
 @login_required
 def subscriptions():
@@ -633,6 +671,7 @@ def save_subscriptions():
 
 #---------------------------------------------------
  # ---- Future Budget ----
+
 @views.route('/future_budget')
 @login_required
 def future_budget():
@@ -697,6 +736,7 @@ def save_future_budget():
     
 #---------------------------------------------------
  # ---- Epic Retirement & One-Off Experiences ----
+
 @views.route('/epic')
 @login_required
 def epic():
@@ -746,10 +786,10 @@ def save_epic():
         db.session.rollback()
         import traceback; traceback.print_exc()
         return jsonify({'error': str(e)}), 500
-#---------------------------------------------------
-@views.route('/life')
-def life():
-    return render_template('calculators/life_expectancy.html')
+
+
+
+
 #---------------------------------------------------
 
 @views.route('/calculator')                
@@ -815,7 +855,7 @@ def spending_allocation_alias():
 @views.route('/super_projection')
 @login_required
 def super_projection():
-    return render_template('claculators/super_projection.html')
+    return render_template('calculators/super_projection.html')
 
 @views.route('/super')
 @login_required

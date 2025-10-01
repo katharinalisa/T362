@@ -44,6 +44,19 @@ class Subscriber(db.Model):
 
 
 
+class LifeExpectancy(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    gender = db.Column(db.String(16), nullable=False)
+    percentile = db.Column(db.String(32), nullable=False)
+    current_age = db.Column(db.Integer, nullable=False)
+    expected_lifespan = db.Column(db.Integer, nullable=False)
+    years_remaining = db.Column(db.Integer, nullable=False)
+    estimated_year_of_death = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.DateTime, server_default=db.func.now())
+
+
+
 class Asset(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -77,24 +90,15 @@ class Income(db.Model):
 
 
 class Expense(db.Model):
-    __tablename__ = 'expenses'
-
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    category = db.Column(db.String(64))
+    item = db.Column(db.String(128))
+    amount = db.Column(db.Float)
+    frequency = db.Column(db.String(32))
+    type = db.Column(db.String(32))
+    timestamp = db.Column(db.DateTime, server_default=db.func.now())
 
-    phase = db.Column(db.String(120), nullable=False)
-    baseline = db.Column(db.Float, default=0.0)
-    lifestyle = db.Column(db.Float, default=0.0)
-    saving_investing = db.Column(db.Float, default=0.0)
-    health_care = db.Column(db.Float, default=0.0)
-    other = db.Column(db.Float, default=0.0)
-
-    total_spending = db.Column(db.Float, default=0.0)     
-    budgeted_amount = db.Column(db.Float, default=0.0)   
-    surplus_deficit = db.Column(db.Float, default=0.0)     
-
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class Subscription(db.Model):
@@ -146,6 +150,18 @@ class EpicExperience(db.Model):
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+#--------
+class IncomeLayer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    layer = db.Column(db.String(64))
+    description = db.Column(db.String(128))
+    start_age = db.Column(db.Integer)
+    end_age = db.Column(db.Integer)
+    annual_amount = db.Column(db.Float)
+    timestamp = db.Column(db.DateTime, server_default=db.func.now())
+
 
 class SpendingAllocation(db.Model):
     __tablename__ = 'spending_allocation'

@@ -35,11 +35,11 @@
 
   function clearAll() {
     tbody.innerHTML = '';
-    // ✅ Just one blank starter row
+ 
     addRow();
   }
 
-  // Remove row (keep at least one row)
+  // Remove row and keep one row
   tbody.addEventListener('click', (e) => {
     const btn = e.target.closest('.remove-row');
     if (!btn) return;
@@ -89,7 +89,7 @@
       }
       if (!res.ok) throw new Error();
       const data = await res.json();
-      return data; // expect optional { message, redirect }
+      return data; 
     } catch {
       alert('Error saving income layers.');
       return null;
@@ -103,7 +103,7 @@
       const rows = await res.json();
       tbody.innerHTML = '';
       if (!rows.length) {
-        clearAll(); // ✅ one blank row if DB empty
+        clearAll();
         return;
       }
       rows.forEach(addRow);

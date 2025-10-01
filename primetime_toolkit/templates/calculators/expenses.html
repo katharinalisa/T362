@@ -7,12 +7,11 @@
   <div class="mb-3">
     <h1 class="text-center mb-4" style="color:#9E2A2B; font-family:'Playfair Display', serif;">Expenses Tracker</h1>
   </div>
-    <div class="d-flex flex-wrap gap-2 mb-3">
-      <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
-      <button id="clearAllBtn" class="btn btn-outline-danger" type="button">Clear All</button>
-      <button id="saveExpensesBtn" class="btn btn-outline-primary" type="button">Save</button>
-    </div>
-
+  
+<div class="d-flex justify-content-between align-items-center gap-2 mb-3">
+  <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
+  <button id="clearAllBtn" class="btn btn-outline-danger" type="button">Clear All</button>
+</div>
 
   <p class="small-note mb-3">
     Itemise your spending across each category. Enter the <strong>Amount per period</strong> and select a <strong>Frequency</strong>.
@@ -130,9 +129,11 @@
     </div>
   </div>
   <br><br>
+{% if expenses_data %}
 <script>
-  window.expensesPrefill = {{ expenses_data | default([], true) | tojson }};
+  window.expensesPrefill = {{ expenses_data | tojson }};
 </script>
+{% endif %}
 <script>
   document.getElementById('backBtn')?.addEventListener('click', () => history.back());
 </script>

@@ -1,17 +1,18 @@
-
 (() => {
+  // ===== DOM =====
   const genderEl = document.getElementById('leGender');
   const pctEl = document.getElementById('lePercentile');
   const ageEl = document.getElementById('leAge');
-
   const expectedEl = document.getElementById('leExpected');
   const remainingEl = document.getElementById('leRemaining');
   const yearEl = document.getElementById('leYear');
   const resetBtn = document.getElementById('leReset');
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
+  const saveBtn = document.getElementById('saveLifeExpectancyBtn'); // Optional extra save button
 
   if (!genderEl || !pctEl || !ageEl || !expectedEl || !remainingEl || !yearEl) return;
 
+  // ===== Utils =====
   const TABLE = {
     male: {
       '25th percentile': 85,
@@ -40,9 +41,10 @@
   };
   const setVal = (el, value) => {
     el.textContent = value ?? '—';
-    el.classList.toggle('placeholder', value == null);
+    el.classList.toggle('placeholder', value == null || value === '—');
   };
 
+  // ===== Calculation =====
   function compute() {
     const genderKey = (genderEl.value || '').trim().toLowerCase();
     const pctKey = pctEl.value || '';
@@ -74,6 +76,14 @@
     setVal(yearEl, '—');
   }
 
+  function prefill(data) {
+    if (!data) return;
+    if (data.gender) genderEl.value = data.gender;
+    if (data.percentile) pctEl.value = data.percentile;
+    if (data.current_age !== undefined && data.current_age !== null) ageEl.value = data.current_age;
+    compute();
+  }
+
   function getEstimateData() {
     return {
       gender: genderEl.value,
@@ -85,41 +95,83 @@
     };
   }
 
-  saveAndNextBtn?.addEventListener('click', () => {
+  // ===== Save helper =====
+  async function saveAll() {
     const data = getEstimateData();
-    if (!data.gender || !data.percentile || !Number.isFinite(data.current_age) || data.expected_lifespan === '—') {
+    if (
+      !data.gender ||
+      !data.percentile ||
+      !Number.isFinite(data.current_age) ||
+      data.expected_lifespan === '—'
+    ) {
       alert("Please complete all fields before saving.");
-      return;
+      return null;
     }
-
-    fetch('/save-lifeexpectancy', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    })
-    .then(res => {
+    try {
+      const res = await fetch('/save-lifeexpectancy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
       if (res.status === 401) {
         alert('Please log in to save your estimate.');
         window.location.href = '/login';
-        return;
+        return null;
       }
-      return res.json();
-    })
-    .then(data => {
-      if (data?.redirect) {
-        window.location.href = data.redirect;
-      } else {
-        alert(data?.message || 'Life Expectancy estimate saved!');
-      }
-    })
-    .catch(() => alert('Error saving life expectancy estimate.'));
+      if (!res.ok) throw new Error();
+      return await res.json();
+    } catch {
+      alert('Error saving life expectancy estimate.');
+      return null;
+    }
+  }
+
+  // ===== Events =====
+  [genderEl, pctEl, ageEl].forEach(el => {
+    if (el) {
+      el.addEventListener('input', compute);
+      el.addEventListener('change', compute);
+    }
   });
 
-  [genderEl, pctEl, ageEl].forEach(el => {
-    el.addEventListener('input', compute);
-    el.addEventListener('change', compute);
-  });
   resetBtn?.addEventListener('click', reset);
 
-  reset(); // initialize on load
+  saveAndNextBtn?.addEventListener('click', async () => {
+    const original = saveAndNextBtn.textContent;
+    saveAndNextBtn.disabled = true;
+    saveAndNextBtn.textContent = 'Saving…';
+    try {
+      const data = await saveAll();
+      if (data?.redirect) {
+        window.location.href = data.redirect;
+      } else if (data) {
+        alert(data.message || 'Life Expectancy estimate saved!');
+      }
+    } finally {
+      saveAndNextBtn.disabled = false;
+      saveAndNextBtn.textContent = original;
+    }
+  });
+
+  saveBtn?.addEventListener('click', async () => {
+    const original = saveBtn.textContent;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+    try {
+      const data = await saveAll();
+      if (data && !data.redirect) {
+        alert(data.message || 'Life Expectancy estimate saved!');
+      }
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = original;
+    }
+  });
+
+  // ===== Init =====
+  if (window.lifeExpectancyPrefill && typeof window.lifeExpectancyPrefill === 'object') {
+    prefill(window.lifeExpectancyPrefill);
+  } else {
+    reset();
+  }
 })();
