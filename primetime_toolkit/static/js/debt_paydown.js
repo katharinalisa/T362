@@ -110,19 +110,23 @@
   });
 
   saveAndNextBtn?.addEventListener('click', async () => {
-    const original = saveAndNextBtn.textContent;
-    saveAndNextBtn.disabled = true;
-    saveAndNextBtn.textContent = 'Saving…';
+    const btn = saveAndNextBtn;
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+
+    let nextUrl = '/enough_calculator';
     try {
       const data = await saveAll();
-      if (data?.redirect) {
-        window.location.href = data.redirect;
-      } else if (data) {
-        alert(data.message || 'Debts saved!');
+      if (data && data.redirect) {
+        nextUrl = data.redirect;
       }
+    } catch (e) {
+      console.error('Save failed, continuing to next step', e);
     } finally {
-      saveAndNextBtn.disabled = false;
-      saveAndNextBtn.textContent = original;
+      btn.disabled = false;
+      btn.textContent = original;
+      window.location.href = nextUrl;
     }
   });
 
