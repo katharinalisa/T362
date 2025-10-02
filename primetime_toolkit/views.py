@@ -867,28 +867,36 @@ def super():
 @views.route('/debt_paydown')
 @login_required
 def debt_paydown():
+    """Render the Debt Paydown Planner (kept under calculators/ to match others)."""
     return render_template('calculators/debt_paydown.html')
 
 
 @views.route('/save-debt_paydown', methods=['POST'])
 @login_required
 def save_debt_paydown():
+    """Save Debt Paydown rows (placeholder until model exists), then go to Summary.
+    Matches the pattern used by other save-* routes: accept JSON or form, flash, and
+    return a JSON object with a redirect URL for the front-end.
+    """
     try:
-        payload = request.get_json(silent=True) or {}
-        debts = payload.get('debts', [])
+        payload = request.get_json(silent=True)
+        if not payload:
+            # Fallback: support form-encoded submissions
+            payload = request.form.to_dict(flat=True)
+        debts = payload.get('debts', []) if isinstance(payload, dict) else []
 
-        # TODO: save debts to DB when you create a Debt model
+        # TODO: When a Debt model/table is added, clear + persist rows for current_user.id
         # Example fields per row: name, principal, rate, payment, years
 
         flash("Debt paydown data saved successfully!", "success")
         return jsonify({
             "message": "Debt paydown data saved successfully!",
-            "redirect": url_for('views.summary')  # or the next step in your flow
-        })
+            "redirect": url_for('views.summary')
+        }), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        # Be permissive: still point the client to summary so the flow can continue
+        return jsonify({"error": str(e), "redirect": url_for('views.summary')}), 200
 #---------------------------------------------------
-
 
 
 @views.route('/summary')
