@@ -780,7 +780,7 @@ def save_epic():
         db.session.commit()
         flash('Epic experiences saved successfully!', 'success')
         # after Epic, your flow goes to Spending Allocation
-        return jsonify({'redirect': url_for('views.spending')})
+        return jsonify({'redirect': url_for('views.income_layers')})
     except Exception as e:
         db.session.rollback()
         import traceback; traceback.print_exc()
