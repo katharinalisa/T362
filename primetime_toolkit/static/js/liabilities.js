@@ -7,8 +7,12 @@
   const clearAllBtn = document.getElementById('clearAllBtn');
   const saveBtn = document.getElementById('saveLiabilitiesBtn');
 
-  const elTotalLiabilities = document.getElementById('totalLiabilities');
-  const elTotalAnnualOutgoings = document.getElementById('totalAnnualOutgoings');
+  const elTotalLiabilities =
+    document.getElementById('totalLiabilities') ||
+    document.querySelector('[data-role="total-liabilities"], #total-liabilities, .total-liabilities, [data-total="liabilities"]');
+  const elTotalAnnualOutgoings =
+    document.getElementById('totalAnnualOutgoings') ||
+    document.querySelector('[data-role="total-annual"], #total-annual, .total-annual, [data-total="annual"]');
 
   if (!table || !tbody || !rowTemplate) return;
 
@@ -17,22 +21,29 @@
   ]);
 
   const fmt = new Intl.NumberFormat(undefined, {
-    style: 'currency', currency: 'AUD', minimumFractionDigits: 0, maximumFractionDigits: 0
+    style: 'currency', currency: 'AUD', minimumFractionDigits: 2, maximumFractionDigits: 2
   });
   const parseNum = v => {
     const n = parseFloat(String(v ?? '').replace(/[^\d.-]/g, ''));
     return Number.isFinite(n) ? n : 0;
   };
-  const setCurrency = (el, amount) => { el.textContent = fmt.format(amount || 0); };
+  const to2 = (v) => {
+    const n = parseNum(v);
+    return Number.isFinite(n) ? Number(n.toFixed(2)) : 0;
+  };
+  const setCurrency = (el, amount) => {
+    if (!el) return;
+    el.textContent = fmt.format(amount || 0);
+  };
 
   function addRow(prefill = {}) {
     const frag = rowTemplate.content.cloneNode(true);
     const row = frag.querySelector('tr.liability-row');
     if (prefill.category) row.querySelector('.category').value = prefill.category;
     if (prefill.name) row.querySelector('.name').value = prefill.name;
-    if (prefill.amount != null) row.querySelector('.amount').value = prefill.amount;
+    if (prefill.amount != null) row.querySelector('.amount').value = to2(prefill.amount).toFixed(2);
     if (prefill.type) row.querySelector('.type').value = prefill.type;
-    if (prefill.monthly != null) row.querySelector('.monthly').value = prefill.monthly;
+    if (prefill.monthly != null) row.querySelector('.monthly').value = to2(prefill.monthly).toFixed(2);
     if (prefill.notes) row.querySelector('.notes').value = prefill.notes;
     tbody.appendChild(frag);
   }
@@ -44,15 +55,23 @@
   } else {
     addRow();
   }
+  // Ensure all numeric inputs display as 2dp on load
+  tbody.querySelectorAll('.amount, .monthly').forEach(inp => {
+    const n = parseNum(inp.value);
+    inp.value = Number.isFinite(n) ? n.toFixed(2) : '';
+  });
   recalcTotals();
 
+  // Initialize per-row derived cells on load
+  tbody.querySelectorAll('tr.liability-row').forEach(updateDerived);
 
   function recalcTotals() {
     let totalLiabilities = 0;
     let totalAnnualOutgoings = 0;
 
     tbody.querySelectorAll('tr.liability-row').forEach(row => {
-      const include = row.querySelector('.include-toggle')?.checked;
+      const includeEl = row.querySelector('.include-toggle, .include, input[type="checkbox"].include-toggle, input[type="checkbox"].include');
+      const include = includeEl ? includeEl.checked : true;
       if (!include) return;
 
       const rawType = (row.querySelector('.type')?.value || '').trim();
@@ -67,7 +86,36 @@
     });
 
     setCurrency(elTotalLiabilities, totalLiabilities);
-    //setCurrency(elTotalAnnualOutgoings, totalAnnualOutgoings);
+    setCurrency(elTotalAnnualOutgoings, totalAnnualOutgoings);
+  }
+
+  function updateDerived(row){
+    if (!row) return;
+    const includeEl = row.querySelector('.include-toggle, .include, input[type="checkbox"].include-toggle, input[type="checkbox"].include');
+    const include = includeEl ? includeEl.checked : true;
+    const amount = parseNum(row.querySelector('.amount')?.value);
+    const monthly = parseNum(row.querySelector('.monthly')?.value);
+
+    // Balance / Remaining display (if the column exists)
+    const balCell = row.querySelector('.balance, .remaining');
+    if (balCell) setCurrency(balCell, include ? amount : 0);
+
+    // Years to repay (simple heuristic: amount / (monthly * 12))
+    const yearsCell = row.querySelector('.years, .years-to-repay, [data-role="years"]');
+    if (yearsCell) {
+      if (include && amount > 0 && monthly > 0) {
+        const years = amount / (monthly * 12);
+        yearsCell.textContent = years.toFixed(2);
+        yearsCell.title = `${(years * 12).toFixed(0)} months`;
+      } else {
+        yearsCell.textContent = '';
+        yearsCell.removeAttribute('title');
+      }
+    }
+
+    // Annual outgoings (if a per-row cell exists)
+    const annualCell = row.querySelector('.annual, .annual-outgoing');
+    if (annualCell) setCurrency(annualCell, include ? (monthly * 12) : 0);
   }
 
   function handleTbodyChange(e) {
@@ -77,8 +125,11 @@
       t.classList.contains('type') ||
       t.classList.contains('amount') ||
       t.classList.contains('monthly') ||
-      t.classList.contains('include-toggle')
+      t.classList.contains('include-toggle') ||
+      t.classList.contains('include')
     ) {
+      const row = t.closest('tr.liability-row');
+      if (row) updateDerived(row);
       recalcTotals();
     }
 
@@ -99,8 +150,61 @@
   }
   addRowBtn?.addEventListener('click', () => { addRow(); recalcTotals(); });
   clearAllBtn?.addEventListener('click', clearAll);
-  tbody.addEventListener('input', handleTbodyChange);
+
+  // Handle changes and limit inputs to 2 decimal places
+  tbody.addEventListener('input', (e) => {
+    const t = e.target;
+    if (!t) return;
+
+    // Limit numeric inputs to 2 decimal places (do not pad zeros while typing)
+    if (t.classList.contains('amount') || t.classList.contains('monthly')) {
+      let val = String(t.value).replace(/[^0-9.]/g, '');
+      // if multiple dots typed, keep the first
+      const firstDot = val.indexOf('.');
+      if (firstDot !== -1) {
+        val = val.slice(0, firstDot + 1) + val.slice(firstDot + 1).replace(/\./g, '');
+      }
+      if (val.includes('.')) {
+        const [whole, decimal] = val.split('.');
+        val = `${whole}.${(decimal || '').slice(0, 2)}`;
+      }
+      t.value = val;
+    }
+
+    // Update derived cells for this row (balance, years, annual) when editing amount/monthly
+    if (t.classList.contains('amount') || t.classList.contains('monthly')) {
+      const row = t.closest('tr.liability-row');
+      if (row) updateDerived(row);
+    }
+
+    // Recalculate totals dynamically
+    if (
+      t.classList.contains('type') ||
+      t.classList.contains('amount') ||
+      t.classList.contains('monthly') ||
+      t.classList.contains('include-toggle') ||
+      t.classList.contains('include')
+    ) {
+      recalcTotals();
+    }
+  });
+
+  // When user leaves a numeric input, format to exactly 2 decimal places
+  tbody.addEventListener('blur', (e) => {
+    const t = e.target;
+    if (!t) return;
+
+    if (t.classList.contains('amount') || t.classList.contains('monthly')) {
+      const n = parseNum(t.value);
+      t.value = Number.isFinite(n) ? n.toFixed(2) : '';
+      const row = t.closest('tr.liability-row');
+      if (row) updateDerived(row);
+      recalcTotals();
+    }
+  }, true);
+
   tbody.addEventListener('change', handleTbodyChange);
+  
   tbody.addEventListener('click', handleTbodyClick);
 
 
@@ -108,9 +212,9 @@
     return Array.from(tbody.querySelectorAll('tr.liability-row')).map(row => ({
       category: row.querySelector('.category')?.value || '',
       name: row.querySelector('.name')?.value || '', 
-      amount: parseNum(row.querySelector('.amount')?.value),
+      amount: to2(row.querySelector('.amount')?.value),
       type: row.querySelector('.type')?.value || '',
-      monthly: parseNum(row.querySelector('.monthly')?.value),
+      monthly: to2(row.querySelector('.monthly')?.value),
       notes: row.querySelector('.notes')?.value || ''
     }));
   }
@@ -136,6 +240,15 @@
     }
   }
 
+  // === Progress helper (localStorage) ===
+  function markStepComplete(stepKey) {
+    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
+    if (!completed.includes(stepKey)) {
+      completed.push(stepKey);
+      localStorage.setItem("completedSteps", JSON.stringify(completed));
+    }
+  }
+
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
 
   saveAndNextBtn?.addEventListener('click', async () => {
@@ -144,6 +257,8 @@
     saveAndNextBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
+      // Auto-apply progress: mark Liabilities step complete on successful save
+      if (data) { markStepComplete('liabilities'); }
       if (data?.redirect) {
         window.location.href = data.redirect;
       } else if (data) {
@@ -161,6 +276,7 @@
     saveBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
+      if (data) { markStepComplete('liabilities'); }
       if (data && !data.redirect) {
         alert(data.message || 'Liabilities saved!');
       }
