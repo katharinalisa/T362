@@ -185,3 +185,42 @@ class SpendingAllocation(db.Model):
     @property
     def total_spending(self) -> float:
         return (self.cost_base or 0) + (self.cost_life or 0) + (self.cost_save or 0) + (self.cost_health or 0) + (self.cost_other or 0)
+
+class DebtPaydown(db.Model):
+    __tablename__ = 'debt_paydown'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, index=True, nullable=False)
+
+    name = db.Column(db.String(120), default='')
+    principal = db.Column(db.Float, default=0.0)                 # starting balance
+    annual_interest_rate = db.Column(db.Float, default=0.0)      # percent, e.g. 18.0
+    monthly_payment = db.Column(db.Float, default=0.0)
+    years_to_repay = db.Column(db.Float)                         # optional (UI can compute)
+    include = db.Column(db.Boolean, default=True)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class EnoughCalculator(db.Model):
+    __tablename__ = 'enough_calculator'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+
+    # inputs
+    use_future_budget = db.Column(db.String(8), nullable=False, default='Yes')  # 'Yes' or 'No'
+    manual_annual     = db.Column(db.Float, default=0.0)                        # if use_future_budget == 'No'
+    real_rate         = db.Column(db.Float, default=0.0)                        # % real per year
+    years             = db.Column(db.Integer, default=0)                        # retirement duration (years)
+    pension           = db.Column(db.Float, default=0.0)                        # $/year
+    part_time_income  = db.Column(db.Float, default=0.0)                        # $/year
+    part_time_years   = db.Column(db.Float, default=0.0)                        # years of part-time work
+
+    # optional outputs (what was shown to the user)
+    shortfall         = db.Column(db.Float, default=0.0)
+    lump_sum_rule     = db.Column(db.Float, default=0.0)
+    lump_sum_annuity  = db.Column(db.Float, default=0.0)
+
+    created_at        = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at        = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

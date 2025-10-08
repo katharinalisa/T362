@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
+  {% include 'calculators/subnav.html' %}
 <div class="container py-4">
   <h1 class="text-center mb-3" style="font-family:'Playfair Display', serif; color:#9E2A2B;">
     Debt Paydown Planner
@@ -12,6 +13,7 @@
   <button id="addRowBtn" class="btn btn-success" type="button">Add Row</button>
   <button id="clearAllBtn" class="btn btn-outline-danger" type="button">Clear All</button>
 </div>
+
 
   <div class="table-responsive shadow-sm rounded">
     <table id="debtTable" class="table table-bordered align-middle mb-0">

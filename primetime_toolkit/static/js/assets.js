@@ -14,8 +14,8 @@
   if (!table || !tbody || !rowTemplate) return; // safe guard
 
   // ====== Utils ======
-  const fmt = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 });
-  const fmt2 = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'AUD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  const fmt = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'AUD', maximumFractionDigits: 2 });
+  const fmt2 = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'AUD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   function parseAmount(value) {
     if (value == null) return 0;
@@ -159,7 +159,30 @@
   clearAllBtn?.addEventListener('click', clearAll);
 
   // Delegated events
-  tbody.addEventListener('input', onTbodyInput);
+  tbody.addEventListener('input', (e) => {
+    const t = e.target;
+    if (!t) return;
+
+    // Limit .amount inputs to 2 decimal places
+    if (t.classList.contains('amount')) {
+      const val = t.value;
+      if (val.includes('.')) {
+        const [whole, decimal] = val.split('.');
+        if (decimal.length > 2) {
+          t.value = `${whole}.${decimal.slice(0, 2)}`;
+        }
+      }
+    }
+
+    // Recalculate when relevant inputs change
+    if (
+      t.classList.contains('amount') ||
+      t.classList.contains('category') ||
+      t.classList.contains('include-toggle')
+    ) {
+      recalcTotals();
+    }
+  });
   tbody.addEventListener('change', onTbodyInput);
   tbody.addEventListener('click', onTbodyClick);
   tbody.addEventListener('blur', onTbodyBlur, true);
