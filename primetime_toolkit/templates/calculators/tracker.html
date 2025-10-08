@@ -11,6 +11,9 @@
         <div class="progress-fill" id="progressFill"></div>
       </div>
       <p class="progress-label" id="progressLabel">0 of 12 steps completed</p>
+      <div class="text-end mt-2">
+        <button id="restartBtn" class="btn btn-outline-danger btn-sm">Restart Progress</button>
+      </div>
     </div>
 
   <div class="container py-5">
@@ -201,6 +204,9 @@
 const TOTAL_STEPS = 12;
 
 document.addEventListener("DOMContentLoaded", updateProgressBar);
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("restartBtn")?.addEventListener("click", resetProgress);
+});
 
 function updateProgressBar() {
   const completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
@@ -212,6 +218,20 @@ function updateProgressBar() {
   fill.classList.add("animate");
   label.textContent = `${completed.length} of ${TOTAL_STEPS} steps completed`;
   document.getElementById('progressA11y')?.setAttribute('aria-valuenow', pct.toFixed(0));
+}
+
+function resetProgress() {
+  // Clear stored completion
+  localStorage.removeItem("completedSteps");
+  // Reset the visual bar and text
+  const fill = document.getElementById("progressFill");
+  const label = document.getElementById("progressLabel");
+  fill.style.width = '0%';
+  label.textContent = `0 of ${TOTAL_STEPS} steps completed`;
+  document.getElementById('progressA11y')?.setAttribute('aria-valuenow', '0');
+
+  // Remove any existing "Completed" badges on cards
+  document.querySelectorAll('.step-card .badge.bg-success').forEach(el => el.remove());
 }
 
 function markStepComplete(stepKey) {
