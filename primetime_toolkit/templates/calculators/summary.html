@@ -4,11 +4,11 @@
   <h1 class="text-center mb-4 no-print" style="color:#9E2A2B;font-family:'Playfair Display',serif">
     Budget Planner Summary
   </h1>
-  <div class="d-flex justify-content-end gap-2 mb-3 no-print">
-    <button id="downloadExcelBtn" class="btn btn-outline-secondary">Download Excel</button>
-    <button id="emailSummaryBtn" class="btn btn-outline-secondary">Email Summary</button>
-    <button id="printSummaryBtn" class="btn btn-success">Download PDF</button>
-  </div>
+<div class="d-flex justify-content-center gap-2 mb-3 no-print">
+  <button id="downloadExcelBtn" class="btn btn-outline-secondary">Download Excel</button>
+  <button id="emailSummaryBtn" class="btn btn-outline-secondary">Email Summary</button>
+  <button id="printSummaryBtn" class="btn btn-success">Download PDF</button>
+</div>
 
   <!-- KPI grid (2 x 3) -->
   <style>
@@ -155,50 +155,47 @@
     </div>
   </div>
 
-
-  <div class="mt-2 p-2 border rounded bg-light">
-    <div class="d-flex justify-content-between align-items-center">
-      <span class="fw-semibold">Others </span>
+  <br>
+  <div class="mt-2 p-2 border rounded bg-light" style="width: 100vw; margin-left: calc(-50vw + 50%);">
+    <div class="container">
+      <span class="fw-semibold" style="font-size:22px">Others </span>
     </div>
+
+    <div class="container card mt-2">
+      <div class="card-body py-3">
+        <div class="d-flex justify-content-between mb-2">
+          <span>Subscriptions</span>
+          <strong id="otherSubscriptionsOut">$0</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Future Budget</span>
+          <strong id="otherFutureBudgetOut">$0</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Epic &amp; One-off</span>
+          <strong id="otherEpicOut">$0</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Income Layers</span>
+          <strong id="otherIncomeLayersOut">$0</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Spending Allocation</span>
+          <strong id="otherSpendingOut">$0</strong>
+        </div>
+        <hr class="my-2">
+        <div class="d-flex justify-content-between">
+          <span class="fw-semibold">Total (Others)</span>
+          <strong id="otherGrandTotalOut" class="fw-bold">$0</strong>
+        </div>
+      </div>
+    </div><br><br>
+  </div>
+    <div class="mt-4 no-print">
+    <a href="{{ url_for('views.spending_allocation') }}" class="btn btn-outline-secondary" style="text-decoration: none;">Back</a>
+    <button id="backToToolsBtn" type="button" class="btn btn-outline-secondary">Back to Overview</button>
   </div>
 
-  <div class="card mt-2">
-    <div class="card-body py-3">
-      <div class="d-flex justify-content-between mb-2">
-        <span>Subscriptions</span>
-        <strong id="otherSubscriptionsOut">$0</strong>
-      </div>
-      <div class="d-flex justify-content-between mb-2">
-        <span>Future Budget</span>
-        <strong id="otherFutureBudgetOut">$0</strong>
-      </div>
-      <div class="d-flex justify-content-between mb-2">
-        <span>Epic &amp; One-off</span>
-        <strong id="otherEpicOut">$0</strong>
-      </div>
-      <div class="d-flex justify-content-between mb-2">
-        <span>Income Layers</span>
-        <strong id="otherIncomeLayersOut">$0</strong>
-      </div>
-      <div class="d-flex justify-content-between mb-2">
-        <span>Spending Allocation</span>
-        <strong id="otherSpendingOut">$0</strong>
-      </div>
-      <div class="d-flex justify-content-between mb-2">
-        <span>Super Projection</span>
-        <strong id="otherSuperOut">$0</strong>
-      </div>
-      <div class="d-flex justify-content-between border-top pt-2">
-        <span>Debt Paydown</span>
-        <strong id="otherDebtOut">$0</strong>
-      </div>
-      <hr class="my-2">
-      <div class="d-flex justify-content-between">
-        <span class="fw-semibold">Total (Others)</span>
-        <strong id="otherGrandTotalOut" class="fw-bold">$0</strong>
-      </div>
-    </div>
-  </div>
 
   <script>
     (function(){
@@ -215,7 +212,7 @@
       const out = document.getElementById('totalValueOut');
       if (!row || !out) return;
       const vals = Array.from(row.querySelectorAll('.kpi-value'))
-        .slice(0, 6) // ensure we only take the first 6 boxes
+        .slice(0, 6) // take the first 6 boxes
         .map(el => toNum(el.textContent));
       const total = vals.reduce((a,b)=>a+b,0);
       out.textContent = fmtAUD(total);
@@ -246,8 +243,6 @@
         { id:'otherEpicOut',          url:'/api/epic_experiences/total', field:'total' },
         { id:'otherIncomeLayersOut',  url:'/api/income_layers/total', field:'total' },
         { id:'otherSpendingOut',      url:'/api/spending_allocation/total', field:'total' },
-        { id:'otherSuperOut',         url:'/api/super_projection/total', field:'total' },
-        { id:'otherDebtOut',          url:'/api/debt_paydown/total', field:'total' }
       ];
 
       let grand = 0;
@@ -262,13 +257,42 @@
     })();
   </script>
 
+<br>
+<div class="container d-flex flex-column align-items-center">
+  <div class="mb-3 p-3 rounded shadow-sm" style="background: #f5f7fa; max-width:1000px;">
+    <p class="text-center mb-0" style="font-size:1.18rem; color:#2d3a4a;">
+      <span style="font-size:1.3rem; color:#007bff; font-weight:600;">
+        Ready for More Insights?
+      </span><br>
+      <span>
+        Discover our <strong>advanced calculators</strong> including Super Projection, Debt Paydown, and "Enough" calculators. These optional tools are designed to give you deeper understanding and you can find more information about them once you proceed. You can also go straight to <a href="{{ url_for('views.dashboard') }}">the Dashboards Overview</a> to view your results visually.
+      </span>
+    </p>
+  </div><br>
+
+  <a href="{{ url_for('views.super_projection') }}" class="btn btn-primary btn-lg btn-grow-hover" style="font-size:18px; text-decoration: none;">
+    Continue with Super Projection calculator
+  </a>
+</div>
+<br><br>
+
+<style>
+.btn-grow-hover {
+  transition: transform 0.50s cubic-bezier(.4,1.5,.5,1);
+}
+.btn-grow-hover:hover, .btn-grow-hover:focus {
+  transform: scale(1.08);
+  z-index: 2;
+}
+</style>
+
   <!-- Savings Calculator (compact widget) -->
-  <div class="card mt-4 no-print">
+  <!-- <div class="card mt-4 no-print">
     <div class="card-body">
       <div class="d-flex align-items-center mb-3">
         <h5 class="mb-0">Savings Calculator</h5>
         <a href="{{ url_for('views.enough_calculator') }}" class="btn btn-link ms-auto p-0">
-          Open full calculator →
+          Continue with super projection calculator →
         </a>
       </div>
 
@@ -313,7 +337,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <script>
     (function(){
@@ -409,17 +433,13 @@
   <!-- include the widget js -->
   <script src="{{ url_for('static', filename='js/pig_savings_summary.js') }}"></script>
 
-  <div class="mt-4 no-print">
-    <button id="backToToolsBtn" type="button" class="btn btn-outline-secondary">Back to Tools</button>
-  </div>
-
   <script>
     (function(){
       const btn = document.getElementById('backToToolsBtn');
       if (!btn) return;
       btn.addEventListener('click', async () => {
         const candidates = [
-          '{{ url_for('views.tracker') }}',
+          '{{ url_for("views.tracker") }}',
           '/money_tools',
           '/tools'
         ];
@@ -427,9 +447,9 @@
           try {
             const res = await fetch(url, { method: 'HEAD' });
             if (res.ok) { window.location.href = url; return; }
-          } catch (e) { /* skip */ }
+          } catch (e) {  }
         }
-        // last resort: go home
+
         window.location.href = '/';
       });
     })();

@@ -102,5 +102,22 @@
     </div>
   </div>
 
+<div class="container d-flex flex-column align-items-center mt-5">
+  <div class="mb-3 p-3 rounded shadow-sm" style="background: #f5f7fa; max-width:900px;">
+    <p class="text-center mb-0" style="font-size:1.18rem; color:#2d3a4a;">
+      <span style="font-size:1.3rem; color:#28a745; font-weight:600;">
+        You made it!
+      </span><br>
+      <span>
+        You have completed all the calculators. Click the button below to go to your Dashboard Overview where you can see a visual summary of your results.
+      </span><br><br>
+    </p>
+  </div>
+  <a href="{{ url_for('views.dashboard') }}" class="btn btn-primary btn-lg btn-grow-hover mt-3" style="font-size:18px; text-decoration: none;">
+    Go to Dashboard Overview
+  </a>
+</div>
+<br><br>
+
   <script src="{{ url_for('static', filename='js/enough_calculator.js') }}"></script>
 {% endblock %}
