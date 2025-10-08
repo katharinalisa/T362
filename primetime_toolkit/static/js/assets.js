@@ -104,6 +104,14 @@
     }));
   }
 
+  // === Progress helper (localStorage) ===
+  function markStepComplete(stepKey) {
+    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
+    if (!completed.includes(stepKey)) {
+      completed.push(stepKey);
+      localStorage.setItem("completedSteps", JSON.stringify(completed));
+    }
+  }
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
 
   saveAndNextBtn?.addEventListener('click', () => {
@@ -122,10 +130,11 @@
       return res.json();
     })
     .then(data => {
+      // Auto-apply progress: mark Assets step complete on successful save
+      markStepComplete('assets');
       if (data?.redirect) {
         window.location.href = data.redirect;
       } else {
-  
         alert(data?.message || 'Assets saved!');
       }
     })
