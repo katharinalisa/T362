@@ -7,6 +7,8 @@
   const clearAllBtn = document.getElementById('clearAllBtn');
   const saveBtn = document.getElementById('saveSubscriptionsBtn');
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
+  const elTotalSubs = document.getElementById('totalSubs');
+
 
   if (!table || !tbody || !rowTemplate) return; // safety
 
@@ -56,6 +58,7 @@
     }
 
     tbody.appendChild(frag);
+    recalcTotals(); 
   }
 
   function clearAll() {
@@ -122,6 +125,13 @@
     if (!tbody.querySelector('tr.subs-row')) addRow();
     recalcTotals();
   }
+
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      window.location.reload();
+    }
+  });
+
 
   addRowBtn?.addEventListener('click', () => { addRow(); recalcTotals(); });
   clearAllBtn?.addEventListener('click', clearAll);

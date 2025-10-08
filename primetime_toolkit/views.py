@@ -621,18 +621,34 @@ def save_expenses():
 @login_required
 def subscriptions():
     rows = Subscription.query.filter_by(user_id=current_user.id).all()
-    subscriptions_data = [
-        {
-            "name": r.name,
-            "amount": r.amount,
-            "frequency": r.frequency,
-            "notes": r.notes,
-            "include": r.include,
-            "annual_amount": r.annual_amount,
-        } for r in rows
-    ]
+
+    if not rows:
+        # Inject one empty row if no data exists
+        subscriptions_data = [{
+            "name": "",
+            "provider": "",
+            "amount": 0,
+            "frequency": "monthly",
+            "notes": "",
+            "include": True,
+            "annual_amount": 0
+        }]
+    else:
+        subscriptions_data = [
+            {
+                "name": r.name,
+                "provider": r.provider,
+                "amount": r.amount,
+                "frequency": r.frequency,
+                "notes": r.notes,
+                "include": r.include,
+                "annual_amount": r.annual_amount,
+            } for r in rows
+        ]
+
     return render_template('calculators/subscriptions.html',
-                           subscriptions_data=subscriptions_data or [])
+                           subscriptions_data=subscriptions_data)
+
 
 
 @views.route('/save-subscriptions', methods=['POST'])
