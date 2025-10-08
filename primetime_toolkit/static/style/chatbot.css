@@ -1,0 +1,136 @@
+/* === Chatbot Styles (extracted + cleaned) === */
+
+/* Placement wrapper */
+#chatbot-widget {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 2100;
+}
+
+/* Toggle button (white circular) */
+#chatbot-toggle {
+  --chat-size: 60px;
+  width: var(--chat-size);
+  height: var(--chat-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.1);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+  transition: box-shadow .2s ease, transform .06s ease, border-color .2s ease;
+  cursor: pointer;
+}
+#chatbot-toggle:hover { box-shadow: 0 4px 10px rgba(0,0,0,.18); }
+#chatbot-toggle:active { transform: translateY(1px); }
+#chatbot-toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+#chatbot-toggle img { width: 70%; height: 70%; object-fit: contain; display: block; }
+
+/* Popup container */
+#chatbot-container {
+  width: 350px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  position: relative;
+  margin-top: 10px;
+  display: none; /* toggled by JS */
+}
+.chatbot-container {
+  max-width: 100%;
+  margin: 0;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: none;
+  padding: 16px 10px 10px;
+}
+
+/* Header */
+.chat-header h1 {
+  font-size: 1.1rem;
+  margin: 0 0 8px;
+  text-align: center;
+}
+.chatbot-divider { border: 0; height: 1px; background: #e6e6e6; margin: 6px 0 10px; }
+
+/* Messages */
+#chatbox {
+  background: #fafafa;
+  border-radius: 8px;
+  min-height: 250px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #eaeaea;
+}
+.userText { text-align: right; margin: 8px 0; }
+.userText span {
+  background: var(--brand);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 18px 18px 2px 18px;
+  display: inline-block;
+  max-width: 80%;
+  word-break: break-word;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  text-align: left;
+}
+.botText { text-align: left; margin: 8px 0; }
+.botText span {
+  background: #fff;
+  color: #333;
+  padding: 8px 14px;
+  border-radius: 18px 18px 18px 2px;
+  display: inline-block;
+  max-width: 80%;
+  word-break: break-word;
+  border: 1px solid #e0e0e0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Input row */
+#userInput {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+  margin-top: 10px;
+}
+#text {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 10px 14px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #cfcfcf;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+#text:focus { border-color: var(--brand); }
+#send {
+  padding: 10px 14px;
+  font-size: 1rem;
+  border-radius: 6px;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+#send:hover { filter: brightness(.95); }
+
+/* a11y utility */
+.visually-hidden {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
