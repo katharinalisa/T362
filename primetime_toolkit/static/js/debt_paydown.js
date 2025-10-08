@@ -6,15 +6,43 @@
   const addRowBtn = document.getElementById('addRowBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
   const saveBtn = document.getElementById('saveDebtBtn');
+
+  // === Progress helper (localStorage) ===
+  function markStepComplete(stepKey) {
+    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
+    if (!completed.includes(stepKey)) {
+      completed.push(stepKey);
+      localStorage.setItem("completedSteps", JSON.stringify(completed));
+    }
+  }
+
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
 
-  if (!table || !tbody || !rowTpl) return;
+  if (!table || !tbody) return; // allow page to work even if no row template is present
 
   // ===== Helpers =====
   const toNum = v => {
     const n = parseFloat(String(v ?? '').replace(/[^\d.-]/g, ''));
     return Number.isFinite(n) ? n : 0;
   };
+
+  // Currency formatter (AU dollars by default)
+  const currencyFmt = new Intl.NumberFormat('en-AU', {
+    style: 'currency',
+    currency: 'AUD',
+    minimumFractionDigits: 2
+  });
+
+  function formatCurrencyInput(el){
+    if (!el) return;
+    const n = toNum(el.value);
+    el.value = n ? currencyFmt.format(n) : '';
+  }
+  function unformatCurrencyInput(el){
+    if (!el) return;
+    const n = toNum(el.value);
+    el.value = n ? String(n) : '';
+  }
 
   function monthsToPayoff(P, annualRatePct, M) {
     const i = (annualRatePct / 100) / 12;
@@ -26,12 +54,13 @@
   }
 
   function recalcRow(row) {
-    const P = toNum(row.querySelector('.principal')?.value);
-    const r = toNum(row.querySelector('.rate')?.value);
-    const M = toNum(row.querySelector('.payment')?.value);
+    const P = toNum(row.querySelector('.principal, [name="principal"], .amount, [name="amount"], [data-role="principal"]')?.value);
+    const r = toNum(row.querySelector('.rate, [name="rate"], .annual-rate, [name="interest"], [name="annual_rate"], [data-role="rate"]')?.value);
+    const M = toNum(row.querySelector('.payment, [name="payment"], .monthly, [name="monthly"], [name="monthly_payment"], [data-role="payment"]')?.value);
 
     const months = monthsToPayoff(P, r, M);
-    const cell = row.querySelector('.years');
+    const cell = row.querySelector('.years, .years-to-repay, [data-role="years"]');
+    if (!cell) return; // nothing to render into
 
     if (months === null) {
       cell.textContent = '-';
@@ -41,7 +70,9 @@
     } else {
       const years = months / 12;
       cell.textContent = years.toFixed(2);
-      cell.title = `${months} months`;
+      const tipP = currencyFmt.format(P);
+      const tipM = currencyFmt.format(M);
+      cell.title = `${months} months (P: ${tipP}, M: ${tipM})`;
     }
   }
 
@@ -82,6 +113,7 @@
 
   // ===== Events =====
   addRowBtn?.addEventListener('click', () => {
+    if (!rowTpl) return; // no template available on this page
     const frag = rowTpl.content.cloneNode(true);
     tbody.appendChild(frag);
     recalcAll();
@@ -89,8 +121,10 @@
 
   clearAllBtn?.addEventListener('click', () => {
     tbody.innerHTML = '';
-    const frag = rowTpl.content.cloneNode(true);
-    tbody.appendChild(frag);
+    if (rowTpl) {
+      const frag = rowTpl.content.cloneNode(true);
+      tbody.appendChild(frag);
+    }
     recalcAll();
   });
 
@@ -100,6 +134,7 @@
     saveBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
+      if (data) { markStepComplete('debt_paydown'); }
       if (data && !data.redirect) {
         alert(data.message || 'Debts saved!');
       }
@@ -118,6 +153,7 @@
     let nextUrl = '/enough_calculator';
     try {
       const data = await saveAll();
+      if (data) { markStepComplete('debt_paydown'); }
       if (data && data.redirect) {
         nextUrl = data.redirect;
       }
@@ -130,10 +166,56 @@
     }
   });
 
+  const principalSel = '.principal, [name="principal"], .amount, [name="amount"], [data-role="principal"]';
+  const rateSel = '.rate, [name="rate"], .annual-rate, [name="interest"], [name="annual_rate"], [data-role="rate"]';
+  const paymentSel = '.payment, [name="payment"], .monthly, [name="monthly"], [name="monthly_payment"], [data-role="payment"]';
+  const calcSel = `${principalSel}, ${rateSel}, ${paymentSel}`;
+
+  // Live recalculation as user types
   tbody.addEventListener('input', (e) => {
-    if (e.target.matches('.principal, .rate, .payment')) {
+    // Limit inputs to 2 decimal places
+    if (e.target.matches(principalSel) || e.target.matches(rateSel) || e.target.matches(paymentSel)) {
+      const val = e.target.value;
+      if (val.includes('.')) {
+        const [whole, decimal] = val.split('.');
+        if (decimal.length > 2) {
+          e.target.value = `${whole}.${decimal.slice(0, 2)}`;
+        }
+      }
+    }
+    if (e.target.matches(principalSel) || e.target.matches(rateSel) || e.target.matches(paymentSel)) {
       const row = e.target.closest('tr.debt-row');
       if (row) recalcRow(row);
+    }
+  });
+
+  tbody.addEventListener('change', handleRecalcEvent);
+
+  // Allow typing plain numbers; format only on blur
+  tbody.addEventListener('focus', (e) => {
+    if (e.target.matches(principalSel) || e.target.matches(paymentSel)) {
+      e.target.dataset.raw = toNum(e.target.value) || '';
+      e.target.value = e.target.dataset.raw;
+    }
+  }, true);
+
+  tbody.addEventListener('blur', (e) => {
+    if (e.target.matches(principalSel) || e.target.matches(paymentSel)) {
+      const n = toNum(e.target.value);
+      e.target.value = n ? currencyFmt.format(n) : '';
+      const row = e.target.closest('tr.debt-row');
+      if (row) recalcRow(row);
+    }
+  }, true);
+
+  // Handle row deletion via the first-column × button
+  tbody.addEventListener('click', (e) => {
+    const delBtn = e.target.closest('.delete-row');
+    if (!delBtn) return;
+    const row = delBtn.closest('tr.debt-row');
+    if (row) {
+      row.remove();
+      recalcAll();
     }
   });
 
