@@ -5,6 +5,16 @@
   const rowTemplate = document.getElementById('expenseRowTemplate');
   const addRowBtn = document.getElementById('addRowBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
+
+  // === Progress helper (localStorage) ===
+  function markStepComplete(stepKey) {
+    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
+    if (!completed.includes(stepKey)) {
+      completed.push(stepKey);
+      localStorage.setItem("completedSteps", JSON.stringify(completed));
+    }
+  }
+
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
 
   const elEssential = document.getElementById('totalEssential');
@@ -133,6 +143,8 @@
     })
       .then(res => res.json())
       .then(data => {
+        // Auto-apply progress: mark Expenses step complete on successful save
+        markStepComplete('expenses');
         if (data?.redirect) {
           window.location.href = data.redirect;
         } else {
