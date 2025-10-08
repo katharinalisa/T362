@@ -7,6 +7,16 @@
   const clearBtn = document.getElementById('clearAllBtn');
   const loadBtn  = document.getElementById('loadBtn');
   const saveBtn  = document.getElementById('saveSpendingBtn');
+
+  // === Progress helper (localStorage) ===
+  function markStepComplete(stepKey) {
+    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
+    if (!completed.includes(stepKey)) {
+      completed.push(stepKey);
+      localStorage.setItem("completedSteps", JSON.stringify(completed));
+    }
+  }
+
   const saveAndNextBtn  = document.getElementById('saveAndNextBtn');
   const refreshBudgetBtn = document.getElementById('refreshBudgetBtn');
 
@@ -129,6 +139,8 @@
     saveBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
+      if (data) { markStepComplete('super'); }
+      if (data) { markStepComplete('spending_allocation'); }
       if (data && !data.redirect) {
         alert(data.message || 'Spending allocation saved!');
       }
@@ -144,6 +156,8 @@
     saveAndNextBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
+      if (data) { markStepComplete('super'); }
+      if (data) { markStepComplete('spending_allocation'); }
       if (data?.redirect) {
         window.location.href = data.redirect; // should be /super_projection
       } else if (data) {
