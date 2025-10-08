@@ -6,6 +6,14 @@
   const yearsEl = document.getElementById('yearsPeriod');
   const addBtn  = document.getElementById('addRowBtn');
   const clearBtn= document.getElementById('clearAllBtn');
+  // === Progress helper (localStorage) ===
+  function markStepComplete(stepKey) {
+    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
+    if (!completed.includes(stepKey)) {
+      completed.push(stepKey);
+      localStorage.setItem("completedSteps", JSON.stringify(completed));
+    }
+  }
   const saveBtn = document.getElementById('saveEpicBtn');
   const backBtn = document.getElementById('backBtn');
   const loadBtn = document.getElementById('loadBtn');
@@ -37,7 +45,6 @@
 
   function clearAll() {
     tbody.innerHTML = '';
-    // ✅ Just one blank starter row
     addRow();
     recalcAll();
   }
@@ -105,7 +112,7 @@
   }
 
   // DB I/O
-  async function saveAll({ redirectAfter = false } = {}) {
+  async function saveAll({ redirectAfter = false, nextUrl = null } = {}) {
     const items = collectItems();
     const settings = { years: Math.max(1, Math.floor(num(yearsEl.value))) };
 
@@ -116,9 +123,12 @@
       });
       if (!res.ok) throw new Error();
       const data = await res.json();
-      if (redirectAfter && data?.redirect) {
-        window.location.href = data.redirect;
-        return;
+      if (redirectAfter) {
+        const target = nextUrl || data?.redirect;
+        if (target) {
+          window.location.href = target;
+          return;
+        }
       }
       alert('Saved.');
     } catch {
@@ -151,6 +161,7 @@
     saveBtn.textContent = 'Saving…';
     try {
       await saveAll({ redirectAfter: false });
+      markStepComplete('epic');
     } finally {
       saveBtn.disabled = false;
       saveBtn.textContent = original;
@@ -176,7 +187,9 @@
     saveAndNextBtn.disabled = true;
     saveAndNextBtn.textContent = 'Saving…';
     try {
-      await saveAll({ redirectAfter: true });
+      const nextUrl = saveAndNextBtn.dataset?.nextUrl || null;
+      await saveAll({ redirectAfter: true, nextUrl });
+      markStepComplete('epic');
     } finally {
       saveAndNextBtn.disabled = false;
       saveAndNextBtn.textContent = original;
