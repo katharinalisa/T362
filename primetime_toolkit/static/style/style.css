@@ -486,3 +486,10 @@ input:checked+.slider:before{transform:translateX(24px)}
 .progress-fill.animate {
   animation: progressPulse 2s infinite ease-in-out;
 }
+
+#progress-bar {
+  height: 10px;
+  background-color: #00897b;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
