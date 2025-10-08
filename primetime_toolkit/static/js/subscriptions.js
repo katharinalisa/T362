@@ -5,10 +5,16 @@
   const rowTemplate = document.getElementById('subsRowTemplate');
   const addRowBtn = document.getElementById('addRowBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
+  // === Progress helper (localStorage) ===
+  function markStepComplete(stepKey) {
+    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
+    if (!completed.includes(stepKey)) {
+      completed.push(stepKey);
+      localStorage.setItem("completedSteps", JSON.stringify(completed));
+    }
+  }
   const saveBtn = document.getElementById('saveSubscriptionsBtn');
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
-  const elTotalSubs = document.getElementById('totalSubs');
-
 
   if (!table || !tbody || !rowTemplate) return; // safety
 
@@ -58,7 +64,6 @@
     }
 
     tbody.appendChild(frag);
-    recalcTotals(); 
   }
 
   function clearAll() {
@@ -126,13 +131,6 @@
     recalcTotals();
   }
 
-  window.addEventListener('pageshow', (event) => {
-    if (event.persisted) {
-      window.location.reload();
-    }
-  });
-
-
   addRowBtn?.addEventListener('click', () => { addRow(); recalcTotals(); });
   clearAllBtn?.addEventListener('click', clearAll);
   tbody.addEventListener('input', onTbodyInput);
@@ -167,6 +165,7 @@
     saveAndNextBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
+      if (data) { markStepComplete('subscriptions'); }
       if (data?.redirect) {
         window.location.href = data.redirect; // e.g., /future_budget or next step
       } else if (data) {
@@ -184,6 +183,7 @@
     saveBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
+      if (data) { markStepComplete('subscriptions'); }
       if (data && !data.redirect) {
         alert(data.message || 'Subscriptions saved!');
       }
