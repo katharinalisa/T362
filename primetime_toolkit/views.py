@@ -878,7 +878,15 @@ def spending():
     return render_template('calculators/spending_allocation.html')
 
 
-# Save Spending Allocation and then move to Super Projection
+
+@views.route('/spending_allocation')
+@login_required
+def spending_allocation():
+    return redirect(url_for('views.spending'))
+
+
+
+# Save Spending Allocation and then move to summary
 @views.route('/save-spending', methods=['POST'])
 @login_required
 def save_spending():
@@ -886,20 +894,18 @@ def save_spending():
         payload = request.get_json(silent=True) or {}
         allocations = payload.get('allocations', [])
 
+
         # TODO: Persist to DB when you have a Spending model
         # For now just flash success
 
-        flash("Spending allocation saved successfully!", "success")
-        return jsonify({'redirect': url_for('views.super_projection')})
+        flash("Spending allocation saved successfully!", "success")   # debugging
+        return jsonify({'redirect': url_for('views.summary')}) 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 
-# Alias route for /spending_allocation to canonical /spending
-@views.route('/spending_allocation')
-@login_required
-def spending_allocation_alias():
-    return redirect(url_for('views.spending'))
+
+
 
 #---------------------------------------------------
 # ---- Super Projection  ----
@@ -950,7 +956,7 @@ def save_debt_paydown():
 
         db.session.commit()
         flash("Debt paydown data saved successfully!", "success")
-        return jsonify({"redirect": url_for('views.summary')}), 200
+        return jsonify({"redirect": url_for('views.enough_calculator')}), 200
 
     except Exception as e:
         db.session.rollback()
