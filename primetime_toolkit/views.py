@@ -322,12 +322,31 @@ def submit_assessment():
         key_strengths=key_strengths,
         key_weaknesses=key_weaknesses
     )
+
+
+#----------------------------------------------------------
+#-----Tracker------
     
 @views.route('/tracker')
 @login_required
 def tracker():
-    return render_template('calculators/tracker.html')
-#-------------------------------------------
+    instructions = [
+        {"title": "Life Expectancy", "description": "Use this estimator to determine your expected lifespan. Select your gender, input your age and the sheet will calculate your estimated years remaining and the approximate year you might reach that age using the benchmarks that were published in Prime Time: 27 Lessons for the New Midlife."},
+        {"title": "Assets", "description": "List everything you own that has a saleable value: your home, superannuation, investments, rental properties, cash and lifestyle assets. Indicate whether to include each in your net‑worth totals."},
+        {"title": "Liabilities & Savings", "description": "Record every debt (mortgage, loans, credit cards) and your savings or investment contributions. Include interest rates, terms and monthly repayments."},
+        {"title": "Current Income", "description": "Enter all sources of take‑home income and specify how often they are paid. Tick “Include” to incorporate them in the budget calculations."},
+        {"title": "Current Expenses", "description": "Itemise your spending by category and frequency. The sheet converts different payment frequencies into annual and weekly amounts and summarises essentials vs discretionary costs."},
+        {"title": "Subscriptions", "description": "Track recurring services or direct debits. Specify the amount and frequency; the sheet calculates annual totals."},
+        {"title": "Future Budget", "description": "Plan your cost of living for each life phase. Enter baseline living costs, one‑off costs per year and epic experiences per year along with the number of years you expect to spend in that phase."},
+        {"title": "Epic & One-off", "description": "List specific one‑off costs and epic experiences. Select how often they occur (once, every year or every second year) and whether to include them; the sheet calculates the total cost by multiplying annual items by 10 years and every‑second‑year items by 5."},
+        {"title": "Income Layers", "description": "Think about how different income sources will support you over time. Enter the age ranges for each layer (employment income, super pension, investment income, Age Pension, rental/business income and other) and the estimated annual amounts."},
+        {"title": "Spending Allocation", "description": "Allocate your spending across categories (cost of living, lifestyle discretionary, saving & investing, health & care and other) for each phase. Compare your allocations against your future budget."},
+        {"title": "Summary", "description": "See your big financial picture at a glance: the value of your home, assets (excluding home and super), super balance, liabilities, net worth, income, expenses and your annual and monthly surplus or deficit."},
+        {"title": "Super Projection", "description": "Forecast how your superannuation might grow over time. Input your starting balance, expected annual return, annual contributions and the number of years; the sheet builds a year‑by‑year projection and chart."},
+        {"title": "Debt Paydown", "description": "Estimate how long it will take to repay your debts. For each debt, enter the principal, interest rate and monthly payment; the sheet calculates the number of years to pay it off using Excel’s NPER function."},
+        {"title": "Enough Calculator", "description": "Estimate the lump sum needed to fund your retirement. Use the annual spending from your Future Budget or input your own amount, set your net real return assumption, and adjust for the Age Pension or other income and any part‑time work. The sheet shows both a rule‑of‑thumb and an annuity‑based lump sum."}
+    ]
+    return render_template('calculators/tracker.html', instructions=instructions)
 
 
 
