@@ -73,15 +73,12 @@
 </div>
 
   <div class="d-flex justify-content-between align-items-center gap-2 mt-3">
-    <button type="button" id="backBtn" class="btn btn-outline-secondary">Back</button>
+    <a href="{{ url_for('views.super_projection') }}" class="btn btn-outline-secondary" style="text-decoration: none;">Back</a>
     <div class="ms-auto d-flex gap-2">
       <button id="saveAndNextBtn" class="btn btn-primary" type="button">Save &amp; Next</button>
     </div>
   </div>
   <br><br>
 
-<script>
-  document.getElementById('backBtn')?.addEventListener('click', () => history.back());
-</script>
 <script src="{{ url_for('static', filename='js/debt_paydown.js') }}"></script>
 {% endblock %}
