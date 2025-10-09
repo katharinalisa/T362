@@ -22,7 +22,7 @@
         <div class="step-card d-flex flex-column justify-content-between h-100">
           <div>
             <div class="card-icon" aria-hidden="true"></div>
-            <div class="step-number">Step 1</div>
+            <div class="step-number">Step 2</div>
             <h5 class="fw-bold mb-2">Life Expectancy</h5>
             <p>Estimate your expected lifespan using age &amp; gender to inform long-term planning.</p>
           </div>
@@ -34,7 +34,7 @@
         <div class="step-card d-flex flex-column justify-content-between h-100">
           <div>
             <div class="card-icon" aria-hidden="true"></div>
-            <div class="step-number">Step 2</div>
+            <div class="step-number">Step 3</div>
             <h5 class="fw-bold mb-2">Assets</h5>
             <p>What you own (cash, bank accounts, investments, car, property, etc.). Helps build your <strong>Net Worth</strong>.</p>
           </div>
@@ -46,7 +46,7 @@
         <div class="step-card d-flex flex-column justify-content-between h-100">
           <div>
             <div class="card-icon" aria-hidden="true"></div>
-            <div class="step-number">Step 3</div>
+            <div class="step-number">Step 4</div>
             <h5 class="fw-bold mb-2">Liabilities &amp; Savings</h5>
             <p>What you owe (credit cards, loans, HECS/HELP, mortgage). Reducing liabilities increases <strong>Net Worth</strong>.</p>
           </div>
@@ -58,7 +58,7 @@
         <div class="step-card d-flex flex-column justify-content-between h-100">
           <div>
             <div class="card-icon" aria-hidden="true"></div>
-            <div class="step-number">Step 4</div>
+            <div class="step-number">Step 5</div>
             <h5 class="fw-bold mb-2">Current Income</h5>
             <p>Enter all take-home income and how often it’s paid to feed the budget maths.</p>
           </div>
@@ -70,7 +70,7 @@
         <div class="step-card d-flex flex-column justify-content-between h-100">
           <div>
             <div class="card-icon" aria-hidden="true"></div>
-            <div class="step-number">Step 5</div>
+            <div class="step-number">Step 6</div>
             <h5 class="fw-bold mb-2">Current Expenses</h5>
             <p>Itemise spending by category &amp; frequency; auto-converts to weekly and annual totals.</p>
           </div>
@@ -82,7 +82,7 @@
         <div class="step-card d-flex flex-column justify-content-between h-100">
           <div>
             <div class="card-icon" aria-hidden="true"></div>
-            <div class="step-number">Step 6</div>
+            <div class="step-number">Step 7</div>
             <h5 class="fw-bold mb-2">Subscriptions</h5>
             <p>Track recurring services/direct debits. Enter amount &amp; frequency; annual totals calculated.</p>
           </div>
@@ -94,7 +94,7 @@
         <div class="step-card d-flex flex-column justify-content-between h-100">
           <div>
             <div class="card-icon" aria-hidden="true"></div>
-            <div class="step-number">Step 7</div>
+            <div class="step-number">Step 8</div>
             <h5 class="fw-bold mb-2">Future Budget</h5>
             <p>Plan cost of living for each life phase, including annual/one-off and epic experiences.</p>
           </div>
@@ -106,7 +106,7 @@
         <div class="step-card d-flex flex-column justify-content-between h-100">
           <div>
             <div class="card-icon" aria-hidden="true"></div>
-            <div class="step-number">Step 8</div>
+            <div class="step-number">Step 9</div>
             <h5 class="fw-bold mb-2">Epic &amp; Doc</h5>
             <p>List major one-time costs &amp; epic experiences; the sheet scales them to multi-year totals.</p>
           </div>
@@ -118,7 +118,7 @@
         <div class="step-card d-flex flex-column justify-content-between h-100">
           <div>
             <div class="card-icon" aria-hidden="true"></div>
-            <div class="step-number">Step 9</div>
+            <div class="step-number">Step 10</div>
             <h5 class="fw-bold mb-2">Income Layers</h5>
             <p>Model how income sources change over time (employment, super, investments, pension, rent).</p>
           </div>
@@ -130,7 +130,7 @@
         <div class="step-card d-flex flex-column justify-content-between h-100">
           <div>
             <div class="card-icon" aria-hidden="true"></div>
-            <div class="step-number">Step 10</div>
+            <div class="step-number">Step 11</div>
             <h5 class="fw-bold mb-2">Spending Allocation</h5>
             <p>Allocate spending by category for each phase and compare to your future budget.</p>
           </div>
@@ -142,31 +142,7 @@
         <div class="step-card d-flex flex-column justify-content-between h-100">
           <div>
             <div class="card-icon" aria-hidden="true"></div>
-            <div class="step-number">Step 11</div>
-            <h5 class="fw-bold mb-2">Super Projection</h5>
-            <p>Forecast super growth over time using contributions, returns and years until retirement.</p>
-          </div>
-          <a href="{{ url_for('views.super') }}" class="btn btn-start mt-3 align-self-start">Start</a>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="step-card d-flex flex-column justify-content-between h-100">
-          <div>
-            <div class="card-icon" aria-hidden="true"></div>
             <div class="step-number">Step 12</div>
-            <h5 class="fw-bold mb-2">Debt Paydown</h5>
-            <p>Estimate time to repay debts using principal, rate and payment (NPER-based schedule).</p>
-          </div>
-          <a href="{{ url_for('views.debt_paydown') }}" class="btn btn-start mt-3 align-self-start">Start</a>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="step-card d-flex flex-column justify-content-between h-100">
-          <div>
-            <div class="card-icon" aria-hidden="true"></div>
-            <div class="step-number">Step 13</div>
             <h5 class="fw-bold mb-2">Summary</h5>
             <p>See the big picture: assets, liabilities, net worth, income, expenses and surplus/deficit.</p>
           </div>
@@ -178,7 +154,32 @@
         <div class="step-card d-flex flex-column justify-content-between h-100">
           <div>
             <div class="card-icon" aria-hidden="true"></div>
+            <div class="step-number">Step 13</div>
+            <h5 class="fw-bold mb-2">Super Projection</h5>
+            <p>Forecast super growth over time using contributions, returns and years until retirement.</p>
+          </div>
+          <a href="{{ url_for('views.super') }}" class="btn btn-start mt-3 align-self-start">Start</a>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="step-card d-flex flex-column justify-content-between h-100">
+          <div>
+            <div class="card-icon" aria-hidden="true"></div>
             <div class="step-number">Step 14</div>
+            <h5 class="fw-bold mb-2">Debt Paydown</h5>
+            <p>Estimate time to repay debts using principal, rate and payment (NPER-based schedule).</p>
+          </div>
+          <a href="{{ url_for('views.debt_paydown') }}" class="btn btn-start mt-3 align-self-start">Start</a>
+        </div>
+      </div>
+
+
+      <div class="col-md-4">
+        <div class="step-card d-flex flex-column justify-content-between h-100">
+          <div>
+            <div class="card-icon" aria-hidden="true"></div>
+            <div class="step-number">Step 15</div>
             <h5 class="fw-bold mb-2">Enough Calculator</h5>
             <p>Estimate the lump sum needed to fund retirement using spending needs and return/pension assumptions.</p>
           </div>
@@ -191,8 +192,8 @@
           <div>
             <div class="card-icon" aria-hidden="true"></div>
             <div class="step-number">Step 15</div>
-            <h5 class="fw-bold mb-2">Net Worth</h5>
-            <p>Your overall position at a point in time.</p>
+            <h5 class="fw-bold mb-2">Go to Dashboards</h5>
+            <p>Visit your Dashboard to view your results visually.</p>
           </div>
           <a href="#" class="btn btn-start mt-3 align-self-start">Start</a>
         </div>
@@ -200,6 +201,8 @@
     </div>
   </div>
 </section>
+<br><br>
+
 <script>
 const TOTAL_STEPS = 12;
 
