@@ -417,13 +417,13 @@ input:checked+.slider:before{transform:translateX(24px)}
 }
 
 /* Buttons */
-.tracker-overview .btn-start{
+.btn-start{
   background-color: var(--brand, #009688);
   border: none;
   color:#fff;
-  font-weight:700;
+  font-weight:500;
 }
-.tracker-overview .btn-start:hover{
+.btn-start:hover{
   filter:brightness(.95);
   color:#fff;
 }

@@ -1,90 +1,145 @@
 {% extends 'layout.html' %} {% block content %}
 
 <style>
-    .dashboard-chart {
-      box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18);
-      transition: box-shadow 0.2s, transform 0.2s;
-      border-radius: 30px;
-      border: none;
-      background: #fff;
-    }
-    .dashboard-chart:hover {
-      box-shadow: 0 16px 48px rgba(34, 60, 80, 0.32);
-      transform: translateY(-8px) scale(1.04);
-      z-index: 2;
-    }
+  .dashboard-chart {
+    box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18);
+    transition: box-shadow 0.2s, transform 0.2s;
+    border-radius: 30px;
+    border: none;
+    background: #fff;
+  }
+  .dashboard-chart:hover {
+    box-shadow: 0 16px 48px rgba(34, 60, 80, 0.32);
+    transform: translateY(-8px) scale(1.04);
+    z-index: 2;
+  }
+
+  @keyframes fadeInSlow {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in-slow {
+    animation: fadeInSlow 1.5s ease-out forwards;
+  }
+
+  .option-card {
+    background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .option-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08);
+  }
+
+  .btn-start {
+    background-color: #009687;
+    color: #fff;
+    border: none;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+  }
+
+  .btn-start:hover {
+    background-color: #007f73; /* darker shade for hover */
+    color: #fff;
+  }
+
+
+
 </style>
 
 <section
   class="hero-section text-center py-4"
-  style="background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%); width: 100vw; margin-left: calc(-50vw + 50%); margin-top: -28px">
-  <div class="container"><br>
+  style="width: 100vw; margin-left: calc(-50vw + 50%); margin-top: -28px">
+  <div class="container"><br><br>
     <h1
       class="display-1 section-title mb-2"
       style="font-size: 3rem; font-weight: 800; letter-spacing: 1px;"
     >
       Your Financial Dashboard
     </h1>
-    <p style ="color:#787878">
-      View your financial insights and track your progress over time. We recommend to calculate your finances at least every 6 months.
-    </p><br>
+    {% if data.net_worth is defined and data.net_worth is not none %}
+      <p style="color:#787878">
+        Here you can view your financial stability and track your progress over time. We recommend calculating your finances at least every 6 months.
+      </p>
+    {% else %}
+      <br>
+      <p class="fade-in-slow" style="font-size: 17px;">
+        It looks like you haven’t uploaded a spreadsheet nor completed the web calculators yet.<br>
+        Please choose one of the below options to get started and come back to your <strong>Dashboard</strong> once you have completed one of them.<br>
+        This dashboard provides insights into your financial stability and helps you track your progress over time.
+      </p>
+    {% endif %}
   </div>
 </section>
-<br />
 
-<!-- Upload Spreadsheet Section -->
-<div class="container" style="margin-bottom: 0.5rem">
-  <div class="row justify-content-center align-items-center">
-    <div class="col-md-6">
-      <div
-        class="card mx-auto shadow-lg border-0 rounded-4 p-4 mb-2"
-        style="
-          max-width: 400px;
-          background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%);
-          max-height: 200px; min-height: 200px;">
-        <div class="card-body text-center">
-          <span class="fs-1 text-primary mb-2"><i class="bi bi-upload"></i></span>
-          <h6><strong>Upload Completed Spreadsheet</strong></h6>
-          <br/>
-          <form
-            action="{{ url_for('views.upload_excel') }}"
-            method="POST"
-            enctype="multipart/form-data"
-          >
-            <input
-              type="file"
-              name="budget_file"
-              id="budget_file"
-              class="form-control mb-2 rounded-pill"
-              accept=".xlsx,.xls"
-              required
-            />
-            <button type="submit" id="uploadBtn" class="btn btn-success rounded-pill px-4" disabled>
+
+<div class="container my-5">
+  <div class="row justify-content-center align-items-stretch g-4">
+    <!-- Download Spreadsheet -->
+    <div class="col-md-5 col-lg-4 d-flex">
+      <div class="card option-card compact-card text-center w-100">
+        <div class="card-body d-flex flex-column justify-content-between">
+          <div>
+            <span class="fs-2 text-primary"><i class="bi bi-file-earmark-arrow-down"></i></span>
+            <h6 class="fw-bold mt-3">Get Spreadsheet by Email</h6>
+            <p class="small text-muted">Receive our Excel worksheet, fill it out offline, and upload it later for analysis.</p>
+          </div>
+          <form id="spreadsheetForm" action="{{ url_for('views.send_email') }}" method="POST">
+            <input type="email" name="email" class="form-control mb-2 rounded-pill" placeholder="Your email" required>
+            <button type="submit" class="btn btn-start rounded-pill px-4 mt-2" style="width:310px;">Send Spreadsheet</button>
+            <div id="loadingSpinner" style="display:none; margin-top:10px;">
+              <div class="spinner-border text-info" role="status">
+                <span class="visually-hidden">Sending...</span>
+              </div>
+              <span class="ms-2">Sending...</span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Web Calculator -->
+    <div class="col-md-5 col-lg-4 d-flex">
+      <div class="card option-card compact-card text-center w-100">
+        <div class="card-body d-flex flex-column justify-content-between">
+          <div>
+            <span class="fs-2 text-success"><i class="bi bi-calculator"></i></span>
+            <h6 class="fw-bold mt-3">Use Web Calculator</h6>
+            <p class="small text-muted">Step through each calculator to build your financial roadmap manually.</p>
+          </div>
+          <a href="{{ url_for('views.tracker') }}" class="btn btn-start rounded-pill px-4 mt-2" style="text-decoration: none;">Start Online Calculators</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card upload-highlight shadow-lg border-0 rounded-4 p-4 text-center">
+        <div class="card-body d-flex flex-column align-items-center">
+          <span class="fs-1 text-brand mb-3"><i class="bi bi-upload"></i></span>
+          <h4 class="fw-bold mb-2">Have you completed your spreadsheet?</h4>
+          <p class="text-muted mb-4" style="max-width: 500px;">
+            If you have completed your spreadsheet, upload it here to unlock your personalized dashboard and insights.
+          </p>
+          <form action="{{ url_for('views.upload_excel') }}" method="POST" enctype="multipart/form-data" style="width: 100%; max-width: 500px;">
+            <input type="file" name="budget_file" id="budget_file" class="form-control mb-3 rounded-pill" accept=".xlsx,.xls" required />
+            <button type="submit" id="uploadBtn" class="btn btn-brand rounded-pill px-4 py-2 w-100" disabled>
               Upload Spreadsheet
             </button>
           </form>
         </div>
       </div>
     </div>
-    <div class="col-md-6" style="margin-left: -10px">
-      <div
-        class="card mx-auto shadow-lg border-0 rounded-4 p-4 mb-2"
-        style="
-          max-width: 400px;
-          background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%);
-          max-height: 200px; min-height: 200px;">
-        <div class="card-body text-center">
-          <span class="fs-1 text-success mb-2"><i class="bi bi-calculator"></i></span>
-          <h6><strong>Use Web Calculator</strong></h6>
-          <br />
-          <a href="#" class="btn btn-success rounded-pill px-4 py-2">
-            Use Web Calculator
-          </a>
-        </div>
-      </div>
-    </div>
   </div>
-</div>
+</div><br><br>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -104,6 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+{% if data.net_worth is defined and data.net_worth is not none %}
 <div class="container-fluid py-4">
   <!-- First row: three charts -->
   <div class="row g-4 mb-5">
@@ -112,8 +168,13 @@ document.addEventListener('DOMContentLoaded', function() {
         style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 style="margin-top: -35px" class="mb-2">Current Net Worth</h5><br>
         <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
-          ${{ "{:,.2f}".format(data.net_worth) }}
+          {% if data.net_worth is defined and data.net_worth is not none %}
+            ${{ "{:,.2f}".format(data.net_worth) }}
+          {% else %}
+            <span class="text-muted">Please upload a spreadsheet to calculate your net worth</span>
+          {% endif %}
         </div>
+
         <span class="text-muted mt-2">Calculated from your assets and liabilities</span>
         <canvas id="netWorthChart" style="max-width: 100%; max-height: 220px; display:none;"></canvas>
       </div>
@@ -130,7 +191,11 @@ document.addEventListener('DOMContentLoaded', function() {
         style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Monthly Savings</h5>
         <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
-          ${{ "{:,.2f}".format(data.monthly_savings) }}
+          {% if data.net_worth is defined and data.net_worth is not none %}
+            ${{ "{:,.2f}".format(data.net_worth) }}
+          {% else %}
+            <span class="text-muted">Please upload a spreadsheet to calculate your net worth</span>
+          {% endif %}
         </div>
         <span class="text-muted mt-2">Income minus expenses</span>
       </div>
@@ -196,9 +261,11 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 </div>
+{% endif %}
 
 <!-- Chart.js scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
 const dashboardData = {{ data|tojson }};
 console.log(dashboardData);
