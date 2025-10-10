@@ -314,7 +314,7 @@ def submit_assessment():
 
     # 6) Render template with required context (category_scores always present)
     return render_template(
-        'selftest/summary.html',
+        'selftest/self-summary.html',
         result_message=result_message,
         band=band,
         total_score=total_percent,            

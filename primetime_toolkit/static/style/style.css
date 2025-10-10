@@ -98,7 +98,7 @@ a:hover{text-decoration:underline}
 .dropdown-menu{background:#fefefe;border:1px solid var(--primary-color)}
 
 .navbar-custom{
-  background:linear-gradient(90deg,var(--darker-blue),var(--brand));
+  background:var(--darker-blue);
   padding:2.2rem 1rem;min-height:90px
 }
 .navbar-custom .navbar-brand,
@@ -422,10 +422,14 @@ input:checked+.slider:before{transform:translateX(24px)}
   border: none;
   color:#fff;
   font-weight:500;
+  text-decoration: none;
 }
 .btn-start:hover{
   filter:brightness(.95);
   color:#fff;
+  text-decoration: none;
+  background-color: #006f65;
+  
 }
 
 /* Section titles (scoped to avoid override of global .section-title) */

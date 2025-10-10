@@ -3,11 +3,17 @@
 {% block content %}
 <div class="summary-page" style="background: var(--page-bg); padding: 0;">
   <div class="container-summary" style="display: flex; gap: 28px; align-items: flex-start; justify-content: flex-start;">
-    <div class="main-col" style="flex:1">
+    <div class="main-col" style="flex:1"><br>
+      <h1
+      class="display-1 section-title mb-2"
+      style="font-size: 3rem; font-weight: 800; text-align: center; letter-spacing: -0.6px;"
+    >
+      Your Self-Assessment Summary
+    </h1>
 
       <!-- Overall result card-->
       <section id="overview" class="card" style="text-align:center; margin:40px 0;">
-        <h2 class="section-title" style="color: var(--muted); margin-bottom:12px; font-size:22px; font-weight:600;">
+        <h2 class="section-title" style="color: var(--muted); margin-bottom:12px; font-size:20px; font-weight:400;">
           Your Prime Time Readiness Type is:
         </h2>
         {% if result_message == "Proactive" %}
@@ -112,25 +118,26 @@
       <br>
       <section class="card summary-section" id="next-steps">
         <div class="section-title">
-          <h3>Recommended next steps</h3>
+          <h3>Next steps</h3>
         </div>
-        <p class="muted">Actionable, practical tasks you can complete in the next 30–90 days.</p>
+        <p class="muted">Here are some actionable, practical tasks you can complete in the next 30 days.</p>
         <ol style="margin-top:12px">
-          <li><strong>Track one month of spending</strong> — use our Budget Planner template to capture where money actually goes.</li>
-          <li><strong>Find your super</strong> — use your super fund lookup and set a quarterly check reminder.</li>
-          <li><strong>Build a starter emergency fund</strong> — set up an automatic transfer (even 2–5% of income helps).</li>
+          <li><strong>Clarify your financial goals</strong> — write down what financial independence means to you and set a long-term vision.</li>
+          <li><strong>Track your spending</strong> — identify patterns and track your spending for the next 30 days.</li>
+          <li><strong>Use our Budget Planner</strong> — access the Budget Planner tool in your Dashboard to create a personalized budget overview.</li>
         </ol>
-        <div class="cta-row">
-          <form method="POST" action="{{ url_for('views.send_email') }}">
-            <button class="btn btn-primary" type="submit">Email full report</button>
-          </form>
-          <a class="btn btn-outline" href="{{ url_for('views.future_budget') }}">Download Budget Template</a>
-        </div>
+        <p>To get started, go to your <strong>Dashboard</strong> and choose one of the given options to start your Prime Time journey.</p>
+      <div class="cta-row text-center my-5">
+        <a href="{{ url_for('views.dashboard') }}" class="btn btn-start px-5 py-3 rounded-pill">
+          Go to your Dashboard
+        </a>
+      </div>
       </section>
     </div>
   </div>
   <br><br>
 </div>
+
 
 <!--sidebar active link tracking -->
 <script>

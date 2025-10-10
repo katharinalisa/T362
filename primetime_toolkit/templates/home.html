@@ -29,66 +29,26 @@
   </div><br><br>
 </section>
 
-
-<section class="slice full-bleed">
-  <div class="content-wide">
-    <div class="row g-4 justify-content-center">
-      <div class="col-md-6">
-        <div class="card-soft p-4 text-center h-100" style="box-shadow: 0 8px 32px rgba(34,60,80,0.12); border-radius: 18px;">
-          <span class="fs-1 text-primary mb-3"><i class="bi bi-file-earmark-arrow-down"></i></span>
-          <h3>Get Spreadsheet by Email</h3>
-          <p style="color:#787878">Receive our Excel tool via email, fill it out offline, and return to upload it for instant analysis.</p>
-          <form id="spreadsheetForm" action="{{ url_for('views.send_email') }}" method="POST" class="mb-2">
-            <input type="email" name="email" class="form-control mb-2 rounded-pill" placeholder="Your email" required>
-            <button type="submit" class="btn btn-warning px-4">Send Spreadsheet</button>
-            <div id="loadingSpinner" style="display:none; margin-top:10px;">
-              <div class="spinner-border text-info" role="status">
-                <span class="visually-hidden">Sending...</span>
-              </div>
-              <span style="margin-left:8px;">Sending...</span>
-            </div>
-          </form>
-
-          <script>
-          document.getElementById('spreadsheetForm').addEventListener('submit', function() {
-            document.getElementById('loadingSpinner').style.display = 'inline-block';
-          });
-          </script>
-
-        </div>
-      </div>
-      
-      <div class="col-md-6">
-        <div class="card-soft p-4 text-center h-100" style="box-shadow: 0 8px 32px rgba(34,60,80,0.12); border-radius: 18px;">
-          <span class="fs-1 text-success mb-3"><i class="bi bi-calculator"></i></span>
-          <h3>Use Web Calculators</h3>
-          <p style="color:#787878">Enter your financial details online using our calculators for instant results.</p><br>
-          <a href="{{ url_for('views.tracker') }}" class="btn btn-warning px-4" style="margin-top:19.5px">Start Web Calculators</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<br><br>
 
 <!-- Upload Spreadsheet Section -->
-<section style="background-color:#eafffe; width: 100vw; margin-left: calc(-50vw + 50%);"><br><br><br>
-  <div>
-    <div class="text-center">
-      <h5>Upload Your Completed Excel Spreadsheet on the Next Page</h5>
-      <p class="lead-p mb-3">Go to Dashboards to upload your spreadsheet and view your results.</p>
-        <a href="{{ url_for('views.dashboard') }}" class="btn-login btn-lg shadow"
-          style="font-size:1.3rem; padding: 1rem 2rem;">
-          Go to Dashboards
-        </a>
+<section style="background-color:#f0fffe; width: 100vw; margin-left: calc(-50vw + 50%);"><br><br><br>
+  <div class="text-center">
+    <h5>Upload Your Completed Excel Spreadsheet on the Next Page</h5>
+    <p class="lead-p mb-3">Go to Dashboards to upload your spreadsheet and view your results.</p>
+      <a href="{{ url_for('views.dashboard') }}" class="btn-login btn-lg shadow"
+        style="font-size:1.3rem; padding: 1rem 2rem;">
+        Go to Dashboards
+      </a>
   </div><br><br><br>
 </section><br><br><br>
 
 <!-- Newsletter Subscription Section -->
-<section class="gradient-section2 text-center py-5" style="border-radius:30px;">
+<section class="gradient-section2 text-center py-5" style="border-radius:30px; max-width:900px; min-width:900px; align-items:center; margin-left:150px;">
   <div class="container">
     <h2 class="fw-bold mb-2" style="color:#ebe7e4;">Don't miss out on Bec Wilson's Newsletters</h2>
     <h4 class="fw-bold mb-2" style="color:#ebe7e4;">Get the latest News straight from Bec's Desk</h4><br>
-    <button id="subscribeBtn" class="btn btn-light btn-lg shadow-sm">Subscribe Now</button>
+    <button id="subscribeBtn" class="btn-login btn-lg shadow">Subscribe Now</button>
     <form id="subscribeForm" action="{{ url_for('views.subscribe') }}" method="POST" style="display: none; margin-top: 1rem;">
       {% if current_user.is_authenticated %}
         <input type="hidden" name="email" value="{{ current_user.email }}">
@@ -116,14 +76,14 @@
 {% endif %}
 
 <!-- Learning Hub Section -->
-<section class="slice white-bg full-bleed" style="background-color:#eafffe; width: 100vw; margin-left: calc(-50vw + 50%);">
+<section class="slice white-bg full-bleed" style="background-color:#f0fffe; width: 100vw; margin-left: calc(-50vw + 50%);">
   <div class="content-wide text-center">
     <h2 class="section-title mb-3">The New Prime Time Learning Hub Is Here!</h2>
     <p class="lead-p mb-4">Explore articles, podcasts, and webinars from Bec Wilson to enhance your financial knowledge and retirement planning.</p>
     <a href="{{ url_for('views.learninghub') }}"
-        class="btn btn-info btn-lg px-5 shadow"
-        style="font-size:1.15rem; font-weight:600; letter-spacing:0.5px;">
-      <i class="bi bi-arrow-right-circle me-2"></i>Visit Learning Hub
+        class="btn-login btn-lg shadow"
+        style="font-size:1.15rem; font-weight:600; padding: 1rem 2rem;">
+      Visit Learning Hub
     </a>
   </div>
 </section><br><br>
