@@ -226,12 +226,12 @@ def submit_assessment():
 
     if max_q >= 24:
         cat_ranges = {
-            "purpose": range(1, 11),
-            "spending": range(11, 21),
-            "saving": range(21, 31),
-            "debt": range(31, 41),
-            "super": range(41, 51),
-            "protection": range(51, 61),
+            "purpose": [1, 2, 3, 4],
+            "spending": [5, 6, 7, 8],
+            "saving": [9, 10, 11, 12],
+            "debt": [13, 14, 15, 16],
+            "super": [17, 18, 19, 20],
+            "protection": [21, 22, 23, 24],
         }
     else:
 
