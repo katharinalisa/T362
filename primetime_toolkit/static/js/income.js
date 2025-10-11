@@ -5,14 +5,6 @@
   const rowTemplate = document.getElementById('incomeRowTemplate');
   const addRowBtn = document.getElementById('addRowBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
-  // === Progress helper (localStorage) ===
-  function markStepComplete(stepKey) {
-    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
-    if (!completed.includes(stepKey)) {
-      completed.push(stepKey);
-      localStorage.setItem("completedSteps", JSON.stringify(completed));
-    }
-  }
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
   const saveBtn = document.getElementById('saveIncomeBtn');
 
@@ -29,27 +21,33 @@
     return Number.isFinite(n) ? Number(n.toFixed(2)) : 0;
   };
 
+  function markStepComplete(stepKey) {
+    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
+    if (!completed.includes(stepKey)) {
+      completed.push(stepKey);
+      localStorage.setItem("completedSteps", JSON.stringify(completed));
+    }
+  }
+
   // ===== Rows =====
   function addRow(prefill = {}) {
     const frag = rowTemplate.content.cloneNode(true);
     const row = frag.querySelector('tr.income-row');
 
     row.querySelector('.source').value = prefill.source || '';
-    if (prefill.amount != null && prefill.amount !== '') {
-      row.querySelector('.amount').value = to2(prefill.amount).toFixed(2);
-    } else {
-      row.querySelector('.amount').value = '';
-    }
+    row.querySelector('.amount').value = prefill.amount ? to2(prefill.amount).toFixed(2) : '';
     row.querySelector('.frequency').value = prefill.frequency || '';
     row.querySelector('.notes').value = prefill.notes || '';
     row.querySelector('.include-toggle').checked = prefill.include !== false;
 
     tbody.appendChild(frag);
+    updateTotals();
   }
 
   function clearAll() {
     tbody.innerHTML = '';
-    addRow(); 
+    addRow();
+    updateTotals();
   }
 
   function getRows() {
@@ -62,20 +60,72 @@
     }));
   }
 
+  function updateTotals() {
+    const rows = Array.from(tbody.querySelectorAll('tr.income-row'));
+    let annualTotal = 0;
+    let weeklyTotal = 0;
+
+    rows.forEach(row => {
+      const amount = parseAmount(row.querySelector('.amount')?.value);
+      const frequency = row.querySelector('.frequency')?.value.toLowerCase();
+      const include = row.querySelector('.include-toggle')?.checked;
+
+      let annual = 0;
+      let weekly = 0;
+
+      switch (frequency) {
+        case 'weekly':
+          weekly = amount;
+          annual = amount * 52;
+          break;
+        case 'fortnightly':
+          weekly = amount / 2;
+          annual = amount * 26;
+          break;
+        case 'monthly':
+          weekly = amount / 4.33;
+          annual = amount * 12;
+          break;
+        case 'quarterly':
+          weekly = amount / 13;
+          annual = amount * 4;
+          break;
+        case 'annually':
+          weekly = amount / 52;
+          annual = amount;
+          break;
+      }
+
+      // calculate annual and week
+      row.querySelector('.annual').value = annual.toFixed(2);
+      row.querySelector('.weekly').value = weekly.toFixed(2);
+
+      if (include) {
+        annualTotal += annual;
+        weeklyTotal += weekly;
+      }
+    });
+
+    document.getElementById('totalAnnualIncome').textContent = `$${annualTotal.toFixed(2)}`;
+    document.getElementById('totalWeeklyIncome').textContent = `$${weeklyTotal.toFixed(2)}`;
+  }
+
+  
   // ===== Events =====
   addRowBtn?.addEventListener('click', () => addRow());
   clearAllBtn?.addEventListener('click', clearAll);
 
   tbody.addEventListener('click', (e) => {
     const btn = e.target.closest('.remove-row');
-    if (!btn) return;
-    const row = btn.closest('tr.income-row');
-    if (row) row.remove();
+    if (btn) {
+      const row = btn.closest('tr.income-row');
+      if (row) row.remove();
+      updateTotals();
+    }
   });
 
   tbody.addEventListener('input', (e) => {
     const t = e.target;
-    if (!t) return;
     if (t.classList.contains('amount')) {
       let v = String(t.value).replace(/[^0-9.]/g, '');
       const firstDot = v.indexOf('.');
@@ -88,15 +138,15 @@
       }
       t.value = v;
     }
+    updateTotals();
   });
 
-  // On blur, enforce exactly 2 decimals
   tbody.addEventListener('blur', (e) => {
     const t = e.target;
-    if (!t) return;
     if (t.classList.contains('amount')) {
       const n = parseAmount(t.value);
       t.value = Number.isFinite(n) ? n.toFixed(2) : '';
+      updateTotals();
     }
   }, true);
 
@@ -115,7 +165,7 @@
         return null;
       }
       if (!res.ok) throw new Error();
-      return await res.json(); // { message, redirect? }
+      return await res.json();
     } catch {
       alert('Error saving income.');
       return null;
@@ -128,9 +178,9 @@
     saveAndNextBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
-      if (data) { markStepComplete('income'); }
+      if (data) markStepComplete('income');
       if (data?.redirect) {
-        window.location.href = data.redirect; // e.g., /expenses or next step
+        window.location.href = data.redirect;
       } else if (data) {
         alert(data.message || 'Income saved!');
       }
@@ -146,7 +196,7 @@
     saveBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
-      if (data) { markStepComplete('income'); }
+      if (data) markStepComplete('income');
       if (data && !data.redirect) {
         alert(data.message || 'Income saved!');
       }
@@ -158,14 +208,16 @@
 
   // ===== Init =====
   tbody.innerHTML = '';
-  if (window.incomePrefill && Array.isArray(window.incomePrefill) && window.incomePrefill.length > 0) {
+  if (window.incomePrefill?.length > 0) {
     window.incomePrefill.forEach(addRow);
   } else {
     addRow();
   }
-  // Ensure existing amounts display as 2dp on load
+
   tbody.querySelectorAll('.amount').forEach(inp => {
     const n = parseAmount(inp.value);
     inp.value = Number.isFinite(n) ? n.toFixed(2) : '';
   });
+
+  updateTotals();
 })();
