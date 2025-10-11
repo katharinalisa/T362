@@ -8,6 +8,15 @@
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
   const saveBtn = document.getElementById('saveFutureBudgetBtn');
 
+  // === Progress helper (localStorage) ===
+  function markStepComplete(stepKey) {
+    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
+    if (!completed.includes(stepKey)) {
+      completed.push(stepKey);
+      localStorage.setItem("completedSteps", JSON.stringify(completed));
+    }
+  }
+
   const totalYearsEl = document.getElementById('totalYears');
   const lifetimeTotalEl = document.getElementById('lifetimeTotal');
 
@@ -168,6 +177,7 @@
     saveAndNextBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
+      if (data) { markStepComplete('future_budget'); }
       if (data?.redirect) {
         window.location.href = data.redirect; // e.g., /epic or next step
       } else if (data) {
@@ -186,6 +196,7 @@
     saveBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
+      if (data) { markStepComplete('future_budget'); }
       if (data && !data.redirect) {
         alert(data.message || 'Future Budget saved!');
       }

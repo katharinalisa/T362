@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
 import json
-from primetime_toolkit.models import LifeExpectancy, db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience
+from primetime_toolkit.models import LifeExpectancy, db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience, DebtPaydown, EnoughCalculator
 from sqlalchemy import func, case
 from .excel_parser import parse_excel
 
@@ -314,7 +314,7 @@ def submit_assessment():
 
     # 6) Render template with required context (category_scores always present)
     return render_template(
-        'selftest/summary.html',
+        'selftest/self-summary.html',
         result_message=result_message,
         band=band,
         total_score=total_percent,            
@@ -322,12 +322,31 @@ def submit_assessment():
         key_strengths=key_strengths,
         key_weaknesses=key_weaknesses
     )
+
+
+#----------------------------------------------------------
+#-----Tracker------
     
 @views.route('/tracker')
 @login_required
 def tracker():
-    return render_template('calculators/tracker.html')
-#-------------------------------------------
+    instructions = [
+        {"title": "Life Expectancy", "description": "Use this estimator to determine your expected lifespan. Select your gender, input your age and the sheet will calculate your estimated years remaining and the approximate year you might reach that age using the benchmarks that were published in Prime Time: 27 Lessons for the New Midlife."},
+        {"title": "Assets", "description": "List everything you own that has a saleable value: your home, superannuation, investments, rental properties, cash and lifestyle assets. Indicate whether to include each in your net‑worth totals."},
+        {"title": "Liabilities & Savings", "description": "Record every debt (mortgage, loans, credit cards) and your savings or investment contributions. Include interest rates, terms and monthly repayments."},
+        {"title": "Current Income", "description": "Enter all sources of take‑home income and specify how often they are paid. Tick “Include” to incorporate them in the budget calculations."},
+        {"title": "Current Expenses", "description": "Itemise your spending by category and frequency. The sheet converts different payment frequencies into annual and weekly amounts and summarises essentials vs discretionary costs."},
+        {"title": "Subscriptions", "description": "Track recurring services or direct debits. Specify the amount and frequency; the sheet calculates annual totals."},
+        {"title": "Future Budget", "description": "Plan your cost of living for each life phase. Enter baseline living costs, one‑off costs per year and epic experiences per year along with the number of years you expect to spend in that phase."},
+        {"title": "Epic & One-off", "description": "List specific one‑off costs and epic experiences. Select how often they occur (once, every year or every second year) and whether to include them; the sheet calculates the total cost by multiplying annual items by 10 years and every‑second‑year items by 5."},
+        {"title": "Income Layers", "description": "Think about how different income sources will support you over time. Enter the age ranges for each layer (employment income, super pension, investment income, Age Pension, rental/business income and other) and the estimated annual amounts."},
+        {"title": "Spending Allocation", "description": "Allocate your spending across categories (cost of living, lifestyle discretionary, saving & investing, health & care and other) for each phase. Compare your allocations against your future budget."},
+        {"title": "Summary", "description": "See your big financial picture at a glance: the value of your home, assets (excluding home and super), super balance, liabilities, net worth, income, expenses and your annual and monthly surplus or deficit."},
+        {"title": "Super Projection", "description": "Forecast how your superannuation might grow over time. Input your starting balance, expected annual return, annual contributions and the number of years; the sheet builds a year‑by‑year projection and chart."},
+        {"title": "Debt Paydown", "description": "Estimate how long it will take to repay your debts. For each debt, enter the principal, interest rate and monthly payment; the sheet calculates the number of years to pay it off using Excel’s NPER function."},
+        {"title": "Enough Calculator", "description": "Estimate the lump sum needed to fund your retirement. Use the annual spending from your Future Budget or input your own amount, set your net real return assumption, and adjust for the Age Pension or other income and any part‑time work. The sheet shows both a rule‑of‑thumb and an annuity‑based lump sum."}
+    ]
+    return render_template('calculators/tracker.html', instructions=instructions)
 
 
 
@@ -399,10 +418,9 @@ def send_email():
 
 #--------------------------------------------------------
 #-------------------------------------------------------
-# Calculators
-
+# ------------WEB CALCULATOR------------
 #-----------------------------------------------------
-# life expectancy
+#------------ Life Expectancy ------------
 
 @views.route('/life')
 @login_required
@@ -436,7 +454,7 @@ def save_life_expectancy():
     return jsonify({'redirect': url_for('views.assets')})
 
 #------------------------------------------------------
-# Assets 
+#------------ Assets ------------
 
 @views.route('/assets')
 @login_required
@@ -621,18 +639,34 @@ def save_expenses():
 @login_required
 def subscriptions():
     rows = Subscription.query.filter_by(user_id=current_user.id).all()
-    subscriptions_data = [
-        {
-            "name": r.name,
-            "amount": r.amount,
-            "frequency": r.frequency,
-            "notes": r.notes,
-            "include": r.include,
-            "annual_amount": r.annual_amount,
-        } for r in rows
-    ]
+
+    if not rows:
+        # Inject one empty row if no data exists
+        subscriptions_data = [{
+            "name": "",
+            "provider": "",
+            "amount": 0,
+            "frequency": "monthly",
+            "notes": "",
+            "include": True,
+            "annual_amount": 0
+        }]
+    else:
+        subscriptions_data = [
+            {
+                "name": r.name,
+                "provider": r.provider,
+                "amount": r.amount,
+                "frequency": r.frequency,
+                "notes": r.notes,
+                "include": r.include,
+                "annual_amount": r.annual_amount,
+            } for r in rows
+        ]
+
     return render_template('calculators/subscriptions.html',
-                           subscriptions_data=subscriptions_data or [])
+                           subscriptions_data=subscriptions_data)
+
 
 
 @views.route('/save-subscriptions', methods=['POST'])
@@ -781,7 +815,7 @@ def save_epic():
         db.session.commit()
         flash('Epic experiences saved successfully!', 'success')
         # after Epic, your flow goes to Spending Allocation
-        return jsonify({'redirect': url_for('views.spending')})
+        return jsonify({'redirect': url_for('views.income_layers')})
     except Exception as e:
         db.session.rollback()
         import traceback; traceback.print_exc()
@@ -791,10 +825,46 @@ def save_epic():
 
 
 #---------------------------------------------------
+#------------ Enough Calculator------------
+@views.route('/enough_calculator')
+@login_required
+def enough_calculator():
+    rows = EnoughCalculator.query.filter_by(user_id=current_user.id)\
+        .order_by(EnoughCalculator.created_at.desc())\
+        .all()
+    latest = rows[0] if rows else None
+    return render_template('calculators/enough_calculator.html',
+                           enough=latest)
 
-@views.route('/calculator')                
-def calculator():                           
-    return render_template('calculators/calculator.html')
+@views.route('/save-enough_calculator', methods=['POST'])
+@login_required
+def save_enough_calculator():
+    try:
+        payload = request.get_json(silent=True) or {}
+        # Clear old rows for this user (keep only one snapshot if desired)
+        EnoughCalculator.query.filter_by(user_id=current_user.id).delete()
+
+        ec = EnoughCalculator(
+            user_id=current_user.id,
+            use_future_budget=payload.get('use_future_budget', 'Yes'),
+            manual_annual=float(payload.get('manual_annual') or 0),
+            real_rate=float(payload.get('real_rate') or 0),
+            years=int(payload.get('years') or 0),
+            pension=float(payload.get('pension') or 0),
+            part_time_income=float(payload.get('part_time_income') or 0),
+            part_time_years=float(payload.get('part_time_years') or 0),
+            shortfall=float(payload.get('shortfall') or 0),
+            lump_sum_rule=float(payload.get('lump_sum_rule') or 0),
+            lump_sum_annuity=float(payload.get('lump_sum_annuity') or 0),
+        )
+        db.session.add(ec)
+        db.session.commit()
+        flash("Enough Calculator data saved successfully!", "success")
+        return jsonify({'redirect': url_for('views.summary')})
+    except Exception as e:
+        db.session.rollback()
+        import traceback; traceback.print_exc()
+        return jsonify({'error': str(e), 'redirect': url_for('views.summary')}), 200
 
 #---------------------------------------------------
 # ---- Income Layers ----
@@ -827,7 +897,15 @@ def spending():
     return render_template('calculators/spending_allocation.html')
 
 
-# Save Spending Allocation and then move to Super Projection
+
+@views.route('/spending_allocation')
+@login_required
+def spending_allocation():
+    return redirect(url_for('views.spending'))
+
+
+
+# Save Spending Allocation and then move to summary
 @views.route('/save-spending', methods=['POST'])
 @login_required
 def save_spending():
@@ -835,20 +913,18 @@ def save_spending():
         payload = request.get_json(silent=True) or {}
         allocations = payload.get('allocations', [])
 
+
         # TODO: Persist to DB when you have a Spending model
         # For now just flash success
 
-        flash("Spending allocation saved successfully!", "success")
-        return jsonify({'redirect': url_for('views.super_projection')})
+        flash("Spending allocation saved successfully!", "success")   # debugging
+        return jsonify({'redirect': url_for('views.summary')}) 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 
-# Alias route for /spending_allocation to canonical /spending
-@views.route('/spending_allocation')
-@login_required
-def spending_allocation_alias():
-    return redirect(url_for('views.spending'))
+
+
 
 #---------------------------------------------------
 # ---- Super Projection  ----
@@ -867,28 +943,45 @@ def super():
 @views.route('/debt_paydown')
 @login_required
 def debt_paydown():
+    """Render the Debt Paydown Planner (kept under calculators/ to match others)."""
     return render_template('calculators/debt_paydown.html')
 
 
 @views.route('/save-debt_paydown', methods=['POST'])
 @login_required
 def save_debt_paydown():
+    """Persist Debt Paydown rows for the current user, then go to Summary."""
     try:
         payload = request.get_json(silent=True) or {}
         debts = payload.get('debts', [])
 
-        # TODO: save debts to DB when you create a Debt model
-        # Example fields per row: name, principal, rate, payment, years
+        # clear old debts for this user
+        DebtPaydown.query.filter_by(user_id=current_user.id).delete()
 
+        def f(v):
+            try: return float(v or 0)
+            except (TypeError, ValueError): return 0.0
+
+        for d in debts:
+            db.session.add(DebtPaydown(
+                user_id=current_user.id,
+                name=d.get('name', '') or d.get('debt_name', ''),
+                principal=f(d.get('principal')),
+                annual_interest_rate=f(d.get('annual_interest_rate')),
+                monthly_payment=f(d.get('monthly_payment')),
+                years_to_repay=(f(d.get('years_to_repay')) or None),
+                include=bool(d.get('include', True)),
+            ))
+
+        db.session.commit()
         flash("Debt paydown data saved successfully!", "success")
-        return jsonify({
-            "message": "Debt paydown data saved successfully!",
-            "redirect": url_for('views.summary')  # or the next step in your flow
-        })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-#---------------------------------------------------
+        return jsonify({"redirect": url_for('views.enough_calculator')}), 200
 
+    except Exception as e:
+        db.session.rollback()
+        import traceback; traceback.print_exc()
+        return jsonify({"error": str(e), "redirect": url_for('views.summary')}), 200
+#---------------------------------------------------
 
 
 @views.route('/summary')
@@ -948,15 +1041,18 @@ def summary():
         ), 0.0)
     ).filter(Subscription.user_id == uid, Subscription.include == True).scalar()
 
-    # ---------- Spending Allocation (Expense buckets) ----------
+    # ---------- Expenses (annualised from Expense table) ----------
+    expense_factor = case(
+        (Expense.frequency.ilike('weekly'),      52),
+        (Expense.frequency.ilike('fortnightly'), 26),
+        (Expense.frequency.ilike('monthly'),     12),
+        (Expense.frequency.ilike('quarterly'),    4),
+        (Expense.frequency.ilike('annually'),     1),
+        else_=12
+    )
+    # Keep variable name `expense_buckets_sum` so the rest of the template logic stays unchanged
     expense_buckets_sum = db.session.query(
-        func.coalesce(func.sum(
-            func.coalesce(Expense.baseline, 0.0) +
-            func.coalesce(Expense.lifestyle, 0.0) +
-            func.coalesce(Expense.saving_investing, 0.0) +
-            func.coalesce(Expense.health_care, 0.0) +
-            func.coalesce(Expense.other, 0.0)
-        ), 0.0)
+        func.coalesce(func.sum(func.coalesce(Expense.amount, 0.0) * expense_factor), 0.0)
     ).filter(Expense.user_id == uid).scalar()
 
     # ---------- Epic Experiences: annualise (spread 'Once only' across 10 years) ----------

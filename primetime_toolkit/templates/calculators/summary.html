@@ -2,11 +2,13 @@
 {% block content %}
 <div class="container py-4">
   <h1 class="text-center mb-4 no-print" style="color:#9E2A2B;font-family:'Playfair Display',serif">
-    Summary
+    Budget Planner Summary
   </h1>
-  <div class="d-flex justify-content-end gap-2 mb-3 no-print">
-    <button id="printSummaryBtn" class="btn btn-success">Download PDF</button>
-  </div>
+<div class="d-flex justify-content-center gap-2 mb-3 no-print">
+  <button id="downloadExcelBtn" class="btn btn-outline-secondary">Download Excel</button>
+  <button id="emailSummaryBtn" class="btn btn-outline-secondary">Email Summary</button>
+  <button id="printSummaryBtn" class="btn btn-success">Download PDF</button>
+</div>
 
   <!-- KPI grid (2 x 3) -->
   <style>
@@ -71,35 +73,27 @@
     <!-- Total Assets -->
     <div class="col-12 col-md-6 col-lg-4">
       <div class="kpi-card">
-        <div class="kpi-icon" aria-hidden="true">📦</div>
+        <div class="kpi-icon" aria-hidden="true">
+          <img src="{{ url_for('static', filename='img/asset.png') }}" alt="Total Assets" style="width:32px; height:32px; object-fit:contain;">
+        </div>
         <div>
           <p class="kpi-title mb-1">Total Assets</p>
           <p class="kpi-value mb-1">{{ "${:,.0f}".format(assets_total|default(0)) }}</p>
-          <p class="kpi-sub">annual snapshot</p>
+          <p class="kpi-sub">current total</p>
         </div>
       </div>
     </div>
 
-    <!-- Revenue / Income -->
+    <!-- Loans / Liabilities -->
     <div class="col-12 col-md-6 col-lg-4">
       <div class="kpi-card">
-        <div class="kpi-icon" aria-hidden="true">💰</div>
-        <div>
-          <p class="kpi-title mb-1">Annual Income</p>
-          <p class="kpi-value mb-1">{{ "${:,.0f}".format(income_annual|default(0)) }}</p>
-          <p class="kpi-sub">per year</p>
+        <div class="kpi-icon" aria-hidden="true">
+          <img src="{{ url_for('static', filename='img/liability.png') }}" alt="Total Liabilities" style="width:32px; height:32px; object-fit:contain;">
         </div>
-      </div>
-    </div>
-
-    <!-- Total Tax Paid (use Expenses as proxy if tax not tracked) -->
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="kpi-card">
-        <div class="kpi-icon" aria-hidden="true">🧾</div>
         <div>
-          <p class="kpi-title mb-1">Annual Expenses</p>
-          <p class="kpi-value mb-1">{{ "${:,.0f}".format(expenses_annual|default(0)) }}</p>
-          <p class="kpi-sub">per year</p>
+          <p class="kpi-title mb-1">Total Liabilities</p>
+          <p class="kpi-value mb-1">{{ "${:,.0f}".format(liabilities_total|default(0)) }}</p>
+          <p class="kpi-sub">current total</p>
         </div>
       </div>
     </div>
@@ -107,7 +101,9 @@
     <!-- Deposits (Net Worth proxy) -->
     <div class="col-12 col-md-6 col-lg-4">
       <div class="kpi-card">
-        <div class="kpi-icon" aria-hidden="true">🏦</div>
+        <div class="kpi-icon" aria-hidden="true">
+          <img src="{{ url_for('static', filename='img/networth.png') }}" alt="Net Worth" style="width:32px; height:32px; object-fit:contain;">
+        </div>
         <div>
           <p class="kpi-title mb-1">Net Worth</p>
           <p class="kpi-value mb-1">{{ "${:,.0f}".format(net_worth|default(0)) }}</p>
@@ -116,72 +112,187 @@
       </div>
     </div>
 
-    <!-- Loans / Liabilities -->
+    <!-- Revenue / Income -->
     <div class="col-12 col-md-6 col-lg-4">
       <div class="kpi-card">
-        <div class="kpi-icon" aria-hidden="true">🏛️</div>
+        <div class="kpi-icon" aria-hidden="true">
+          <img src="{{ url_for('static', filename='img/income.png') }}" alt="Total Income" style="width:32px; height:32px; object-fit:contain;">
+        </div>
         <div>
-          <p class="kpi-title mb-1">Liabilities</p>
-          <p class="kpi-value mb-1">{{ "${:,.0f}".format(liabilities_total|default(0)) }}</p>
+          <p class="kpi-title mb-1">Total Income</p>
+          <p class="kpi-value mb-1">{{ "${:,.0f}".format(income_annual|default(0)) }}</p>
           <p class="kpi-sub">current total</p>
         </div>
       </div>
     </div>
 
-    <!-- Net Income / Surplus Monthly -->
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="kpi-card {{ 'kpi-danger' if (surplus_annual|default(0)) < 0 else '' }}">
-        <div class="kpi-icon" aria-hidden="true">🐷</div>
-        <div>
-          <p class="kpi-title mb-1">Monthly Surplus / Deficit</p>
-          <p class="kpi-value mb-1">{{ "${:,.0f}".format(surplus_monthly|default(0)) }}</p>
-          <p class="kpi-sub">income − expenses ÷ 12</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Category totals only (KPI style) -->
-  <div class="row g-3 mt-3">
+    <!-- Total Tax Paid (use Expenses as proxy if tax not tracked) -->
     <div class="col-12 col-md-6 col-lg-4">
       <div class="kpi-card">
-        <div class="kpi-icon" aria-hidden="true">💰</div>
-        <div>
-          <p class="kpi-title mb-1">Total Income</p>
-          <p class="kpi-value mb-1">{{ "${:,.0f}".format(income_annual|default(0)) }}</p>
-          <p class="kpi-sub">per year</p>
+        <div class="kpi-icon" aria-hidden="true">
+          <img src="{{ url_for('static', filename='img/expense.png') }}" alt="Total Expenses" style="width:32px; height:32px; object-fit:contain;">
         </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="kpi-card">
-        <div class="kpi-icon" aria-hidden="true">🧾</div>
         <div>
           <p class="kpi-title mb-1">Total Expenses</p>
           <p class="kpi-value mb-1">{{ "${:,.0f}".format(expenses_annual|default(0)) }}</p>
-          <p class="kpi-sub">per year</p>
+          <p class="kpi-sub">current total</p>
         </div>
       </div>
     </div>
+
+    <!-- Net Income -->
     <div class="col-12 col-md-6 col-lg-4">
-      <div class="kpi-card">
-        <div class="kpi-icon" aria-hidden="true">📊</div>
+      <div class="kpi-card {{ 'kpi-danger' if (surplus_annual|default(0)) < 0 else '' }}">
+        <div class="kpi-icon" aria-hidden="true">
+          <img src="{{ url_for('static', filename='img/netincome.png') }}" alt="Net Income" style="width:32px; height:32px; object-fit:contain;">
+        </div>
         <div>
-          <p class="kpi-title mb-1">Total Balance</p>
-          <p class="kpi-value mb-1">{{ "${:,.0f}".format((income_annual|default(0)) - (expenses_annual|default(0))) }}</p>
+          <p class="kpi-title mb-1">Net Income</p>
+          <p class="kpi-value mb-1">{{ "${:,.0f}".format(((income_annual|default(0)) - (expenses_annual|default(0)))) }}</p>
           <p class="kpi-sub">income − expenses</p>
         </div>
       </div>
     </div>
   </div>
 
+  <br>
+  <div class="mt-2 p-2 border rounded bg-light" style="width: 100vw; margin-left: calc(-50vw + 50%);">
+    <div class="container">
+      <span class="fw-semibold" style="font-size:22px">Others </span>
+    </div>
+
+    <div class="container card mt-2">
+      <div class="card-body py-3">
+        <div class="d-flex justify-content-between mb-2">
+          <span>Subscriptions</span>
+          <strong id="otherSubscriptionsOut">$0</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Future Budget</span>
+          <strong id="otherFutureBudgetOut">$0</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Epic &amp; One-off</span>
+          <strong id="otherEpicOut">$0</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Income Layers</span>
+          <strong id="otherIncomeLayersOut">$0</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Spending Allocation</span>
+          <strong id="otherSpendingOut">$0</strong>
+        </div>
+        <hr class="my-2">
+        <div class="d-flex justify-content-between">
+          <span class="fw-semibold">Total (Others)</span>
+          <strong id="otherGrandTotalOut" class="fw-bold">$0</strong>
+        </div>
+      </div>
+    </div><br><br>
+  </div>
+    <div class="mt-4 no-print">
+    <a href="{{ url_for('views.spending_allocation') }}" class="btn btn-outline-secondary" style="text-decoration: none;">Back</a>
+    <button id="backToToolsBtn" type="button" class="btn btn-outline-secondary">Back to Overview</button>
+  </div>
+
+
+  <script>
+    (function(){
+      // Sum the six KPI values in the first grid via DOM (currency text -> number)
+      function toNum(text){
+        const n = parseFloat(String(text||'').replace(/[^0-9.-]/g, ''));
+        return Number.isFinite(n) ? n : 0;
+      }
+      function fmtAUD(n){
+        try { return new Intl.NumberFormat(undefined, { style:'currency', currency:'AUD' }).format(n); }
+        catch { return `$${(n||0).toFixed(2)}`; }
+      }
+      const row = document.querySelector('.row.g-3.mt-1');
+      const out = document.getElementById('totalValueOut');
+      if (!row || !out) return;
+      const vals = Array.from(row.querySelectorAll('.kpi-value'))
+        .slice(0, 6) // take the first 6 boxes
+        .map(el => toNum(el.textContent));
+      const total = vals.reduce((a,b)=>a+b,0);
+      out.textContent = fmtAUD(total);
+    })();
+  </script>
+
+
+  <script>
+    (async function(){
+      function fmtAUD(n){
+        try { return new Intl.NumberFormat(undefined, { style:'currency', currency:'AUD' }).format(Number(n||0)); }
+        catch { return `$${Number(n||0).toFixed(2)}`; }
+      }
+      async function getMaybe(url, field){
+        try{
+          const res = await fetch(url, { headers:{'Accept':'application/json'} });
+          if(!res.ok) return 0;
+          const j = await res.json();
+          const v = (field? j?.[field]: (j?.total ?? j));
+          const num = parseFloat(v);
+          return Number.isFinite(num) ? num : 0;
+        }catch(e){ return 0; }
+      }
+
+      const endpoints = [
+        { id:'otherSubscriptionsOut', url:'/api/subscriptions/total', field:'total' },
+        { id:'otherFutureBudgetOut',  url:'/api/future_budget/total', field:'total' },
+        { id:'otherEpicOut',          url:'/api/epic_experiences/total', field:'total' },
+        { id:'otherIncomeLayersOut',  url:'/api/income_layers/total', field:'total' },
+        { id:'otherSpendingOut',      url:'/api/spending_allocation/total', field:'total' },
+      ];
+
+      let grand = 0;
+      for (const item of endpoints){
+        const val = await getMaybe(item.url, item.field);
+        grand += val;
+        const el = document.getElementById(item.id);
+        if (el) el.textContent = fmtAUD(val);
+      }
+      const out = document.getElementById('otherGrandTotalOut');
+      if (out) out.textContent = fmtAUD(grand);
+    })();
+  </script>
+
+<br>
+<div class="container d-flex flex-column align-items-center">
+  <div class="mb-3 p-3 rounded shadow-sm" style="background: #f5f7fa; max-width:1000px;">
+    <p class="text-center mb-0" style="font-size:1.18rem; color:#2d3a4a;">
+      <span style="font-size:1.3rem; color:#007bff; font-weight:600;">
+        Ready for More Insights?
+      </span><br>
+      <span>
+        Discover our <strong>advanced calculators</strong> including Super Projection, Debt Paydown, and "Enough" calculators. These optional tools are designed to give you deeper understanding and you can find more information about them once you proceed. You can also go straight to <a href="{{ url_for('views.dashboard') }}">the Dashboards Overview</a> to view your results visually.
+      </span>
+    </p>
+  </div><br>
+
+  <a href="{{ url_for('views.super_projection') }}" class="btn btn-primary btn-lg btn-grow-hover" style="font-size:18px; text-decoration: none;">
+    Continue with Super Projection calculator
+  </a>
+</div>
+<br><br>
+
+<style>
+.btn-grow-hover {
+  transition: transform 0.50s cubic-bezier(.4,1.5,.5,1);
+}
+.btn-grow-hover:hover, .btn-grow-hover:focus {
+  transform: scale(1.08);
+  z-index: 2;
+}
+</style>
+
   <!-- Savings Calculator (compact widget) -->
-  <div class="card mt-4 no-print">
+  <!-- <div class="card mt-4 no-print">
     <div class="card-body">
       <div class="d-flex align-items-center mb-3">
         <h5 class="mb-0">Savings Calculator</h5>
-        <a href="{{ url_for('views.calculator') }}" class="btn btn-link ms-auto p-0">
-          Open full calculator →
+        <a href="{{ url_for('views.enough_calculator') }}" class="btn btn-link ms-auto p-0">
+          Continue with super projection calculator →
         </a>
       </div>
 
@@ -226,20 +337,17 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <script>
     (function(){
-      const btn = document.getElementById('downloadSummaryBtn');
-      if (!btn) return;
-      btn.addEventListener('click', () => {
-        const rows = [];
-        const fmt = (n) => {
-          try { return new Intl.NumberFormat(undefined, { style:'currency', currency:'AUD' }).format(Number(n||0)); }
-          catch { return `$${Number(n||0).toFixed(2)}`; }
-        };
+      function fmtAUD(n){
+        try { return new Intl.NumberFormat(undefined, { style:'currency', currency:'AUD' }).format(Number(n||0)); }
+        catch { return `$${Number(n||0).toFixed(2)}`; }
+      }
+      function buildData(){
         const today = new Date().toISOString().slice(0,10);
-        const data = {
+        return {
           Brand: "PrimeTime Toolkit",
           Date: today,
           'Total Assets': {{ (assets_total|default(0))|float }},
@@ -247,37 +355,68 @@
           'Annual Expenses': {{ (expenses_annual|default(0))|float }},
           'Net Worth': {{ (net_worth|default(0))|float }},
           'Liabilities': {{ (liabilities_total|default(0))|float }},
-          'Monthly Surplus/Deficit': {{ (surplus_monthly|default(0))|float }},
-          'Total Income': {{ (income_annual|default(0))|float }},
-          'Total Expenses': {{ (expenses_annual|default(0))|float }},
+          'Net Income (Annual)': {{ ((income_annual|default(0)) - (expenses_annual|default(0)))|float }},
           'Total Balance (Income - Expenses)': {{ ((income_annual|default(0)) - (expenses_annual|default(0)))|float }}
         };
-        // Header
-        rows.push(Object.keys(data).join(','));
-        // Values (currency formatted where appropriate)
-        rows.push([
-          data['Date'],
-          fmt(data['Total Assets']),
-          fmt(data['Annual Income']),
-          fmt(data['Annual Expenses']),
-          fmt(data['Net Worth']),
-          fmt(data['Liabilities']),
-          fmt(data['Monthly Surplus/Deficit']),
-          fmt(data['Total Income']),
-          fmt(data['Total Expenses']),
-          fmt(data['Total Balance (Income - Expenses)'])
-        ].join(','));
+      }
 
-        const csv = rows.join('\n');
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `summary_${today}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 0);
-      });
+      // Excel export (HTML table wrapped with Excel MIME so it opens in Excel)
+      const xlsBtn = document.getElementById('downloadExcelBtn');
+      if (xlsBtn){
+        xlsBtn.addEventListener('click', () => {
+          const data = buildData();
+          const headers = Object.keys(data);
+          const values = [
+            data['Date'],
+            data['Total Assets'],
+            data['Annual Income'],
+            data['Annual Expenses'],
+            data['Net Worth'],
+            data['Liabilities'],
+            data['Net Income (Annual)'],
+            data['Total Balance (Income - Expenses)']
+          ];
+          const table = `
+            <table border="1">
+              <thead>
+                <tr>${headers.map(h=>`<th style="text-align:left">${h}</th>`).join('')}</tr>
+              </thead>
+              <tbody>
+                <tr>${values.map(v=>`<td>${typeof v === 'number' ? fmtAUD(v) : v}</td>`).join('')}</tr>
+              </tbody>
+            </table>
+          `;
+          const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>${table}</body></html>`;
+          const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `summary_${data['Date']}.xls`;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); },0);
+        });
+      }
+
+      // Email Summary
+      const emailBtn = document.getElementById('emailSummaryBtn');
+      if (emailBtn){
+        emailBtn.addEventListener('click', () => {
+          const d = buildData();
+          const body = encodeURIComponent(
+`PrimeTime Toolkit — Financial Summary (as of ${d['Date']})\n\n`+
+`Total Assets: ${fmtAUD(d['Total Assets'])}\n`+
+`Net Worth: ${fmtAUD(d['Net Worth'])}\n`+
+`Liabilities: ${fmtAUD(d['Liabilities'])}\n`+
+`Annual Income: ${fmtAUD(d['Annual Income'])}\n`+
+`Annual Expenses: ${fmtAUD(d['Annual Expenses'])}\n`+
+`Net Income (Annual): ${fmtAUD(d['Net Income (Annual)'])}\n`+
+`Total Balance (Income - Expenses): ${fmtAUD(d['Total Balance (Income - Expenses)'])}\n`+
+`\nLink: ${window.location.href}`);
+          const mailto = `mailto:?subject=PrimeTime%20Toolkit%20Summary&body=${body}`;
+          window.location.href = mailto;
+        });
+      }
     })();
   </script>
 
@@ -294,17 +433,13 @@
   <!-- include the widget js -->
   <script src="{{ url_for('static', filename='js/pig_savings_summary.js') }}"></script>
 
-  <div class="mt-4 no-print">
-    <button id="backToToolsBtn" type="button" class="btn btn-outline-secondary">Back to Tools</button>
-  </div>
-
   <script>
     (function(){
       const btn = document.getElementById('backToToolsBtn');
       if (!btn) return;
       btn.addEventListener('click', async () => {
         const candidates = [
-          '{{ url_for('views.tracker') }}',
+          '{{ url_for("views.tracker") }}',
           '/money_tools',
           '/tools'
         ];
@@ -312,9 +447,9 @@
           try {
             const res = await fetch(url, { method: 'HEAD' });
             if (res.ok) { window.location.href = url; return; }
-          } catch (e) { /* skip */ }
+          } catch (e) {  }
         }
-        // last resort: go home
+
         window.location.href = '/';
       });
     })();

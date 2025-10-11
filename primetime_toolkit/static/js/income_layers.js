@@ -5,6 +5,16 @@
   const addBtn   = document.getElementById('addRowBtn');
   const clearBtn = document.getElementById('clearAllBtn');
   const saveBtn  = document.getElementById('saveBtn');
+
+  // === Progress helper (localStorage) ===
+  function markStepComplete(stepKey) {
+    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
+    if (!completed.includes(stepKey)) {
+      completed.push(stepKey);
+      localStorage.setItem("completedSteps", JSON.stringify(completed));
+    }
+  }
+
   const loadBtn  = document.getElementById('loadBtn');
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
 
@@ -118,6 +128,7 @@
     saveBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
+      if (data) { markStepComplete('income_layers'); }
       if (data && !data.redirect) {
         alert(data.message || 'Income layers saved!');
       }
@@ -134,6 +145,7 @@
     saveAndNextBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
+      if (data) { markStepComplete('income_layers'); }
       if (data?.redirect) {
         window.location.href = data.redirect;
       } else if (data) {

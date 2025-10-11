@@ -5,6 +5,14 @@
   const rowTemplate = document.getElementById('subsRowTemplate');
   const addRowBtn = document.getElementById('addRowBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
+  // === Progress helper (localStorage) ===
+  function markStepComplete(stepKey) {
+    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
+    if (!completed.includes(stepKey)) {
+      completed.push(stepKey);
+      localStorage.setItem("completedSteps", JSON.stringify(completed));
+    }
+  }
   const saveBtn = document.getElementById('saveSubscriptionsBtn');
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
 
@@ -157,6 +165,7 @@
     saveAndNextBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
+      if (data) { markStepComplete('subscriptions'); }
       if (data?.redirect) {
         window.location.href = data.redirect; // e.g., /future_budget or next step
       } else if (data) {
@@ -174,6 +183,7 @@
     saveBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
+      if (data) { markStepComplete('subscriptions'); }
       if (data && !data.redirect) {
         alert(data.message || 'Subscriptions saved!');
       }
