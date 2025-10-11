@@ -5,6 +5,8 @@
   const rowTemplate = document.getElementById('subsRowTemplate');
   const addRowBtn = document.getElementById('addRowBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
+  const elTotalSubs = document.getElementById('totalSubsAmount');
+
   // === Progress helper (localStorage) ===
   function markStepComplete(stepKey) {
     let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
@@ -45,26 +47,44 @@
   }
 
   // ====== Row management ======
-  function addRow(prefill = {}) {
-    const frag = rowTemplate.content.cloneNode(true);
-    const row = frag.querySelector('tr.subs-row');
+function addRow(prefill = {}) {
+  const frag = rowTemplate.content.cloneNode(true);
+  const row = frag.querySelector('tr.subs-row');
 
-    // Classes expected in the row markup:
-    // .service .provider .amount .frequency .include-toggle .annual
-    if (prefill.name) row.querySelector('.service').value = prefill.name;
-    if (prefill.provider) row.querySelector('.provider').value = prefill.provider;
-    if (prefill.amount != null) row.querySelector('.amount').value = prefill.amount;
-    if (prefill.frequency) row.querySelector('.frequency').value = normFreq(prefill.frequency) || 'monthly';
-    if (prefill.include !== undefined) row.querySelector('.include-toggle').checked = !!prefill.include;
-
-    // If annual amount came from DB, show it (optional)
-    const annualCell = row.querySelector('.annual');
-    if (annualCell && prefill.annual_amount != null) {
-      setCurrency(annualCell, prefill.annual_amount);
-    }
-
-    tbody.appendChild(frag);
+  const serviceEl = row.querySelector('.service');
+  if (prefill.name && serviceEl) {
+    serviceEl.value = prefill.name;
   }
+
+  const providerEl = row.querySelector('.provider');
+  if (prefill.provider && providerEl) {
+    providerEl.value = prefill.provider;
+  }
+
+  const amountEl = row.querySelector('.amount');
+  if (amountEl && prefill.amount != null) {
+    amountEl.value = prefill.amount;
+  }
+
+  const freqEl = row.querySelector('.freq');
+  if (freqEl && prefill.frequency) {
+    freqEl.value = normFreq(prefill.frequency) || 'monthly';
+  }
+
+  const includeEl = row.querySelector('.include');
+  if (includeEl && prefill.include !== undefined) {
+    includeEl.checked = !!prefill.include;
+  }
+
+  const annualCell = row.querySelector('.annual');
+  if (annualCell && prefill.annual_amount != null) {
+    setCurrency(annualCell, prefill.annual_amount);
+  }
+
+  tbody.appendChild(frag);
+}
+
+
 
   function clearAll() {
     tbody.innerHTML = '';
@@ -74,12 +94,13 @@
 
   // ====== Calculations ======
   function annualForRow(row) {
-    const include = row.querySelector('.include-toggle')?.checked;
+    const include = row.querySelector('.include')?.checked;
     if (!include) return 0;
     const amt = parseAmount(row.querySelector('.amount')?.value);
-    const f = normFreq(row.querySelector('.frequency')?.value || 'monthly');
+    const f = normFreq(row.querySelector('.freq')?.value || 'monthly');
     return amt * (PERIODS_PER_YEAR[f] ?? 0);
   }
+
 
   function recalcTotals() {
     let total = 0;
@@ -120,6 +141,11 @@
     ) {
       recalcTotals();
     }
+  }
+
+  function setCurrency(el, amount) {
+    if (!el) return;
+    el.textContent = AUD0.format(amount || 0);
   }
 
   function onTbodyClick(e) {
@@ -192,6 +218,10 @@
       saveBtn.textContent = original;
     }
   });
+
+  tbody.addEventListener('input', onTbodyInput);
+  tbody.addEventListener('change', onTbodyInput);
+
 
   // ====== Init ======
   tbody.innerHTML = '';
