@@ -75,5 +75,10 @@
     </div>
   </div>
   <br><br>
+
+  <script>
+  window.spendingPrefill = {{ spending_data | tojson }};
+</script>
+
   <script src="{{ url_for('static', filename='js/spending_allocation.js') }}"></script>
 {% endblock %}

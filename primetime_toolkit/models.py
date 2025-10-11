@@ -151,6 +151,8 @@ class EpicExperience(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 #--------
+
+
 class IncomeLayer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -184,6 +186,11 @@ class SpendingAllocation(db.Model):
     @property
     def total_spending(self) -> float:
         return (self.cost_base or 0) + (self.cost_life or 0) + (self.cost_save or 0) + (self.cost_health or 0) + (self.cost_other or 0)
+
+
+
+#----------------------------------------------
+# Debt Paydown Calculator
 
 class DebtPaydown(db.Model):
     __tablename__ = 'debt_paydown'

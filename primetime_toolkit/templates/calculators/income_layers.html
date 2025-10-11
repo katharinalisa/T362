@@ -80,5 +80,10 @@
   </div>
   <br><br>
 
+<script>
+  window.incomeLayersPrefill = {{ layers | tojson }};
+</script>
+
+
   <script src="{{ url_for('static', filename='js/income_layers.js') }}"></script>
 {% endblock %}

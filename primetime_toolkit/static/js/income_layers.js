@@ -15,7 +15,6 @@
     }
   }
 
-  const loadBtn  = document.getElementById('loadBtn');
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
 
   if (!tbody || !rowTpl) return;
@@ -106,21 +105,17 @@
     }
   }
 
-  async function loadAll() {
-    try {
-      const res = await fetch('/api/income_layers');
-      if (!res.ok) throw new Error();
-      const rows = await res.json();
-      tbody.innerHTML = '';
-      if (!rows.length) {
-        clearAll();
-        return;
-      }
-      rows.forEach(addRow);
-    } catch {
-      clearAll();
+
+  document.addEventListener('DOMContentLoaded', () => {
+    tbody.innerHTML = '';
+    if (Array.isArray(window.incomeLayersPrefill) && window.incomeLayersPrefill.length > 0) {
+      window.incomeLayersPrefill.forEach(addRow);
+    } else {
+      addRow();
     }
-  }
+  });
+
+
 
   saveBtn?.addEventListener('click', async () => {
     const original = saveBtn.textContent;
@@ -137,7 +132,6 @@
       saveBtn.textContent = original;
     }
   });
-  loadBtn?.addEventListener('click', () => { void loadAll(); });
 
   saveAndNextBtn?.addEventListener('click', async () => {
     const original = saveAndNextBtn.textContent;
@@ -157,5 +151,12 @@
     }
   });
 
-  document.addEventListener('DOMContentLoaded', loadAll);
+  document.addEventListener('DOMContentLoaded', () => {
+    tbody.innerHTML = '';
+    if (Array.isArray(window.incomeLayersPrefill) && window.incomeLayersPrefill.length > 0) {
+      window.incomeLayersPrefill.forEach(addRow);
+    } else {
+      addRow();
+    }
+  });
 })();

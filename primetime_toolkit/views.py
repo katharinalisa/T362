@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
 import json
-from primetime_toolkit.models import LifeExpectancy, db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience, DebtPaydown, EnoughCalculator
+from primetime_toolkit.models import IncomeLayer, LifeExpectancy, SpendingAllocation, db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience, DebtPaydown, EnoughCalculator
 from sqlalchemy import func, case
 from .excel_parser import parse_excel
 
@@ -887,38 +887,65 @@ def save_enough_calculator():
 @views.route('/income_layers')
 @login_required
 def income_layers():
-    return render_template('calculators/income_layers.html')
+    rows = IncomeLayer.query.filter_by(user_id=current_user.id).all()
+    layers_data = [
+        {
+            'id': r.id,
+            'layer': r.layer,
+            'description': r.description,
+            'start_age': r.start_age,
+            'end_age': r.end_age,
+            'annual_amount': r.annual_amount
+        } for r in rows
+    ]
+    return render_template('calculators/income_layers.html', layers=layers_data)
 
 @views.route('/save-income_layers', methods=['POST'])
 @login_required
 def save_income_layers():
-    """Save Income Layers rows and then redirect to Spending Allocation.
-    Currently stores nothing (model TBD) but keeps the same backend-driven pattern
-    as Assets/Liabilities/Income/etc.
-    """
     try:
         payload = request.get_json(silent=True) or {}
-        items = payload.get('items', [])  # TODO: persist when model is ready
-        # You can add DB persistence here later to mirror other save_* routes.
-        flash('Income layers saved successfully!', 'success')
-        return jsonify({'redirect': url_for('views.spending')})
+        items = payload.get('items', [])
+
+        # Clear existing layers for this user
+        IncomeLayer.query.filter_by(user_id=current_user.id).delete()
+
+        for item in items:
+            layer = IncomeLayer(
+                user_id=current_user.id,
+                layer=item.get('layer', ''),
+                description=item.get('description', ''),
+                start_age=item.get('start_age'),
+                end_age=item.get('end_age'),
+                annual_amount=item.get('annual_amount', 0.0)
+            )
+            db.session.add(layer)
+
+        db.session.commit()
+        return jsonify({'redirect': url_for('views.spending_allocation')})
     except Exception as e:
+        db.session.rollback()
         return jsonify({'error': str(e)}), 500
+
 
 #---------------------------------------------------
 # ---- Spending Allocation ----
-@views.route('/spending')
-@login_required
-def spending():
-    return render_template('calculators/spending_allocation.html')
-
-
-
 @views.route('/spending_allocation')
 @login_required
 def spending_allocation():
-    return redirect(url_for('views.spending'))
-
+    rows = SpendingAllocation.query.filter_by(user_id=current_user.id).all()
+    spending_data = [
+        {
+            'id': r.id,
+            'phase': r.phase,
+            'cost_base': r.cost_base,
+            'cost_life': r.cost_life,
+            'cost_save': r.cost_save,
+            'cost_health': r.cost_health,
+            'cost_other': r.cost_other
+        } for r in rows
+    ]
+    return render_template('calculators/spending_allocation.html', spending_data=spending_data)
 
 
 # Save Spending Allocation and then move to summary
@@ -929,16 +956,27 @@ def save_spending():
         payload = request.get_json(silent=True) or {}
         allocations = payload.get('allocations', [])
 
+        # Clear existing rows for this user
+        SpendingAllocation.query.filter_by(user_id=current_user.id).delete()
 
-        # TODO: Persist to DB when you have a Spending model
-        # For now just flash success
+        for item in allocations:
+            row = SpendingAllocation(
+                user_id=current_user.id,
+                phase=item.get('phase', ''),
+                cost_base=item.get('cost_base', 0.0),
+                cost_life=item.get('cost_life', 0.0),
+                cost_save=item.get('cost_save', 0.0),
+                cost_health=item.get('cost_health', 0.0),
+                cost_other=item.get('cost_other', 0.0),
+            )
+            db.session.add(row)
 
-        flash("Spending allocation saved successfully!", "success")   # debugging
-        return jsonify({'redirect': url_for('views.summary')}) 
+        db.session.commit()
+        flash("Spending allocation saved successfully!", "success")
+        return jsonify({'redirect': url_for('views.summary')})
     except Exception as e:
+        db.session.rollback()
         return jsonify({'error': str(e)}), 500
-
-
 
 
 
