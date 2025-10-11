@@ -102,16 +102,29 @@ function addRow(prefill = {}) {
   }
 
 
-  function recalcTotals() {
-    let total = 0;
-    tbody.querySelectorAll('tr.subs-row').forEach(row => {
-      const annual = annualForRow(row);
-      const annualCell = row.querySelector('.annual');
-      if (annualCell) setCurrency(annualCell, annual);
+function recalcTotals() {
+  let total = 0;
+
+  tbody.querySelectorAll('tr.subs-row').forEach(row => {
+    const amt = parseAmount(row.querySelector('.amount')?.value);
+    const freq = normFreq(row.querySelector('.freq')?.value || 'monthly');
+    const include = row.querySelector('.include')?.checked;
+
+    const annual = amt * (PERIODS_PER_YEAR[freq] ?? 0);
+
+    // ✅ Always show the row's annual value
+    const annualCell = row.querySelector('.annual');
+    if (annualCell) setCurrency(annualCell, annual);
+
+    // ✅ Only include in total if toggle is checked
+    if (include) {
       total += annual;
-    });
-    setCurrency(elTotalSubs, total);
-  }
+    }
+  });
+
+  setCurrency(elTotalSubs, total);
+}
+
 
   // ====== Gather payload ======
   function getSubsRows() {
@@ -119,8 +132,9 @@ function addRow(prefill = {}) {
       const name = row.querySelector('.service')?.value?.trim() || '';
       const provider = row.querySelector('.provider')?.value?.trim() || '';
       const amount = parseAmount(row.querySelector('.amount')?.value);
-      const frequency = normFreq(row.querySelector('.frequency')?.value || 'monthly');
-      const include = !!row.querySelector('.include-toggle')?.checked;
+      const frequency = normFreq(row.querySelector('.freq')?.value || 'monthly');
+      const include = !!row.querySelector('.include')?.checked;
+
       const annual_amount = include ? amount * (PERIODS_PER_YEAR[frequency] ?? 0) : 0;
 
       return { name, provider, amount, frequency, notes: '', include, annual_amount };
@@ -134,8 +148,8 @@ function addRow(prefill = {}) {
     if (!t) return;
     if (
       t.classList.contains('amount') ||
-      t.classList.contains('frequency') ||
-      t.classList.contains('include-toggle') ||
+      t.classList.contains('freq') ||
+      t.classList.contains('include') ||
       t.classList.contains('service') ||
       t.classList.contains('provider')
     ) {

@@ -647,20 +647,32 @@ def subscriptions():
             "provider": "",
             "amount": 0,
             "frequency": "monthly",
-            "notes": "",
             "include": True,
             "annual_amount": 0
         }]
     else:
+        periods = {
+            'weekly': 52,
+            'fortnightly': 26,
+            'monthly': 12,
+            'quarterly': 4,
+            'annually': 1
+        }
+
+        def as_float(v):
+            try:
+                return float(v or 0)
+            except (TypeError, ValueError):
+                return 0.0
+
         subscriptions_data = [
             {
                 "name": r.name,
                 "provider": r.provider,
                 "amount": r.amount,
                 "frequency": r.frequency,
-                "notes": r.notes,
                 "include": r.include,
-                "annual_amount": r.annual_amount,
+                "annual_amount": as_float(r.amount) * periods.get(r.frequency.lower(), 0),
             } for r in rows
         ]
 
@@ -676,6 +688,7 @@ def save_subscriptions():
         data = request.get_json(silent=True) or {}
         subs = data.get('subscriptions', [])
 
+
         Subscription.query.filter_by(user_id=current_user.id).delete()
 
         def as_float(v):
@@ -685,15 +698,18 @@ def save_subscriptions():
                 return 0.0
 
         for s in subs:
+            frequency = (s.get('frequency', 'monthly') or 'monthly').lower()
             db.session.add(Subscription(
                 user_id=current_user.id,
                 name=s.get('name', ''),
+                provider=s.get('provider', ''),
                 amount=as_float(s.get('amount')),
-                frequency=s.get('frequency', '') or 'monthly',
+                frequency=frequency,
                 notes=s.get('notes', ''),
                 include=bool(s.get('include', False)),
                 annual_amount=as_float(s.get('annual_amount')),
             ))
+
         db.session.commit()
         # chain to Future Budget
         return jsonify({'redirect': url_for('views.future_budget')})
