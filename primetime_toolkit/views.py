@@ -882,8 +882,11 @@ def save_enough_calculator():
         import traceback; traceback.print_exc()
         return jsonify({'error': str(e), 'redirect': url_for('views.summary')}), 200
 
+
+
 #---------------------------------------------------
 # ---- Income Layers ----
+
 @views.route('/income_layers')
 @login_required
 def income_layers():
@@ -930,6 +933,7 @@ def save_income_layers():
 
 #---------------------------------------------------
 # ---- Spending Allocation ----
+
 @views.route('/spending_allocation')
 @login_required
 def spending_allocation():
@@ -982,6 +986,7 @@ def save_spending():
 
 #---------------------------------------------------
 # ---- Super Projection  ----
+
 @views.route('/super_projection')
 @login_required
 def super_projection():
@@ -992,8 +997,10 @@ def super_projection():
 def super():
     return redirect(url_for('views.super_projection'))
 
+
 #---------------------------------------------------
 # ---- Debt Paydown  ----
+
 @views.route('/debt_paydown')
 @login_required
 def debt_paydown():
@@ -1035,8 +1042,27 @@ def save_debt_paydown():
         db.session.rollback()
         import traceback; traceback.print_exc()
         return jsonify({"error": str(e), "redirect": url_for('views.summary')}), 200
-#---------------------------------------------------
+    
 
+
+
+@views.route('/debug-data')
+@login_required
+def debug_data():
+    uid = current_user.id
+    assets = Asset.query.filter_by(user_id=uid).all()
+    income = Income.query.filter_by(user_id=uid).all()
+    subs = Subscription.query.filter_by(user_id=uid).all()
+
+    return {
+        "assets": [a.amount for a in assets],
+        "income": [i.amount for i in income],
+        "subscriptions": [s.amount for s in subs]
+    }
+
+
+#---------------------------------------------------
+# ------ Calculator Summary ---------------
 
 @views.route('/summary')
 @login_required

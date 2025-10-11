@@ -167,7 +167,7 @@
       <div class="card-body py-3">
         <div class="d-flex justify-content-between mb-2">
           <span>Subscriptions</span>
-          <strong id="otherSubscriptionsOut">$0</strong>
+          <strong id="otherSubscriptionsOut">${{ subs_annual | round(0) }}</strong>
         </div>
         <div class="d-flex justify-content-between mb-2">
           <span>Future Budget</span>
@@ -188,7 +188,7 @@
         <hr class="my-2">
         <div class="d-flex justify-content-between">
           <span class="fw-semibold">Total (Others)</span>
-          <strong id="otherGrandTotalOut" class="fw-bold">$0</strong>
+          <strong id="otherGrandTotalOut">$0</strong>
         </div>
       </div>
     </div><br><br>
@@ -239,21 +239,7 @@
         }catch(e){ return 0; }
       }
 
-      const endpoints = [
-        { id:'otherSubscriptionsOut', url:'/api/subscriptions/total', field:'total' },
-        { id:'otherFutureBudgetOut',  url:'/api/future_budget/total', field:'total' },
-        { id:'otherEpicOut',          url:'/api/epic_experiences/total', field:'total' },
-        { id:'otherIncomeLayersOut',  url:'/income_layers/total', field:'total' },
-        { id:'otherSpendingOut',      url:'/api/spending_allocation/total', field:'total' },
-      ];
-
       let grand = 0;
-      for (const item of endpoints){
-        const val = await getMaybe(item.url, item.field);
-        grand += val;
-        const el = document.getElementById(item.id);
-        if (el) el.textContent = fmtAUD(val);
-      }
       const out = document.getElementById('otherGrandTotalOut');
       if (out) out.textContent = fmtAUD(grand);
     })();
@@ -288,58 +274,7 @@
 }
 </style>
 
-  <!-- Savings Calculator (compact widget) -->
-  <!-- <div class="card mt-4 no-print">
-    <div class="card-body">
-      <div class="d-flex align-items-center mb-3">
-        <h5 class="mb-0">Savings Calculator</h5>
-        <a href="{{ url_for('views.enough_calculator') }}" class="btn btn-link ms-auto p-0">
-          Continue with super projection calculator →
-        </a>
-      </div>
 
-      <div class="row g-3 align-items-center">
-        <div class="col-md-4 text-center">
-          <img src="{{ url_for('static', filename='img/pig.jpg') }}" alt="Piggy bank" width="140" height="auto" style="max-width:100%; height:auto;"/>
-          <div class="text-muted mt-2 small">End balance</div>
-          <div id="sumPigOut" class="fs-4 fw-semibold">$0.00</div>
-        </div>
-
-        <div class="col-md-8">
-          <form id="sumPigForm" class="row g-2">
-            <div class="col-6">
-              <label class="form-label mb-1">Starting balance</label>
-              <input id="sumPigStart" type="number" class="form-control form-control-sm" value="10000" min="0" step="0.01">
-            </div>
-            <div class="col-6">
-              <label class="form-label mb-1">Monthly contribution</label>
-              <input id="sumPigMonthly" type="number" class="form-control form-control-sm" value="1500" min="0" step="0.01">
-            </div>
-            <div class="col-4">
-              <label class="form-label mb-1">Period</label>
-              <input id="sumPigPeriod" type="number" class="form-control form-control-sm" value="2" min="0" step="1">
-            </div>
-            <div class="col-4">
-              <label class="form-label mb-1 d-block">Unit</label>
-              <div class="btn-group btn-group-sm" role="group">
-                <input type="radio" class="btn-check" name="sumPigUnit" id="sumPigYears" value="years" checked>
-                <label class="btn btn-outline-secondary" for="sumPigYears">Years</label>
-                <input type="radio" class="btn-check" name="sumPigUnit" id="sumPigMonths" value="months">
-                <label class="btn btn-outline-secondary" for="sumPigMonths">Months</label>
-              </div>
-            </div>
-            <div class="col-4">
-              <label class="form-label mb-1">Annual rate (%)</label>
-              <input id="sumPigRate" type="number" class="form-control form-control-sm" value="12" step="0.01">
-            </div>
-            <div class="col-12">
-              <button class="btn btn-success btn-sm">Calculate</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div> -->
 
   <script>
     (function(){
@@ -406,15 +341,15 @@
         emailBtn.addEventListener('click', () => {
           const d = buildData();
           const body = encodeURIComponent(
-`PrimeTime Toolkit — Financial Summary (as of ${d['Date']})\n\n`+
-`Total Assets: ${fmtAUD(d['Total Assets'])}\n`+
-`Net Worth: ${fmtAUD(d['Net Worth'])}\n`+
-`Liabilities: ${fmtAUD(d['Liabilities'])}\n`+
-`Annual Income: ${fmtAUD(d['Annual Income'])}\n`+
-`Annual Expenses: ${fmtAUD(d['Annual Expenses'])}\n`+
-`Net Income (Annual): ${fmtAUD(d['Net Income (Annual)'])}\n`+
-`Total Balance (Income - Expenses): ${fmtAUD(d['Total Balance (Income - Expenses)'])}\n`+
-`\nLink: ${window.location.href}`);
+            `PrimeTime Toolkit — Financial Summary (as of ${d['Date']})\n\n`+
+            `Total Assets: ${fmtAUD(d['Total Assets'])}\n`+
+            `Net Worth: ${fmtAUD(d['Net Worth'])}\n`+
+            `Liabilities: ${fmtAUD(d['Liabilities'])}\n`+
+            `Annual Income: ${fmtAUD(d['Annual Income'])}\n`+
+            `Annual Expenses: ${fmtAUD(d['Annual Expenses'])}\n`+
+            `Net Income (Annual): ${fmtAUD(d['Net Income (Annual)'])}\n`+
+            `Total Balance (Income - Expenses): ${fmtAUD(d['Total Balance (Income - Expenses)'])}\n`+
+            `\nLink: ${window.location.href}`);
           const mailto = `mailto:?subject=PrimeTime%20Toolkit%20Summary&body=${body}`;
           window.location.href = mailto;
         });
@@ -433,7 +368,7 @@
   </script>
 
   <!-- include the widget js -->
-  <script src="{{ url_for('static', filename='js/pig_savings_summary.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/calculator_summary.js') }}"></script>
 
   <script>
     (function(){
