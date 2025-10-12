@@ -574,6 +574,7 @@ def save_income():
             include=i.get('include', True)
         ))
     db.session.commit()
+    print("Received incomes:", incomes)
     flash("Income saved successfully!", "success")
     # Next step in your flow → Expenses
     return jsonify({'redirect': url_for('views.expenses')})
@@ -1061,6 +1062,54 @@ def debug_data():
     }
 
 
+
+
+@views.route('/debug-summary-values')
+@login_required
+def debug_summary_values():
+    uid = current_user.id
+
+    assets = Asset.query.filter_by(user_id=uid).all()
+    liabilities = Liability.query.filter_by(user_id=uid).all()
+    income = Income.query.filter_by(user_id=uid).all()
+    subscriptions = Subscription.query.filter_by(user_id=uid).all()
+    expenses = Expense.query.filter_by(user_id=uid).all()
+    epics = EpicExperience.query.filter_by(user_id=uid).all()
+    future_budget = FutureBudget.query.filter_by(user_id=uid).all()
+
+    return {
+        "assets": [a.amount for a in assets],
+        "liabilities": [l.amount for l in liabilities],
+        "income": [i.amount for i in income],
+        "subscriptions": [s.amount for s in subscriptions],
+        "expenses": [e.amount for e in expenses],
+        "epics": [e.amount for e in epics],
+        "future_budget": [f.total_annual_budget for f in future_budget]
+    }
+
+
+
+
+
+@views.route('/debug-income')
+@login_required
+def debug_income():
+    rows = Income.query.filter_by(user_id=current_user.id).all()
+    return {
+        "count": len(rows),
+        "rows": [
+            {
+                "source": r.source,
+                "amount": r.amount,
+                "frequency": r.frequency,
+                "include": r.include
+            } for r in rows
+        ]
+    }
+
+
+
+
 #---------------------------------------------------
 # ------ Calculator Summary ---------------
 
@@ -1185,6 +1234,14 @@ def summary():
         "epic":     float(fb_epic),
         "total":    float(fb_total),
     }
+
+    print("Assets Total:", assets_total)
+    print("Income Annual:", income_annual)
+    print("Expenses Annual:", expenses_annual)
+    print("Subscriptions Annual:", subs_annual)
+    print("Epic Annual:", epic_annual)
+    print("Future Budget Total:", fb_total)
+
 
     return render_template(
         'calculators/summary.html',

@@ -136,20 +136,6 @@
     }
   }
 
-  async function loadAll() {
-    try {
-      const res = await fetch('/api/epic_one_off');
-      if (!res.ok) throw new Error();
-      const payload = await res.json();
-      yearsEl.value = payload?.settings?.years ?? 10;
-      tbody.innerHTML = '';
-      (payload?.items ?? []).forEach(addRow);
-      if (!tbody.children.length) clearAll(); // ✅ one starter row if DB empty
-      recalcAll();
-    } catch {
-      clearAll();
-    }
-  }
 
   // Back button
   backBtn?.addEventListener('click', () => history.back());

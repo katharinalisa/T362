@@ -31,22 +31,7 @@
   let budgetMap = {};
   const normPhase = p => (p || '').trim().toLowerCase();
 
-  async function pullBudget() {
-    try {
-      const res = await fetch('/api/future_budget');
-      if (!res.ok) throw new Error();
-      const rows = await res.json();
-      budgetMap = {};
-      rows.forEach(r => {
-        const annual = (r.baseline || 0) + (r.oneoff || 0) + (r.epic || 0) || r.annual || 0;
-        budgetMap[normPhase(r.phase)] = annual;
-      });
-    } catch {
-      budgetMap = {};
-    } finally {
-      recalcAll();
-    }
-  }
+
 
   function addRow(prefill = {}) {
     const frag = rowTpl.content.cloneNode(true);

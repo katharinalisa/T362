@@ -62,6 +62,9 @@
     .print-footer { display:none; }
   </style>
 
+
+  <div id="sumPigOut" class="mt-2 fw-bold text-success"></div>
+
   <div class="print-header" style="flex-direction:column; align-items:center; text-align:center;">
     <div class="print-brand" style="width:100%; display:flex; justify-content:space-between; align-items:center;">
       <img src="{{ url_for('static', filename='img/primetime_image.png') }}" alt="PrimeTime Toolkit" style="height:32px;"/>
@@ -100,20 +103,7 @@
       </div>
     </div>
 
-    <!-- Deposits (Net Worth proxy) -->
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="kpi-card">
-        <div class="kpi-icon" aria-hidden="true">
-          <img src="{{ url_for('static', filename='img/networth.png') }}" alt="Net Worth" style="width:32px; height:32px; object-fit:contain;">
-        </div>
-        <div>
-          <p class="kpi-title mb-1">Net Worth</p>
-          <p class="kpi-value mb-1">{{ "${:,.0f}".format(net_worth|default(0)) }}</p>
-          <p class="kpi-sub">assets − liabilities</p>
-        </div>
-      </div>
-    </div>
-
+    
     <!-- Revenue / Income -->
     <div class="col-12 col-md-6 col-lg-4">
       <div class="kpi-card">
@@ -127,6 +117,7 @@
         </div>
       </div>
     </div>
+
 
     <!-- Total Tax Paid (use Expenses as proxy if tax not tracked) -->
     <div class="col-12 col-md-6 col-lg-4">
@@ -155,6 +146,20 @@
         </div>
       </div>
     </div>
+
+    <!-- Subscriptions -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="kpi-card {{ 'kpi-danger' if (surplus_annual|default(0)) < 0 else '' }}">
+        <div class="kpi-icon" aria-hidden="true">
+          <img src="{{ url_for('static', filename='img/netincome.png') }}" alt="Net Income" style="width:32px; height:32px; object-fit:contain;">
+        </div>
+        <div>
+          <p class="kpi-title mb-1">Subscriptions</p>
+          <p class="kpi-value mb-1">${{ subs_annual | round(0) }}</p>
+          <p class="kpi-sub">current total</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <br>
@@ -165,10 +170,7 @@
 
     <div class="container card mt-2">
       <div class="card-body py-3">
-        <div class="d-flex justify-content-between mb-2">
-          <span>Subscriptions</span>
-          <strong id="otherSubscriptionsOut">${{ subs_annual | round(0) }}</strong>
-        </div>
+       
         <div class="d-flex justify-content-between mb-2">
           <span>Future Budget</span>
           <strong id="otherFutureBudgetOut">$0</strong>
@@ -188,7 +190,7 @@
         <hr class="my-2">
         <div class="d-flex justify-content-between">
           <span class="fw-semibold">Total (Others)</span>
-          <strong id="otherGrandTotalOut">$0</strong>
+          <strong id="otherGrandTotalOut">${{ (subs_annual + budget_targets.total + epic_annual) | round(0) }}</strong>
         </div>
       </div>
     </div><br><br>
@@ -197,29 +199,6 @@
     <a href="{{ url_for('views.spending_allocation') }}" class="btn btn-outline-secondary" style="text-decoration: none;">Back</a>
     <button id="backToToolsBtn" type="button" class="btn btn-outline-secondary">Back to Overview</button>
   </div>
-
-
-  <script>
-    (function(){
-      // Sum the six KPI values in the first grid via DOM (currency text -> number)
-      function toNum(text){
-        const n = parseFloat(String(text||'').replace(/[^0-9.-]/g, ''));
-        return Number.isFinite(n) ? n : 0;
-      }
-      function fmtAUD(n){
-        try { return new Intl.NumberFormat(undefined, { style:'currency', currency:'AUD' }).format(n); }
-        catch { return `$${(n||0).toFixed(2)}`; }
-      }
-      const row = document.querySelector('.row.g-3.mt-1');
-      const out = document.getElementById('totalValueOut');
-      if (!row || !out) return;
-      const vals = Array.from(row.querySelectorAll('.kpi-value'))
-        .slice(0, 6) // take the first 6 boxes
-        .map(el => toNum(el.textContent));
-      const total = vals.reduce((a,b)=>a+b,0);
-      out.textContent = fmtAUD(total);
-    })();
-  </script>
 
 
   <script>

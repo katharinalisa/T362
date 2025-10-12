@@ -26,31 +26,8 @@
   };
   const setText = (el, val) => { el.textContent = val; el.classList.toggle('placeholder', val === '—'); };
 
-  let fbAverageAnnual = 0; // weighted average from Future Budget
+  let fbAverageAnnual = 0;
 
-  // Fetch weighted average from /api/future_budget
-  async function loadFBAnnual() {
-    try {
-      const res = await fetch('/api/future_budget');
-      if (!res.ok) throw new Error('fetch failed');
-      const rows = await res.json();
-
-      // annual = baseline + oneoff + epic; weighted by years
-      let sumAY = 0, sumY = 0;
-      rows.forEach(r => {
-        const annual = num(r.baseline) + num(r.oneoff) + num(r.epic);
-        const y = num(r.years);
-        sumAY += annual * y;
-        sumY  += y;
-      });
-      fbAverageAnnual = sumY > 0 ? (sumAY / sumY) : 0;
-      setText(fbAnnualEl, AUD.format(fbAverageAnnual));
-    } catch (e) {
-      fbAverageAnnual = 0;
-      setText(fbAnnualEl, '—');
-    }
-    compute();
-  }
 
   function toggleManual() {
     const show = (useFB.value || 'Yes') === 'No';

@@ -159,58 +159,37 @@
     URL.revokeObjectURL(url);
   }
 
-  // API
-  async function loadAssumptions() {
-    try {
-      const res = await fetch('/api/super_projection');
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      writeAssumptions(data || {});
-      calcAndRender();
-    } catch {
-      // fall back to defaults already in the form
-      calcAndRender();
-    }
-  }
 
   async function saveAssumptions() {
-    const btn = $('sp_save');
-    const original = btn?.textContent;
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = 'Saving…';
-    }
-
-    const a = readAssumptions();
-    a.years = Math.max(1, Math.floor(a.endAge - a.startAge + 1));
-    try {
-      const res = await fetch('/api/super_projection/save', {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify(a)
-      });
-      if (!res.ok) throw new Error();
-      alert('Super Projection saved successfully!');
-    } catch {
-      alert('Save failed. Check server logs.');
-    } finally {
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = original;
-      }
-    }
+  const btn = $('sp_save');
+  const original = btn?.textContent;
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
   }
+
+  const a = readAssumptions();
+  a.years = Math.max(1, Math.floor(a.endAge - a.startAge + 1));
+
+
+
+  // TODO: Add actual save logic here
+  console.log("Saving assumptions:", a);
+
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+}
 
   // wires
   $('sp_calc')?.addEventListener('click', calcAndRender);
   $('sp_csv')?.addEventListener('click', () => downloadCSV(calcAndRender()));
-  $('sp_load')?.addEventListener('click', loadAssumptions);
   $('sp_save')?.addEventListener('click', saveAssumptions);
 
   // init
   document.addEventListener('DOMContentLoaded', () => {
     recomputeYears();
-    loadAssumptions();
 
     // Wire buttons after DOM is ready
     $('sp_back')?.addEventListener('click', () => {
@@ -228,24 +207,6 @@
       const a = readAssumptions();
       a.years = Math.max(1, Math.floor(a.endAge - a.startAge + 1));
       let ok = false;
-      try {
-        const res = await fetch('/api/super_projection/save', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(a)
-        });
-        ok = res.ok;
-        if (!ok) throw new Error();
-      } catch (e) {
-        alert('Save failed. Redirecting to Debt Paydown anyway.');
-      } finally {
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = original;
-        }
-        // Always go to Debt Paydown as requested
-        window.location.href = '/debt_paydown';
-      }
     });
   });
 })();

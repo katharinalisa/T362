@@ -315,12 +315,12 @@ input:checked+.slider:before{transform:translateX(24px)}
 ------------------- */
 .sidebar{
   position:fixed;inset:0 auto 0 0;width:0;height:100vh;background:var(--darker-blue);
-  overflow-x:hidden;overflow-y:auto;padding-top:65px;box-shadow:8px 0 10px rgba(0, 0, 0, 0.2);
+  overflow-x:hidden;overflow-y:auto;padding-top:90px;box-shadow:8px 0 10px rgba(0, 0, 0, 0.2);
   transition:width .35s;z-index:1300
 }
 .sidebar.is-open{width:260px}
 .sidebar a{
-  padding:12px 0px 12px 32px;text-decoration:none;font-size:15px;font-family:'Poppins',sans-serif;
+  padding:12px 0px 12px 32px;text-decoration:none;font-size:16px;font-family:'Poppins',sans-serif;
   color:#FDF6ED;display:block;transition:background .25s,padding-left .25s
 }
 .sidebar a:hover{background:#10A8A0;padding-left:40px;color:#fff}
