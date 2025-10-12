@@ -6,11 +6,6 @@
       Your Financial Summary
     </h1>
   </div>
-<div class="d-flex justify-content-center gap-2 mb-3 no-print">
-  <button id="downloadExcelBtn" class="btn btn-outline-secondary">Download Excel</button>
-  <button id="emailSummaryBtn" class="btn btn-outline-secondary">Email Summary</button>
-  <button id="printSummaryBtn" class="btn btn-success">Download PDF</button>
-</div>
 
   <!-- KPI grid (2 x 3) -->
   <style>
@@ -60,10 +55,18 @@
     /* default: hide print header on screen */
     .print-header { display:none; }
     .print-footer { display:none; }
+
+    .btn-grow-hover {
+      transition: transform 0.50s cubic-bezier(.4,1.5,.5,1);
+    }
+    .btn-grow-hover:hover, .btn-grow-hover:focus {
+      transform: scale(1.08);
+      z-index: 2;
+    }
   </style>
 
-
-  <div id="sumPigOut" class="mt-2 fw-bold text-success"></div>
+<!-- LEAVE THIS LINE
+  <div id="sumPigOut" class="mt-2 fw-bold text-success" style="color:white"></div> -->
 
   <div class="print-header" style="flex-direction:column; align-items:center; text-align:center;">
     <div class="print-brand" style="width:100%; display:flex; justify-content:space-between; align-items:center;">
@@ -103,6 +106,21 @@
       </div>
     </div>
 
+
+    <!-- Subscriptions -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="kpi-card {{ 'kpi-danger' if (surplus_annual|default(0)) < 0 else '' }}">
+        <div class="kpi-icon" aria-hidden="true">
+          <img src="{{ url_for('static', filename='img/netincome.png') }}" alt="Net Income" style="width:32px; height:32px; object-fit:contain;">
+        </div>
+        <div>
+          <p class="kpi-title mb-1">Subscriptions</p>
+          <p class="kpi-value mb-1">${{ subs_annual | round(0) }}</p>
+          <p class="kpi-sub">current total</p>
+        </div>
+      </div>
+    </div>
+
     
     <!-- Revenue / Income -->
     <div class="col-12 col-md-6 col-lg-4">
@@ -133,6 +151,7 @@
       </div>
     </div>
 
+    
     <!-- Net Income -->
     <div class="col-12 col-md-6 col-lg-4">
       <div class="kpi-card {{ 'kpi-danger' if (surplus_annual|default(0)) < 0 else '' }}">
@@ -146,60 +165,45 @@
         </div>
       </div>
     </div>
+  </div><br>
 
-    <!-- Subscriptions -->
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="kpi-card {{ 'kpi-danger' if (surplus_annual|default(0)) < 0 else '' }}">
-        <div class="kpi-icon" aria-hidden="true">
-          <img src="{{ url_for('static', filename='img/netincome.png') }}" alt="Net Income" style="width:32px; height:32px; object-fit:contain;">
-        </div>
-        <div>
-          <p class="kpi-title mb-1">Subscriptions</p>
-          <p class="kpi-value mb-1">${{ subs_annual | round(0) }}</p>
-          <p class="kpi-sub">current total</p>
-        </div>
-      </div>
-    </div>
+  <div class="card shadow-sm p-2 mt-4 mx-auto" style="background: linear-gradient(to right, #fcffff, #fcffff); width:900px;">
+    <div class="container text-center mt-5">
+    <h2 class="fw-bold text-primary">Next Steps</h2>
+    <p class="text-muted">Choose an action or explore more tools</p>
   </div>
 
-  <br>
-  <div class="mt-2 p-2 border rounded bg-light" style="width: 100vw; margin-left: calc(-50vw + 50%);">
-    <div class="container">
-      <span class="fw-semibold" style="font-size:22px">Others </span>
+    <div class="btn-toolbar justify-content-center gap-2 mt-4 mb-3" role="toolbar">
+      <a href="{{ url_for('views.spending_allocation') }}" class="btn btn-outline-secondary">Back</a>
+      <button id="backToToolsBtn" type="button" class="btn btn-outline-secondary">Back to Overview</button>
+      <button id="downloadExcelBtn" class="btn btn-outline-primary">Download as Excel</button>
+      <button id="emailSummaryBtn" class="btn btn-outline-info">Get per Email</button>
+      <button id="printSummaryBtn" class="btn btn-success">Download PDF</button>
     </div>
-
-    <div class="container card mt-2">
-      <div class="card-body py-3">
-       
-        <div class="d-flex justify-content-between mb-2">
-          <span>Future Budget</span>
-          <strong id="otherFutureBudgetOut">$0</strong>
-        </div>
-        <div class="d-flex justify-content-between mb-2">
-          <span>Epic &amp; One-off</span>
-          <strong id="otherEpicOut">$0</strong>
-        </div>
-        <div class="d-flex justify-content-between mb-2">
-          <span>Income Layers</span>
-          <strong id="otherIncomeLayersOut">$0</strong>
-        </div>
-        <div class="d-flex justify-content-between mb-2">
-          <span>Spending Allocation</span>
-          <strong id="otherSpendingOut">$0</strong>
-        </div>
-        <hr class="my-2">
-        <div class="d-flex justify-content-between">
-          <span class="fw-semibold">Total (Others)</span>
-          <strong id="otherGrandTotalOut">${{ (subs_annual + budget_targets.total + epic_annual) | round(0) }}</strong>
-        </div>
-      </div>
+    
+    <div class="container d-flex flex-column align-items-center">
+      <a href="{{ url_for('views.dashboard') }}" class="btn btn-primary btn-lg btn-grow-hover" style="font-size:18px; text-decoration: none;">Go to your Dashboard</a>
     </div><br><br>
   </div>
-    <div class="mt-4 no-print">
-    <a href="{{ url_for('views.spending_allocation') }}" class="btn btn-outline-secondary" style="text-decoration: none;">Back</a>
-    <button id="backToToolsBtn" type="button" class="btn btn-outline-secondary">Back to Overview</button>
-  </div>
 
+  <br><br><hr>
+<div class="container d-flex flex-column align-items-center">
+    <p class="text-center mbS-0" style="font-size:1.18rem; color:#2d3a4a;">
+      <span style="font-size:1.3rem; color:#007bff; font-weight:600;">
+        Ready for More Calculations?
+      </span><br>
+      <span>
+        Discover our <strong>advanced calculators</strong> including Super Projection, Debt Paydown, and "Enough" calculators. These optional tools are designed to give you deeper understanding and you can find more information about them once you proceed. You can also go straight to <a href="{{ url_for('views.dashboard') }}">the Dashboards Overview</a> to view your results visually.
+      </span>
+    </p><br>
+
+  <a class="btn btn-secondary btn-lg disabled" style="font-size:18px; text-decoration: none; pointer-events: none; opacity: 0.6;">
+    Continue with Super Projection calculator
+  </a>
+  <p class="text-muted">This feature is currently unavailable.</p>
+
+</div>
+<br><br>
 
   <script>
     (async function(){
@@ -223,35 +227,6 @@
       if (out) out.textContent = fmtAUD(grand);
     })();
   </script>
-
-<br>
-<div class="container d-flex flex-column align-items-center">
-  <div class="mb-3 p-3 rounded shadow-sm" style="background: #f5f7fa; max-width:1000px;">
-    <p class="text-center mb-0" style="font-size:1.18rem; color:#2d3a4a;">
-      <span style="font-size:1.3rem; color:#007bff; font-weight:600;">
-        Ready for More Insights?
-      </span><br>
-      <span>
-        Discover our <strong>advanced calculators</strong> including Super Projection, Debt Paydown, and "Enough" calculators. These optional tools are designed to give you deeper understanding and you can find more information about them once you proceed. You can also go straight to <a href="{{ url_for('views.dashboard') }}">the Dashboards Overview</a> to view your results visually.
-      </span>
-    </p>
-  </div><br>
-
-  <a href="{{ url_for('views.super_projection') }}" class="btn btn-primary btn-lg btn-grow-hover" style="font-size:18px; text-decoration: none;">
-    Continue with Super Projection calculator
-  </a>
-</div>
-<br><br>
-
-<style>
-.btn-grow-hover {
-  transition: transform 0.50s cubic-bezier(.4,1.5,.5,1);
-}
-.btn-grow-hover:hover, .btn-grow-hover:focus {
-  transform: scale(1.08);
-  z-index: 2;
-}
-</style>
 
 
 
