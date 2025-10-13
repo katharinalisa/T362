@@ -4,7 +4,9 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 {% set step_number = 1 %}
 {% set step_label = "Purpose & Direction" %}
+{% set page_class = "assessment-bg" %}
 
+<body class="{{ page_class | default('') }}">
 <br>
 <div class="step-box">
   <div class="header-box mb-4">
@@ -92,4 +94,5 @@
   </form>
 </div>
 <br><br>
+</body>
 {% endblock %}

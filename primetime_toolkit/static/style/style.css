@@ -53,6 +53,17 @@ a:hover{text-decoration:underline}
 .accent-text{font-family:'Playfair Display',serif;font-style:italic;font-weight:600}
 
 
+.assessment-bg {
+  background-image: url('/static/img/abstract-background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  width:100vw; margin-left:calc(-50vw + 50%);
+}
+
+
+
 /* ------------------
    Hero / Banners
 ------------------- */
@@ -231,7 +242,7 @@ input:checked+.slider:before{transform:translateX(24px)}
 
 .summary-page{margin: 0 0 0 0}
 .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin:20px 0}
-.card{background:linear-gradient(to right,var(--blue), #f9fffd);border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0, 0, 0, 0.1)}
+.card{background:linear-gradient(to right,var(--darker-blue), #f9fffd);padding:20px;box-shadow:0 4px 12px rgba(0, 0, 0, 0.1)}
 .card h3{margin:0 0 10px; color: #00428d}
 
 /* KPIs */
@@ -568,16 +579,18 @@ input:checked+.slider:before{transform:translateX(24px)}
 /*----------------------------------
 /*-------Self-assessment------------*/
 .step-box {
-  background: #f1f1f1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-radius: 12px;
   padding: 0;
   max-width: 600px;
   margin: 2rem auto;
   overflow: hidden;
   text-align: center;
+  margin-bottom:80px !important;
 }
+
 .header-box {
-  background: #1e2b3a;
+  background: var(--darker-blue);
   color: white;
   padding: 1.5rem;
   display: flex;
@@ -605,8 +618,8 @@ input:checked+.slider:before{transform:translateX(24px)}
   cursor: pointer;
 }
 .likert input[type="radio"]:checked {
-  background-color: #7e57c2;
-  border-color: #7e57c2;
+  background-color: #3426f7cc;
+  border-color: #644dfe;
 }
 .likert input[type="radio"]::after {
   content: "";
@@ -732,11 +745,10 @@ input:checked+.slider:before{transform:translateX(24px)}
 .badge3 { background-color: #6f42c1; }
 
 .step-box {
-  background: #f1f1f1;
-  border-radius: 12px;
-  padding: 0;
-  max-width: 600px;
-  margin: 2rem auto;
-  overflow: hidden;
-  text-align: center;
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  max-width: 800px;
+  margin: 0 auto;
 }
