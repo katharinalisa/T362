@@ -21,6 +21,7 @@
 
   .fade-in-slow {
     animation: fadeInSlow 1.5s ease-out forwards;
+    animation-delay: 1.5s;
   }
 
   .option-card {
@@ -147,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
-<h1
+<h1 id="financial-dashboard"
   class="display-1 section-title mb-2"
   style="font-size: 3rem; font-weight: 800; text-align: center; letter-spacing: -0.6px;"
   >
@@ -163,7 +164,6 @@ document.addEventListener('DOMContentLoaded', function() {
       <p class="fade-in-slow" style="font-size: 17px;">
         It looks like you haven’t uploaded a spreadsheet nor completed the web calculators yet.<br>
         Please choose one of the above options to get started and come back to your <strong>Dashboard</strong> once you have completed one of them.<br>
-        This dashboard provides insights into your financial stability and helps you track your progress over time.
       </p>
     {% endif %}
   </div>

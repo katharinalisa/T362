@@ -132,6 +132,37 @@
           height: 1px;
           overflow: hidden;
       }
+
+      .chat-hint {
+        position: fixed;
+        bottom: 50px;
+        right: 100px;
+        background: rgba(0, 0, 0, 0.5);
+        color: #d1d1d1;
+        padding: 8px 12px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        font-size: 14px;
+        z-index: 999;
+        opacity: 0;
+        transform: translateY(0);
+        transition: opacity 1.5s ease, transform 1.5s ease;
+      }
+      .chat-hint.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      #chat-hint2 {
+        bottom: 45px;
+        right: 102px;
+      }
+
+      .chat-hint.shift-up {
+        transform: translateY(-40px); /* moves chat bubble up */
+        transition: transform 0.5s ease;
+      }
+
   </style>
   
   <meta charset="UTF-8" />
@@ -283,8 +314,11 @@
 
 <!--_________________________-->
   <!-- Chat button + popup -->
-
+  <div id="chat-hint" class="chat-hint">Chat if you need assistance</div>
+  <div id="chat-hint2" class="chat-hint">Our Chatbot is here to help!</div>
+  
   <div id="chatbot-widget">
+    
     <button id="chatbot-toggle" aria-label="Open chatbot">💬</button>
     <div id="chatbot-container">
       <div class="chatbot-container">
@@ -385,9 +419,27 @@
       messages.scrollTop = messages.scrollHeight;
       input.value = '';
     }
+        
+
+    $(document).ready(function() {
+      const hint1 = $('#chat-hint');
+      const hint2 = $('#chat-hint2');
+
+      hint1.addClass('show');
+
+      setTimeout(() => {
+        hint1.addClass('shift-up'); // move it up
+        hint2.addClass('show');     // show second message
+      }, 1500);
+
+      setTimeout(() => {
+        hint1.removeClass('show shift-up');
+        hint2.removeClass('show');
+      }, 10000);
+    });
 
 
-
+    
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && popup.style.display === 'block') closeChat();
     });
