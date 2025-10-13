@@ -138,7 +138,7 @@
         bottom: 50px;
         right: 100px;
         background: rgba(0, 0, 0, 0.5);
-        color: #d1d1d1;
+        color: #dedede;
         padding: 8px 12px;
         border-radius: 8px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.2);
@@ -421,21 +421,28 @@
     }
         
 
+
     $(document).ready(function() {
-      const hint1 = $('#chat-hint');
-      const hint2 = $('#chat-hint2');
+      const isHomePage = window.location.pathname === '/'; // chat bubbles only appear on homepage
 
-      hint1.addClass('show');
+      if (isHomePage) {
+        const hint1 = $('#chat-hint');
+        const hint2 = $('#chat-hint2');
 
-      setTimeout(() => {
-        hint1.addClass('shift-up'); // move it up
-        hint2.addClass('show');     // show second message
-      }, 1500);
+        setTimeout(() => {
+          hint1.addClass('show');
+        }, 1000);
 
-      setTimeout(() => {
-        hint1.removeClass('show shift-up');
-        hint2.removeClass('show');
-      }, 10000);
+        setTimeout(() => {
+          hint1.addClass('shift-up');
+          hint2.addClass('show');
+        }, 2700);
+
+        setTimeout(() => {
+          hint1.removeClass('show shift-up');
+          hint2.removeClass('show');
+        }, 10000);
+      }
     });
 
 
