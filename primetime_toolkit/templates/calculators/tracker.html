@@ -211,13 +211,27 @@
           <a href="{{ url_for('views.summary') }}" class="btn btn-start mt-3 align-self-start">Start</a>
         </div>
       </div>
-<br><br><br><br><br>
-      <h2
-      class="display-1 section-title mb-2"
-      style="font-size: 2.5rem; font-weight: 800; letter-spacing: -0.6px; text-align: center;"
-    >
-      This Content is not available yet
-    </h2>
+
+            
+      <div class="col-12 mt-5">
+        <div class="option-card p-5 text-center shadow-sm">
+          <h2 class="display-6 fw-bold mb-4 text-success-emphasis">
+            Have you completed all steps?
+          </h2>
+          <a href="{{ url_for('views.dashboard') }}#financial-dashboard" class="btn btn-start mt-3 align-self-start" style="font-weight: 600; font-size: 1.2rem; padding:15px;">
+            View Your Financial Dashboard
+          </a>
+        </div>
+      </div>
+
+      <div style="height: 60px;"></div>
+      <h3
+        class="section-title mb-2 mt-5"
+        style="font-size: 2rem; font-weight: 800; letter-spacing: -0.6px; text-align: center;"
+      >
+        This Content is not available yet
+      </h3>
+    </div>
         
     <div class="row mt-4">
       <div class="col-md-4">
@@ -256,23 +270,21 @@
         </div>
       </div>
     </div>
-
-
    </div>
   </div>
-      <div class="text-end mt-2">
+      <!-- <div class="text-end mt-2">
         <button id="restartBtn" class="btn btn-outline-danger btn-sm">Restart Progress</button>
-      </div>
+      </div> -->
 </section>
-
 <br><br>
+
 
 <script>
 const TOTAL_STEPS = 15;
 
 document.addEventListener("DOMContentLoaded", updateProgressBar);
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("restartBtn")?.addEventListener("click", resetProgress);
+  // document.getElementById("restartBtn")?.addEventListener("click", resetProgress);
 });
 
 function updateProgressBar() {
@@ -287,19 +299,21 @@ function updateProgressBar() {
   document.getElementById('progressA11y')?.setAttribute('aria-valuenow', pct.toFixed(0));
 }
 
-function resetProgress() {
-  // Clear stored completion
-  localStorage.removeItem("completedSteps");
-  // Reset the visual bar and text
-  const fill = document.getElementById("progressFill");
-  const label = document.getElementById("progressLabel");
-  fill.style.width = '0%';
-  label.textContent = `0 of ${TOTAL_STEPS} steps completed`;
-  document.getElementById('progressA11y')?.setAttribute('aria-valuenow', '0');
 
-  // Remove any existing "Completed" badges on cards
-  document.querySelectorAll('.step-card .badge.bg-success').forEach(el => el.remove());
-}
+
+// function resetProgress() {
+//   localStorage.removeItem("completedSteps");
+
+//   const fill = document.getElementById("progressFill");
+//   const label = document.getElementById("progressLabel");
+//   fill.style.width = '0%';
+//   label.textContent = `0 of ${TOTAL_STEPS} steps completed`;
+//   document.getElementById('progressA11y')?.setAttribute('aria-valuenow', '0');
+
+//   document.querySelectorAll('.step-card .badge.bg-success').forEach(el => el.remove());
+// }
+
+
 
 function markStepComplete(stepKey) {
   let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
@@ -317,6 +331,7 @@ function markStepComplete(stepKey) {
     future_budget: 7, epic: 8, income_layers: 9, spending_allocation: 10,
     super: 11, debt_paydown: 12
   };
+
   document.querySelectorAll('.step-card').forEach(card => {
     const num = card.querySelector('.step-number')?.textContent?.match(/\d+/)?.[0];
     const key = Object.keys(map).find(k => map[k] == num);
@@ -325,6 +340,25 @@ function markStepComplete(stepKey) {
       tag.className = 'badge bg-success ms-auto';
       tag.textContent = 'Completed';
       card.querySelector('.fw-bold')?.insertAdjacentElement('afterend', tag);
+    }
+
+    // Lock Summary card if Steps 1–10 are not completed
+    if (num === '11' && completed.size < 10) {
+      card.classList.add('text-muted');
+      card.style.opacity = '0.6';
+      card.style.pointerEvents = 'none';
+
+      const btn = card.querySelector('a');
+      if (btn) {
+        btn.classList.add('btn-secondary', 'disabled');
+        btn.textContent = 'Locked';
+        btn.removeAttribute('href');
+      }
+
+      const desc = card.querySelector('p');
+      if (desc) {
+        desc.textContent = 'Complete Steps 1–10 to unlock your summary.';
+      }
     }
   });
 })();
