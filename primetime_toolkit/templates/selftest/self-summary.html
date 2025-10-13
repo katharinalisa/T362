@@ -1,12 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<div class="summary-page" style="background: var(--page-bg); padding: 0;">
+<div class="summary-page" style="background: var(--page-bg);">
   <div class="container-summary" style="display: flex; gap: 28px; align-items: flex-start; justify-content: flex-start;">
     <div class="main-col" style="flex:1"><br><br>
       <h1
       class="display-1 section-title mb-2"
-      style="font-size: 3rem; font-weight: 800; text-align: center; letter-spacing: -0.6px;"
+      style="font-size: 3rem; font-weight: 800; text-align: center; letter-spacing: -0.6px; margin-top:-10px;"
     >
       Your Self-Assessment Summary
     </h1>
@@ -17,17 +17,17 @@
           Your Prime Time Readiness Type is:
         </h2>
         {% if result_message == "Proactive" %}
-          <h1 style="font-size:48px;color:#075985;margin:0">Proactive</h1>
+          <h1 style="font-size:48px;color:#0062b1;margin:0">Proactive</h1>
           <p class="meta" style="max-width:700px;margin:16px auto 0">
             You’ve demonstrated a high level of financial awareness and proactive planning. Whether it’s managing your spending, saving regularly, understanding your super, or protecting your future. your habits show consistency and confidence. You are likely someone who takes initiative, seeks out resources, and follows through with actions that align with your long-term goals. While there may still be areas to refine, you’re in a strong position to maintain momentum and build wealth with intention. Keep leveraging your strengths and explore advanced strategies like investment planning, mentoring others, or fine-tuning your retirement vision.
           </p>
         {% elif result_message == "Reactive" %}
-          <h1 style="font-size:48px;color:#92400e;margin:0">Reactive</h1>
+          <h1 style="font-size:48px;color:#994505;margin:0">Reactive</h1>
           <p class="meta" style="max-width:700px;margin:16px auto 0">
             You’ve started your financial journey with some strong habits in place. Perhaps you’re budgeting, saving, or beginning to understand your superannuation, but your planning may still be inconsistent or reactive rather than intentional. You might rely on short-term fixes or find it hard to follow through on your plans. That’s okay you’re not starting from scratch. The next step is to focus on clarity, build consistency, and strengthen your financial foundation. With a few practical tools and routines, you can move from reacting to challenges to confidently leading your financial future.
           </p>
         {% else %}
-          <h1 style="font-size:48px;color:#9f1239;margin:0">Inactive</h1>
+          <h1 style="font-size:48px;color:#8f0b30;margin:0">Inactive</h1>
           <p class="meta" style="max-width:700px;margin:16px auto 0">
             You’re likely just beginning your financial journey or have not yet built strong habits around saving, budgeting, or planning for the future. You may feel uncertain, avoid financial tasks, or lack confidence in money decisions — and that’s okay. Everyone starts somewhere. This is your opportunity to take small, manageable steps: track your spending, build a basic emergency fund, or explore how superannuation works. Remember, progress is not about perfection. it’s about building one positive habit at a time. With the right support, you can gain control and start moving toward financial independence.
           </p>
@@ -75,7 +75,7 @@
           </tbody>
         </table>
       </section>
-      <br>
+      <div style="height:40px;"></div>
       <section class="card summary-section" id="gaps">
         <div class="section-title">
           <h3>Areas to improve</h3>
@@ -115,7 +115,7 @@
           {% endfor %}
         {% endif %}
       </section>
-      <br>
+      <div style="height:40px;"></div>
       <section class="card summary-section" id="next-steps">
         <div class="section-title">
           <h3>Next steps</h3>
