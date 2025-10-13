@@ -1256,6 +1256,17 @@ def summary():
     print("Future Budget Total:", fb_total)
 
 
+    summary_payload = {
+        "net_worth": float(net_worth or 0.0),
+        "assets_total": float(assets_total or 0.0),
+        "liabilities_total": float(liabilities_total or 0.0),
+        "income_annual": float(income_annual or 0.0),
+        "subs_annual": float(subs_annual or 0.0),
+        "expenses_annual": float(expenses_annual or 0.0)
+    }
+
+    session['summary_data'] = summary_payload
+    
     return render_template(
         'calculators/summary.html',
         # Point-in-time
