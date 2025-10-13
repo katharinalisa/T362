@@ -58,26 +58,13 @@
       class="display-1 section-title mb-2"
       style="font-size: 3rem; font-weight: 800; text-align: center; letter-spacing: -0.6px;"
     >
-      Your Financial Dashboard
+      Choose how you would like to proceed
     </h1>
-    {% if data.net_worth is defined and data.net_worth is not none %}
-      <p style="color:#787878">
-        Here you can view your financial stability and track your progress over time. We recommend calculating your finances at least every 6 months.
-      </p>
-    {% else %}
-      <br>
-      <p class="fade-in-slow" style="font-size: 17px;">
-        It looks like you haven’t uploaded a spreadsheet nor completed the web calculators yet.<br>
-        Please choose one of the below options to get started and come back to your <strong>Dashboard</strong> once you have completed one of them.<br>
-        This dashboard provides insights into your financial stability and helps you track your progress over time.
-      </p>
-    {% endif %}
-  </div>
-</section>
 
 
-<div class="container my-5">
-  <div class="row justify-content-center align-items-stretch g-4">
+  <div class="container my-5">
+    <div class="row justify-content-center align-items-stretch g-4">
+
     <!-- Download Spreadsheet -->
     <div class="col-md-5 col-lg-4 d-flex">
       <div class="card option-card compact-card text-center w-100">
@@ -158,6 +145,29 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+
+
+<h1
+  class="display-1 section-title mb-2"
+  style="font-size: 3rem; font-weight: 800; text-align: center; letter-spacing: -0.6px;"
+  >
+    Your Financial Dashboard
+</h1>
+
+    {% if data.net_worth is defined and data.net_worth is not none %}
+      <p style="color:#787878">
+        Here you can view your financial stability and track your progress over time. We recommend calculating your finances at least every 6 months.
+      </p>
+    {% else %}
+      <br>
+      <p class="fade-in-slow" style="font-size: 17px;">
+        It looks like you haven’t uploaded a spreadsheet nor completed the web calculators yet.<br>
+        Please choose one of the above options to get started and come back to your <strong>Dashboard</strong> once you have completed one of them.<br>
+        This dashboard provides insights into your financial stability and helps you track your progress over time.
+      </p>
+    {% endif %}
+  </div>
+</section><br><br><br>
 
 {% if data.net_worth is defined and data.net_worth is not none %}
 <div class="container-fluid py-4">
