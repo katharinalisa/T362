@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, session, url_for, flash, jsonify
 from . import mail
 from flask import current_app
 from flask_mail import Mail, Message
@@ -23,16 +23,29 @@ def dashboard():
         flash("Please log in first", "error")
         return redirect(url_for("auth.login"))'''
     
-    upload_folder = current_app.config['UPLOAD_FOLDER']
-    data = {}
+    mode = request.args.get('mode')
 
-    if os.path.exists(upload_folder):
-        files = [os.path.join(upload_folder, f) for f in os.listdir(upload_folder) if allowed_file(f)]
-        if files:
-            latest_file = max(files, key=os.path.getmtime)
-            data = parse_excel(latest_file)
+    if request.method == 'GET':
+        if mode == 'summary':
+            summary_data = session.get('summary_data')
+            return render_template(
+                'dashboard.html',
+                mode='summary',
+                data=summary_data
+            )
+        return render_template('dashboard.html', mode='none', data=None)
+    
+    elif request.method == 'POST':
+        upload_folder = current_app.config['UPLOAD_FOLDER']
+        data = {}
 
-    return render_template('dashboard.html', data=data)
+        if os.path.exists(upload_folder):
+            files = [os.path.join(upload_folder, f) for f in os.listdir(upload_folder) if allowed_file(f)]
+            if files:
+                latest_file = max(files, key=os.path.getmtime)
+                data = parse_excel(latest_file)
+
+        return render_template('dashboard.html', data=data, mode='spreadsheet')
 
 @views.route('/superannuation')
 def superannuation():
@@ -1243,6 +1256,17 @@ def summary():
     print("Future Budget Total:", fb_total)
 
 
+    summary_payload = {
+        "net_worth": float(net_worth or 0.0),
+        "assets_total": float(assets_total or 0.0),
+        "liabilities_total": float(liabilities_total or 0.0),
+        "income_annual": float(income_annual or 0.0),
+        "subs_annual": float(subs_annual or 0.0),
+        "expenses_annual": float(expenses_annual or 0.0)
+    }
+
+    session['summary_data'] = summary_payload
+    
     return render_template(
         'calculators/summary.html',
         # Point-in-time

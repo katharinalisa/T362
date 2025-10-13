@@ -169,7 +169,8 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </section><br><br><br>
 
-{% if data.net_worth is defined and data.net_worth is not none %}
+{% if data.net_worth is defined and data.net_worth is not none and mode != 'none' %}
+
 <div class="container-fluid py-4">
   <!-- First row: three charts -->
   <div class="row g-4 mb-5">
@@ -271,6 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 </div>
+
 {% endif %}
 
 <!-- Chart.js scripts -->
