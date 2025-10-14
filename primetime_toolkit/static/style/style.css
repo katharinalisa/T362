@@ -12,7 +12,6 @@
   --green:#e6f5f3;
   --blue:#e9f0f7;
   --brand:#009687;
-  --soft-bg:#fff;
   --heading-color:#0a1f2c;
   --link-color:#009687;
   --darker-blue:#021f2f;
@@ -31,12 +30,7 @@
 /* ------------------
    Base & Typography
 ------------------- */
-body{
-  background:var(--soft-bg);
-  font-family:'Roboto',sans-serif;
-  color:var(--text-color);
-  line-height:1.6;
-}
+
 h1,h2,h3,h4,h5{
   font-family:'Poppins',sans-serif;
   color:var(--heading-color);
@@ -60,6 +54,15 @@ a:hover{text-decoration:underline}
   background-position: center;
   background-attachment: fixed;
 }
+
+.assessment-bg::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(249, 249, 249, 0.9);
+  z-index: -1;
+}
+
 
 
 
@@ -578,7 +581,9 @@ input:checked+.slider:before{transform:translateX(24px)}
 /*----------------------------------
 /*-------Self-assessment------------*/
 .step-box {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
   border-radius: 12px;
   padding: 0;
   max-width: 600px;
