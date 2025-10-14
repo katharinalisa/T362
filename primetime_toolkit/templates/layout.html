@@ -281,11 +281,9 @@
             <h3 style="color:#bbbbbb;">Quick Links</h3>
             <ul class="list-unstyled">
               <li><a href="{{ url_for('views.home') }}" class="footer-list-item text-decoration-none">Home</a></li>
-              <li><a href="#" class="footer-list-item text-decoration-none">Budget Planner</a></li>
-              <li><a href="#" class="footer-list-item text-decoration-none">Superannuation</a></li>
-              <li><a href="#" class="footer-list-item text-decoration-none">Investment Tools</a></li>
-              <li><a href="#" class="footer-list-item text-decoration-none">Savings & Super Growth</a></li>
-              <li><a href="#" class="footer-list-item text-decoration-none">Retirement Drawdown</a></li>
+              <li><a href="{{ url_for('views.learninghub') }}" class="footer-list-item text-decoration-none">Learning Hub</a></li>
+              <li><a href="{{ url_for('views.superannuation') }}" class="footer-list-item text-decoration-none">Superannuation</a></li>
+              <li><a href="{{ url_for('views.learninghub') }}#faq" class="footer-list-item text-decoration-none">FAQ</a></li>
             </ul>
           </div>
           <div class="col-md-4 mb-3">
@@ -295,13 +293,14 @@
               Phone: 1300 000 111<br>
               Address: 88 Retirement Ave, Brisbane, QLD
             </p>
+            <li><a href="https://www.primetimers.net/" target="_blank" rel="noopener noreferrer" class="footer-list-item text-decoration-none">Subscribe</a></li>
           </div>
           <div class="col-md-4 mb-3">
-            <h3 style="color:#bbbbbb;">Learning Hub</h3>
+            <h3 style="color:#bbbbbb;">Tools & Resources</h3>
             <ul class="list-unstyled">
-              <li><a href="#" class="footer-list-item text-decoration-none">Workshops</a></li>
-              <li><a href="#" class="footer-list-item text-decoration-none">Webinars</a></li>
-              <li><a href="#" class="footer-list-item text-decoration-none">Resources</a></li>
+              <li><a href="{{ url_for('views.assessment_intro') }}" class="footer-list-item text-decoration-none">Self-Assessment</a></li>
+              <li><a href="{{ url_for('views.dashboard') }}" class="footer-list-item text-decoration-none">Dashboard</a></li>
+              <li><a href="{{ url_for('views.tracker') }}" class="footer-list-item text-decoration-none">Web Calculator</a></li>
             </ul>
           </div>
         </div>
@@ -340,6 +339,18 @@
       </div>
     </div>
   </div>
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (window.location.hash) {
+      const target = document.querySelector(window.location.hash);
+      if (target) {
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 600);
+      }
+    }
+  });
+  </script>
 </body>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
