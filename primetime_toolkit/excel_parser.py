@@ -84,6 +84,10 @@ def parse_excel(path):
     subs_name = find_sheet(sheets, ["subs", "subscription", "services"])
     subs_items, subs_total = extract_items_auto(path, subs_name) if subs_name else ([], 0)
 
+    # Merge subscriptions into expenses
+    exp_total += subs_total
+    exp_items.extend(subs_items)
+
     # --- Income ---
     inc_name = find_sheet(sheets, ["income", "salary", "earnings"])
     inc_items, inc_total = extract_items_auto(path, inc_name) if inc_name else ([], 0)

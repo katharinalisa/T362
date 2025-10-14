@@ -107,19 +107,22 @@
     </div>
 
 
-    <!-- Subscriptions -->
+       <!-- Net Worth -->
     <div class="col-12 col-md-6 col-lg-4">
       <div class="kpi-card {{ 'kpi-danger' if (surplus_annual|default(0)) < 0 else '' }}">
         <div class="kpi-icon" aria-hidden="true">
           <img src="{{ url_for('static', filename='img/netincome.png') }}" alt="Net Income" style="width:32px; height:32px; object-fit:contain;">
         </div>
         <div>
-          <p class="kpi-title mb-1">Subscriptions</p>
-          <p class="kpi-value mb-1">${{ subs_annual | round(0) }}</p>
-          <p class="kpi-sub">Current total</p>
+          <p class="kpi-title mb-1">Net Worth</p>
+          <p class="kpi-value mb-1">
+            {{ "${:,.0f}".format((assets_total|default(0)) - (liabilities_total|default(0))) }}
+          </p>
+          <p class="kpi-sub">Assets - Liabilities</p>
         </div>
       </div>
     </div>
+
 
     
     <!-- Revenue / Income -->
@@ -167,19 +170,6 @@
     </div>
 
 
-    <!-- Net Worth -->
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="kpi-card {{ 'kpi-danger' if (surplus_annual|default(0)) < 0 else '' }}">
-        <div class="kpi-icon" aria-hidden="true">
-          <img src="{{ url_for('static', filename='img/netincome.png') }}" alt="Net Income" style="width:32px; height:32px; object-fit:contain;">
-        </div>
-        <div>
-          <p class="kpi-title mb-1">Net Worth</p>
-          <p class="kpi-value mb-1">{{ "${:,.0f}".format(((income_annual|default(0)) - (expenses_annual|default(0)))) }}</p>
-          <p class="kpi-sub">Assets - Liabilities</p>
-        </div>
-      </div>
-    </div>
 
   </div><br>
 
@@ -198,7 +188,7 @@
     </div>
     
     <div class="container d-flex flex-column align-items-center">
-      <a href="{{ url_for('views.dashboard_spreadsheet', mode='summary') }}" class="btn btn-primary btn-lg btn-grow-hover" style="font-size:18px; text-decoration: none;">Go to your Dashboard</a>
+      <a href="{{ url_for('views.dashboard_spreadsheet') }}" class="btn btn-primary btn-lg btn-grow-hover" style="font-size:18px; text-decoration: none;">Go to your Dashboard</a>
     </div><br><br>
   </div>
 

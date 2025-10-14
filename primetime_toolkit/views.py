@@ -345,12 +345,49 @@ def submit_assessment():
     )
 
 
-#----------------------------------------------------------
-#-----Tracker------
-    
+#--------------------------
+#--------Tracker-----------
+
 @views.route('/tracker')
 @login_required
 def tracker():
+    user_id = current_user.id
+
+    life = LifeExpectancy.query.filter_by(user_id=user_id).first()
+    assets = Asset.query.filter_by(user_id=user_id).all()
+    liabilities = Liability.query.filter_by(user_id=user_id).all()
+    income = Income.query.filter_by(user_id=user_id).all()
+    expenses = Expense.query.filter_by(user_id=user_id).all()
+    subscriptions = Subscription.query.filter_by(user_id=user_id).all()
+    future_budget = FutureBudget.query.filter_by(user_id=user_id).all()
+    epic = EpicExperience.query.filter_by(user_id=user_id).all()
+    income_layers = IncomeLayer.query.filter_by(user_id=user_id).all()
+    spending_allocation = SpendingAllocation.query.filter_by(user_id=user_id).all()
+
+
+    assets_total = sum(a.amount for a in assets if a.amount)
+    liabilities_total = sum(l.amount for l in liabilities if l.amount)
+    income_total = sum(i.amount for i in income if i.amount and i.include)
+    expenses_total = sum(e.amount for e in expenses if e.amount)
+    subscriptions_total = sum(s.annual_amount for s in subscriptions if s.include)
+    net_worth = assets_total - liabilities_total
+
+    # Merge subscriptions into expenses
+    expenses_total += subscriptions_total
+
+    completion_flags = {
+        "life": life is not None,
+        "assets": assets_total > 0,
+        "liabilities": liabilities_total > 0,
+        "income": income_total > 0,
+        "expenses": expenses_total > 0,
+        "future_budget": len(future_budget) > 0,
+        "epic": len(epic) > 0,
+        "income_layers": len(income_layers) > 0,
+        "spending_allocation": len(spending_allocation) > 0,
+        "summary": net_worth != 0
+    }
+
     instructions = [
         {"title": "Life Expectancy", "description": "Use this estimator to determine your expected lifespan. Select your gender, input your age and the sheet will calculate your estimated years remaining and the approximate year you might reach that age using the benchmarks that were published in Prime Time: 27 Lessons for the New Midlife."},
         {"title": "Assets", "description": "List everything you own that has a saleable value: your home, superannuation, investments, rental properties, cash and lifestyle assets. Indicate whether to include each in your net‑worth totals."},
@@ -367,7 +404,20 @@ def tracker():
         {"title": "Debt Paydown", "description": "Estimate how long it will take to repay your debts. For each debt, enter the principal, interest rate and monthly payment; the sheet calculates the number of years to pay it off using Excel’s NPER function."},
         {"title": "Enough Calculator", "description": "Estimate the lump sum needed to fund your retirement. Use the annual spending from your Future Budget or input your own amount, set your net real return assumption, and adjust for the Age Pension or other income and any part‑time work. The sheet shows both a rule‑of‑thumb and an annuity‑based lump sum."}
     ]
-    return render_template('calculators/tracker.html', instructions=instructions)
+
+    # Pass everything to the template
+    return render_template(
+        "calculators/tracker.html",
+        instructions=instructions,
+        completion_flags=completion_flags,
+        data={
+            "assets_total": assets_total,
+            "liabilities_total": liabilities_total,
+            "income_total": income_total,
+            "expenses_total": expenses_total,
+            "net_worth": net_worth
+        }
+    )
 
 
 
@@ -391,6 +441,31 @@ def submit_tracker():
 
     flash("Net Worth Tracker saved successfully!", "success")
     return redirect(url_for("views.tracker"))
+
+
+
+@views.route('/reset-tracker', methods=['POST'])
+@login_required
+def reset_tracker():
+    user_id = current_user.id
+
+    # Delete all relevant data for this user
+    from .models import (
+        LifeExpectancy, Asset, Liability, Income, Expense, Subscription,
+        FutureBudget, EpicExperience, IncomeLayer, SpendingAllocation
+    )
+
+    try:
+        for model in [LifeExpectancy, Asset, Liability, Income, Expense, Subscription,
+                      FutureBudget, EpicExperience, IncomeLayer, SpendingAllocation]:
+            model.query.filter_by(user_id=user_id).delete()
+
+        db.session.commit()
+        return jsonify({"success": True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
 
 
 #---------------------------------------------

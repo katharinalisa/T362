@@ -6,14 +6,16 @@
   const yearsEl = document.getElementById('yearsPeriod');
   const addBtn  = document.getElementById('addRowBtn');
   const clearBtn= document.getElementById('clearAllBtn');
-  // === Progress helper (localStorage) ===
-  function markStepComplete(stepKey) {
-    let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
-    if (!completed.includes(stepKey)) {
-      completed.push(stepKey);
-      localStorage.setItem("completedSteps", JSON.stringify(completed));
-    }
-  }
+
+
+  // // === Progress helper (localStorage) ===
+  // function markStepComplete(stepKey) {
+  //   let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
+  //   if (!completed.includes(stepKey)) {
+  //     completed.push(stepKey);
+  //     localStorage.setItem("completedSteps", JSON.stringify(completed));
+  //   }
+  // }
   const saveBtn = document.getElementById('saveEpicBtn');
   const backBtn = document.getElementById('backBtn');
   const loadBtn = document.getElementById('loadBtn');
