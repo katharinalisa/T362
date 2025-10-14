@@ -87,7 +87,7 @@
         <div>
           <p class="kpi-title mb-1">Total Assets</p>
           <p class="kpi-value mb-1">{{ "${:,.0f}".format(assets_total|default(0)) }}</p>
-          <p class="kpi-sub">current total</p>
+          <p class="kpi-sub">Current total</p>
         </div>
       </div>
     </div>
@@ -101,7 +101,7 @@
         <div>
           <p class="kpi-title mb-1">Total Liabilities</p>
           <p class="kpi-value mb-1">{{ "${:,.0f}".format(liabilities_total|default(0)) }}</p>
-          <p class="kpi-sub">current total</p>
+          <p class="kpi-sub">Current total</p>
         </div>
       </div>
     </div>
@@ -116,7 +116,7 @@
         <div>
           <p class="kpi-title mb-1">Subscriptions</p>
           <p class="kpi-value mb-1">${{ subs_annual | round(0) }}</p>
-          <p class="kpi-sub">current total</p>
+          <p class="kpi-sub">Current total</p>
         </div>
       </div>
     </div>
@@ -131,7 +131,7 @@
         <div>
           <p class="kpi-title mb-1">Total Income</p>
           <p class="kpi-value mb-1">{{ "${:,.0f}".format(income_annual|default(0)) }}</p>
-          <p class="kpi-sub">current total</p>
+          <p class="kpi-sub">Current total</p>
         </div>
       </div>
     </div>
@@ -146,7 +146,7 @@
         <div>
           <p class="kpi-title mb-1">Total Expenses</p>
           <p class="kpi-value mb-1">{{ "${:,.0f}".format(expenses_annual|default(0)) }}</p>
-          <p class="kpi-sub">current total</p>
+          <p class="kpi-sub">Current total</p>
         </div>
       </div>
     </div>
@@ -161,10 +161,26 @@
         <div>
           <p class="kpi-title mb-1">Net Income</p>
           <p class="kpi-value mb-1">{{ "${:,.0f}".format(((income_annual|default(0)) - (expenses_annual|default(0)))) }}</p>
-          <p class="kpi-sub">income − expenses</p>
+          <p class="kpi-sub">Income − Expenses</p>
         </div>
       </div>
     </div>
+
+
+    <!-- Net Worth -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="kpi-card {{ 'kpi-danger' if (surplus_annual|default(0)) < 0 else '' }}">
+        <div class="kpi-icon" aria-hidden="true">
+          <img src="{{ url_for('static', filename='img/netincome.png') }}" alt="Net Income" style="width:32px; height:32px; object-fit:contain;">
+        </div>
+        <div>
+          <p class="kpi-title mb-1">Net Worth</p>
+          <p class="kpi-value mb-1">{{ "${:,.0f}".format(((income_annual|default(0)) - (expenses_annual|default(0)))) }}</p>
+          <p class="kpi-sub">Assets - Liabilities</p>
+        </div>
+      </div>
+    </div>
+
   </div><br>
 
   <div class="card shadow-sm p-2 mt-4 mx-auto" style="background: linear-gradient(to right, #fcffff, #fcffff); width:900px;">
