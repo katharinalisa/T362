@@ -35,7 +35,8 @@ def dashboard_spreadsheet():
             data = parse_excel(latest_file)
 
     net_worth = data.get("net_worth", 0)
-    return render_template('dashboard-spreadsheet.html', data=data, net_worth=net_worth)
+    assets_total = data.get("assets", {}).get("total", 0)
+    return render_template('dashboard-spreadsheet.html', data=data, net_worth=net_worth, assets_total=assets_total)
 
 
 

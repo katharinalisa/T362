@@ -114,12 +114,9 @@
         style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Monthly Savings</h5>
         <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
-          {% if net_worth is defined and net_worth is not none %}
-            ${{ "{:,.2f}".format(net_worth) }}
-
-          {% else %}
+   
             <span class="text-muted">Please upload a spreadsheet to calculate your net worth</span>
-          {% endif %}
+        
         </div>
         <span class="text-muted mt-2">Income minus expenses</span>
       </div>
