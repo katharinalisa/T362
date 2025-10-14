@@ -1262,11 +1262,11 @@ def summary():
 
     summary_payload = {
         "net_worth": float(net_worth or 0.0),
-        "assets_total": float(assets_total or 0.0),
-        "liabilities_total": float(liabilities_total or 0.0),
-        "income_annual": float(income_annual or 0.0),
-        "subs_annual": float(subs_annual or 0.0),
-        "expenses_annual": float(expenses_annual or 0.0)
+        "assets":{"total": float(assets_total or 0.0)},
+        "liabilities":{"total": float(liabilities_total or 0.0)},
+        "income":{"total": float(income_annual or 0.0)},
+        "subscriptions":{"total": float(subs_annual or 0.0)},
+        "expenses":{"total": float(expenses_annual or 0.0)}
     }
 
     session['summary_data'] = summary_payload

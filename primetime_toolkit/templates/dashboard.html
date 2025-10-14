@@ -46,9 +46,6 @@
     background-color: #007f73; /* darker shade for hover */
     color: #fff;
   }
-
-
-
 </style>
 
 <section
@@ -168,7 +165,11 @@ document.addEventListener('DOMContentLoaded', function() {
     {% endif %}
   </div>
 </section><br><br><br>
-
+<script>
+    // Make mode available in JS
+    const mode = "{{ mode }}";  // Jinja variable injected as string
+    console.log("Mode:", mode);
+</script>
 {% if data.net_worth is defined and data.net_worth is not none and mode != 'none' %}
 
 <div class="container-fluid py-4">
@@ -219,14 +220,30 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="dashboard-chart p-3 text-center"
         style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Subscription Amount ($)</h5>
-        <canvas id="debtPaydownChart" style="max-width: 100%; max-height: 320px;"></canvas>
+        {% if data.subscriptions is defined and data.subscriptions is not none %}
+          {% if mode == 'spreadsheet' %}
+            <canvas id="debtPaydownChart" style="max-width: 100%; max-height: 320px;"></canvas>
+          {% elif mode == 'summary' %}
+            ${{ "{:,.2f}".format(data.subscriptions.total) }}
+          {% endif %}
+        {% else %}
+          <span class="text-muted">Please calculate your subscriptions</span>
+        {% endif %}
       </div>
     </div>
     <div class="col-md-6">
       <div class="dashboard-chart p-3 text-center"
         style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Monthly Expenses</h5>
-        <canvas id="monthlyExpensesChart" style="max-width: 100%; max-height: 320px;"></canvas>
+        {% if data.expenses is defined and data.expenses is not none %}
+          {% if mode == 'spreadsheet' %}
+            <canvas id="monthlyExpensesChart" style="max-width: 100%; max-height: 320px;"></canvas>
+          {% elif mode == 'summary' %}
+            ${{ "{:,.2f}".format(data.expenses.total) }}
+          {% endif %}
+        {% else %}
+          <span class="text-muted">Please calculate your expenses</span>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -236,7 +253,15 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="dashboard-chart p-3 text-center"
         style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Superannuation Growth</h5>
-        <canvas id="superGrowthChart" style="max-width: 100%; max-height: 220px;"></canvas>
+        {% if data.super is defined and data.super is not none %}
+          {% if mode == 'spreadsheet' %}
+            <canvas id="superGrowthChart" style="max-width: 100%; max-height: 220px;"></canvas>
+          {% elif mode == 'summary' %}
+            ${{ "{:,.2f}".format(data.super.total) }}
+          {% endif %}
+        {% else %}
+          <span class="text-muted">Please calculate your superannuation growth</span>
+        {% endif %}
       </div>
     </div>
     <div class="col-md-4">
