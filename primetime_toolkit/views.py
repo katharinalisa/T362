@@ -16,60 +16,54 @@ views = Blueprint('views', __name__)
 def home():
     return render_template('home.html')
 
-@views.route('/dashboard', methods=['GET', 'POST'])
+
+@views.route('/dashboard', methods=['GET'])
 def dashboard():
-    '''username = current_user.username
-    if not username:
-        flash("Please log in first", "error")
-        return redirect(url_for("auth.login"))'''
-    print(request.method)
-    mode = request.args.get('mode')
-    print('Mode-1:',mode)
+    return render_template('dashboard.html') 
 
-    if mode == 'summary':
-        summary_data = session.get('summary_data')
-        return render_template(
-                'dashboard.html',
-                mode='summary',
-                data=summary_data
-        )
-            
-    elif mode == 'spreadsheet':
-        
-        upload_folder = current_app.config['UPLOAD_FOLDER']
-        data = {}
-        print('Mode-2:',mode)
-        if os.path.exists(upload_folder):
-            files = [os.path.join(upload_folder, f) for f in os.listdir(upload_folder) if allowed_file(f)]
-            if files:
-                latest_file = max(files, key=os.path.getmtime)
-                data = parse_excel(latest_file)
 
-        return render_template('dashboard.html', data=data, mode='spreadsheet')
-        
-    else:
-        return render_template('dashboard.html', mode='none', data=None)
+
+
+@views.route('/dashboard-spreadsheet', methods=['GET'])
+def dashboard_spreadsheet():
+    upload_folder = current_app.config['UPLOAD_FOLDER']
+    data = {}
+    if os.path.exists(upload_folder):
+        files = [os.path.join(upload_folder, f) for f in os.listdir(upload_folder) if allowed_file(f)]
+        if files:
+            latest_file = max(files, key=os.path.getmtime)
+            data = parse_excel(latest_file)
+
+    return render_template('dashboard-spreadsheet.html', data=data)
+
+
 
 
 @views.route('/superannuation')
 def superannuation():
     return render_template('superannuation.html')
 
+
 @views.route('/learning-hub')
 def learninghub():
     return render_template('learninghub.html')
+
 
 @views.route('/learning-hub/workshops')
 def workshops():
     return render_template('learning_hub/workshops.html')
 
+
 @views.route('/learning-hub/webinars')
 def webinars():
     return render_template('learning_hub/webinars.html')
 
+
 @views.route("/eligibility-setup")
 def eligibility_setup():
     return render_template("eligibility_setup.html")
+
+
 
 @views.route('/assessment_intro')
 def assessment_intro():
@@ -80,25 +74,32 @@ def assessment_intro():
 def assessment1():
     return render_template('selftest/assessment/assessment1.html')
 
+
+
 @views.route('/assessment2', methods=['GET', 'POST'])
 def assessment2():
     return render_template('selftest/assessment/assessment2.html')
+
 
 @views.route('/assessment3', methods=['GET', 'POST'])
 def assessment3():
     return render_template('selftest/assessment/assessment3.html')
 
+
 @views.route('/assessment4', methods=['GET', 'POST'])
 def assessment4():
     return render_template('selftest/assessment/assessment4.html')
+
 
 @views.route('/assessment5', methods=['GET', 'POST'])
 def assessment5():
     return render_template('selftest/assessment/assessment5.html')
 
+
 @views.route('/assessment6', methods=['GET', 'POST'])
 def assessment6():
     return render_template('selftest/assessment/assessment6.html')
+
 
 #--------------------------------------------------------------------------
 # Upload Excel spreadsheet
@@ -124,10 +125,13 @@ def upload_excel():
         os.makedirs(upload_folder, exist_ok=True) 
         file.save(os.path.join(upload_folder, filename))
         flash("File uploaded successfully", "success")
-        return redirect(url_for('views.dashboard', mode='spreadsheet'))
+        return redirect(url_for('views.dashboard_spreadsheet'))
 
     flash("Invalid file format", "error")
     return redirect(request.url)
+
+
+
 
 @views.route('/download_budget')
 def download_budget():
