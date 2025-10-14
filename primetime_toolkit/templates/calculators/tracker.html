@@ -1,5 +1,93 @@
 {% extends 'layout.html' %}
 {% block content %}
+
+<script>
+  const completionFlags = {{ completion_flags | tojson }};
+  const TOTAL_STEPS = Object.keys(completionFlags).length;
+  const completedCount = Object.values(completionFlags).filter(Boolean).length;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Update progress bar
+    const fill = document.getElementById("progressFill");
+    const label = document.getElementById("progressLabel");
+    const pct = (completedCount / TOTAL_STEPS) * 100;
+
+    fill.style.width = `${pct}%`;
+    fill.classList.add("animate");
+    label.textContent = `${completedCount} of ${TOTAL_STEPS} steps completed`;
+    document.getElementById('progressA11y')?.setAttribute('aria-valuenow', pct.toFixed(0));
+
+    // Map steps to numbers
+    const map = {
+      life: 1, assets: 2, liabilities: 3, income: 4, expenses: 5, subscriptions: 6,
+      future_budget: 7, epic: 8, income_layers: 9, spending_allocation: 10
+    };
+
+    document.querySelectorAll('.step-card').forEach(card => {
+      const num = card.querySelector('.step-number')?.textContent?.match(/\d+/)?.[0];
+      const key = Object.keys(map).find(k => map[k] == num);
+
+      // Show "Completed" label
+      if (key && completionFlags[key]) {
+        const tag = document.createElement('div');
+        tag.className = 'badge bg-success ms-auto';
+        tag.textContent = 'Completed';
+        card.querySelector('.fw-bold')?.insertAdjacentElement('afterend', tag);
+      }
+
+      // Locks Summary if fewer than 10 steps are complete
+      if (num === '11' && completedCount < 10) {
+        card.classList.add('text-muted');
+        card.style.opacity = '0.6';
+        card.style.pointerEvents = 'none';
+
+        const btn = card.querySelector('a');
+        if (btn) {
+          btn.classList.add('btn-secondary', 'disabled');
+          btn.textContent = 'Locked';
+          btn.removeAttribute('href');
+        }
+
+        const desc = card.querySelector('p');
+        if (desc) {
+          desc.textContent = 'Complete Steps 1–10 to unlock your summary.';
+        }
+      }
+    });
+    document.getElementById("restartBtn")?.addEventListener("click", resetProgress);
+
+    function resetProgress() {
+
+      const fill = document.getElementById("progressFill");
+      const label = document.getElementById("progressLabel");
+      fill.style.width = '0%';
+      label.textContent = `0 of ${TOTAL_STEPS} steps completed`;
+      document.getElementById('progressA11y')?.setAttribute('aria-valuenow', '0');
+
+      document.querySelectorAll('.step-card .badge.bg-success').forEach(el => el.remove());
+    }
+
+    document.getElementById("restartBtn")?.addEventListener("click", async () => {
+    if (!confirm("Are you sure you want to reset all progress? This cannot be undone.")) return;
+
+    try {
+      const res = await fetch("/reset-tracker", { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        location.reload(); // Reload to reflect cleared progress
+      } else {
+        alert("Reset failed: " + (data.error || "Unknown error"));
+      }
+    } catch (err) {
+      alert("Something went wrong while resetting.");
+      console.error(err);
+    }
+  });
+
+  });
+</script>
+
+
 <section class="tracker-overview">
   <section class="page-header text-center py-3 bg-gradient text-white">
     <h1
@@ -25,7 +113,7 @@
   <div class="container py-5" style="margin-top:-60px;">
     <div class="text-center my-5">
     <p class="lead mb-3">
-      Need a walkthrough before diving in? Click below to view full instructions for each step in your financial roadmap.
+      Need a walkthrough before diving in? Click below to view full instructions for each step below.
     </p>
     <button class="btn btn-primary btn-lg" style="background-color: #009687;" data-bs-toggle="modal" data-bs-target="#instructionsModal">
       View Full Instructions
@@ -206,7 +294,7 @@
             <h5 class="fw-bold mb-2">Summary</h5>
             <p>See the big picture: assets, liabilities, net worth, income, expenses and surplus/deficit.</p>
           </div>
-          <a href="{{ url_for('views.summary') }}" class="btn btn-start mt-3 align-self-start">Start</a>
+          <a href="{{ url_for('views.summary') }}" class="btn btn-start mt-3 align-self-start" style="margin-left:70px;width:200px">View</a>
         </div>
       </div>
 
@@ -216,7 +304,7 @@
           <h2 class="display-6 fw-bold mb-4 text-success-emphasis">
             Have you completed all steps?
           </h2>
-          <a href="{{ url_for('views.dashboard') }}#financial-dashboard" class="btn btn-start mt-3 align-self-start" style="font-weight: 600; font-size: 1.2rem; padding:15px;">
+          <a href="{{ url_for('views.dashboard_web_calculator') }}" class="btn btn-start mt-3 align-self-start" style="font-weight: 600; font-size: 1.2rem; padding:15px;">
             View Your Financial Dashboard
           </a>
         </div>
@@ -270,61 +358,16 @@
     </div>
    </div>
   </div>
-      <!-- <div class="text-end mt-2">
-        <button id="restartBtn" class="btn btn-outline-danger btn-sm">Restart Progress</button>
-      </div> -->
+  <button id="restartBtn" class="btn btn-outline-danger btn-sm">Restart Progress</button>
 </section>
 <br><br>
 
 
+<!-- 
 <script>
 const TOTAL_STEPS = 11;
 
-document.addEventListener("DOMContentLoaded", updateProgressBar);
-document.addEventListener("DOMContentLoaded", () => {
-  // document.getElementById("restartBtn")?.addEventListener("click", resetProgress);
-});
 
-
-function updateProgressBar() {
-  const completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
-  const fill = document.getElementById("progressFill");
-  const label = document.getElementById("progressLabel");
-
-  // Clamp to TOTAL_STEPS (11 steps)
-  const count = Math.min(completed.length, TOTAL_STEPS);
-  const pct = (count / TOTAL_STEPS) * 100;
-
-  fill.style.width = `${pct}%`;
-  fill.classList.add("animate");
-  label.textContent = `${count} of ${TOTAL_STEPS} steps completed`;
-  document.getElementById('progressA11y')?.setAttribute('aria-valuenow', pct.toFixed(0));
-}
-
-
-
-// function resetProgress() {
-//   localStorage.removeItem("completedSteps");
-
-//   const fill = document.getElementById("progressFill");
-//   const label = document.getElementById("progressLabel");
-//   fill.style.width = '0%';
-//   label.textContent = `0 of ${TOTAL_STEPS} steps completed`;
-//   document.getElementById('progressA11y')?.setAttribute('aria-valuenow', '0');
-
-//   document.querySelectorAll('.step-card .badge.bg-success').forEach(el => el.remove());
-// }
-
-
-
-function markStepComplete(stepKey) {
-  let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
-  if (!completed.includes(stepKey)) {
-    completed.push(stepKey);
-    localStorage.setItem("completedSteps", JSON.stringify(completed));
-  }
-  updateProgressBar();
-}
 
 (function(){
   const completed = new Set(JSON.parse(localStorage.getItem("completedSteps") || "[]"));
@@ -333,22 +376,36 @@ function markStepComplete(stepKey) {
     future_budget: 7, epic: 8, income_layers: 9, spending_allocation: 10,
     summary: 11
   };
-  
-  
 
-  document.querySelectorAll('.step-card').forEach(card => {
-    const num = card.querySelector('.step-number')?.textContent?.match(/\d+/)?.[0];
-    const key = Object.keys(map).find(k => map[k] == num);
-    if (key && completed.has(key)) {
-      const tag = document.createElement('div');
-      tag.className = 'badge bg-success ms-auto';
-      tag.textContent = 'Completed';
-      card.prepend(tag);
-      card.querySelector('.fw-bold')?.insertAdjacentElement('afterend', tag);
-      console.log("Step:", num, "→ Key:", key, "→ Completed:", completed.has(key));
+document.querySelectorAll('.step-card').forEach(card => {
+  const num = card.querySelector('.step-number')?.textContent?.match(/\d+/)?.[0];
+  const key = Object.keys(map).find(k => map[k] == num);
 
+  if (key && completionFlags[key]) {
+    const tag = document.createElement('div');
+    tag.className = 'badge bg-success ms-auto';
+    tag.textContent = 'Completed';
+    card.querySelector('.fw-bold')?.insertAdjacentElement('afterend', tag);
+  }
+
+
+  if (num === '11' && completedCount < 10) {
+    card.classList.add('text-muted');
+    card.style.opacity = '0.6';
+    card.style.pointerEvents = 'none';
+    const btn = card.querySelector('a');
+    if (btn) {
+      btn.classList.add('btn-secondary', 'disabled');
+      btn.textContent = 'Locked';
+      btn.removeAttribute('href');
     }
-
+    const desc = card.querySelector('p');
+    if (desc) {
+      desc.textContent = 'Complete Steps 1–10 to unlock your summary.';
+    }
+  }
+});
+    
     // Lock Summary card if Steps 1–10 are not completed
     if (num === '11' && completed.size < 10) {
       card.classList.add('text-muted');
@@ -369,5 +426,5 @@ function markStepComplete(stepKey) {
     }
   });
 })();
-</script>
+</script> -->
 {% endblock %}

@@ -1,0 +1,366 @@
+{% extends 'layout.html' %} {% block content %}
+
+<style>
+  .dashboard-chart {
+    box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18);
+    transition: box-shadow 0.2s, transform 0.2s;
+    border-radius: 30px;
+    border: none;
+    background: #fff;
+  }
+  .dashboard-chart:hover {
+    box-shadow: 0 16px 48px rgba(34, 60, 80, 0.32);
+    transform: translateY(-8px) scale(1.04);
+    z-index: 2;
+  }
+
+  @keyframes fadeInSlow {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in-slow {
+    animation: fadeInSlow 1.8s ease-out forwards;
+    animation-delay: 1s;
+  }
+
+  .option-card {
+    background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .option-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08);
+  }
+
+  .btn-start {
+    background-color: #009687;
+    color: #fff;
+    border: none;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+  }
+
+  .btn-start:hover {
+    background-color: #007f73;
+    color: #fff;
+  }
+</style>
+
+<section
+  class="hero-section text-center py-4"
+  style="width: 100vw; margin-left: calc(-50vw + 50%); margin-top: -28px">
+  <div class="container"><br>
+    <h1
+      class="display-1 section-title mb-2"
+      style="font-size: 3rem; font-weight: 800; text-align: center; letter-spacing: -0.6px;"
+    >
+      Your Financial Dashboard
+    </h1>
+
+
+
+    {% if net_worth is defined and net_worth is not none %}
+
+    <p style="color:#787878">
+      This is your Dashboard based on your <strong style="color:#007f73">Web Calculator</strong> results. Here you can view your financial stability and evaluate your current financial situation. We recommend calculating your finances at least every 6 months.
+    </p>
+
+    {% else %}
+      <br>
+      <p class="fade-in-slow" style="font-size: 17px;">
+        It looks like you haven’t uploaded a spreadsheet nor completed the web calculators yet.<br>
+        Please choose one of the above options to get started and come back to your <strong>Dashboard</strong> once you have completed one of them.<br>
+      </p>
+    {% endif %}
+  </div>
+  <a href="{{ url_for('views.dashboard') }}" class="btn btn-outline-secondary mt-4">Back to Dashboard Options</a>
+</section><br>
+
+
+{% if net_worth is defined and net_worth is not none and mode != 'none' %}
+
+
+<div class="container-fluid py-4">
+  <!-- First row: three charts -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 style="margin-top: -35px" class="mb-2">Current Net Worth</h5><br>
+        <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
+          {% if net_worth is defined and net_worth is not none %}
+            ${{ "{:,.2f}".format(net_worth) }}
+
+          {% else %}
+            <span class="text-muted">Please upload a spreadsheet to calculate your net worth</span>
+          {% endif %}
+        </div>
+
+        <span class="text-muted mt-2">Calculated from your assets and liabilities</span>
+        <canvas id="netWorthChart" style="max-width: 100%; max-height: 220px; display:none;"></canvas>
+      </div>
+    </div>
+    <div class="col-md-4 ">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Assets vs Liabilities</h5>
+        <canvas id="assetsLiabilitiesChart" style="max-width: 100%; max-height: 220px;"></canvas>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Monthly Savings</h5>
+        <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
+          {% if net_worth is defined and net_worth is not none %}
+            ${{ "{:,.2f}".format(net_worth) }}
+
+          {% else %}
+            <span class="text-muted">Please upload a spreadsheet to calculate your net worth</span>
+          {% endif %}
+        </div>
+        <span class="text-muted mt-2">Income minus expenses</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Second row: two wide charts -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-6">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Subscription Amount ($)</h5>
+        {% if subscriptions_total is defined and subscriptions_total is not none %}
+            ${{ "{:,.2f}".format(subscriptions_total) }}
+
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Monthly Expenses</h5>
+        {% if expenses_annual is defined and expenses_annual is not none %}
+           ${{ "{:,.2f}".format(expenses_annual) }}
+
+        {% else %}
+          <span class="text-muted">Please calculate your expenses</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <!-- Third row: three charts -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Superannuation Growth</h5>
+        {% if super_total is defined and super_total is not none %}
+            ${{ "{:,.2f}".format(super_total) }}
+
+    
+        {% else %}
+          <span class="text-muted">Please calculate your superannuation growth</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Expense Breakdown</h5>
+        <canvas id="expenseBreakdownChart" style="max-width: 100%; max-height: 220px;"></canvas>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Drawdown Over Time</h5>
+        <canvas id="drawdownChart" style="max-width: 100%; max-height: 220px;"></canvas>
+      </div>
+    </div>
+  </div>
+  <!-- Fourth row: two wide charts -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-6">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Income Sources</h5>
+        <canvas id="incomeSourcesChart" style="max-width: 100%; max-height: 320px;"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Income vs Expenses</h5>
+        <canvas id="incomeExpensesChart" style="max-width: 100%; max-height: 220px;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+<!-- Chart.js scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const dashboardData = {
+  assets: { total: {{ assets_total|float }} },
+  liabilities: { total: {{ liabilities_total|float }} },
+  income: {
+    total: {{ income_annual|float }},
+    items: [
+      { label: "Annual Income", value: {{ income_annual|float }} }
+    ]
+  },
+  expenses: {
+    total: {{ expenses_annual|float }},
+    items: [
+      { label: "Annual Expenses", value: {{ expenses_annual|float }} }
+    ]
+  },
+  net_worth: {{ net_worth|float }},
+  drawdown_over_time: {
+    months: ["Year 1", "Year 2", "Year 3", "Year 4", "Year 5"],
+    values: [{{ net_worth|float }}, {{ net_worth|float * 0.9 }}, {{ net_worth|float * 0.75 }}, {{ net_worth|float * 0.6 }}, {{ net_worth|float * 0.45 }}]
+  },
+  super: {
+    years: ["2025", "2026", "2027", "2028", "2029"],
+    values: [{{ assets_total|float * 0.1 }}, {{ assets_total|float * 0.2 }}, {{ assets_total|float * 0.3 }}, {{ assets_total|float * 0.4 }}, {{ assets_total|float * 0.5 }}]
+  },
+  subscriptions: {
+    items: [
+      { label: "Placeholder Subscription", value: 0 }
+    ]
+  }
+};
+
+console.log(dashboardData);
+
+// Assets vs Liabilities Chart
+var ctxAssetsLiabilities = document.getElementById('assetsLiabilitiesChart').getContext('2d');
+var assetsLiabilitiesChart = new Chart(ctxAssetsLiabilities, {
+  type: 'bar',
+  data: {
+    labels: ['Assets', 'Liabilities'],
+    datasets: [{
+      label: 'Amount',
+      data: [dashboardData.assets.total, dashboardData.liabilities.total],
+      backgroundColor: ['#3bb3c3', '#1a7f8c']
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+// Subscription Amount Chart
+var ctxDebtPaydown = document.getElementById('debtPaydownChart').getContext('2d');
+var subsLabels = dashboardData.subscriptions.items.map(item => item.label);
+var subsValues = dashboardData.subscriptions.items.map(item => item.value);
+var debtPaydownChart = new Chart(ctxDebtPaydown, {
+  type: 'bar',
+  data: {
+    labels: subsLabels,
+    datasets: [{
+      label: 'Subscriptions',
+      data: subsValues,
+      backgroundColor: '#ffe066'
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+// Monthly Expenses Chart
+var ctxMonthlyExpenses = document.getElementById('monthlyExpensesChart').getContext('2d');
+var expenseLabels = dashboardData.expenses.items.map(item => item.label);
+var expenseValues = dashboardData.expenses.items.map(item => item.value);
+var monthlyExpensesChart = new Chart(ctxMonthlyExpenses, {
+  type: 'bar',
+  data: {
+    labels: expenseLabels,
+    datasets: [{
+      label: 'Expenses',
+      data: expenseValues,
+      backgroundColor: '#dc3545'
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true },
+      x: { title: { display: true, text: 'Expense Category' } }
+    }
+  }
+});
+
+// Superannuation Growth Chart
+var ctxSuperGrowth = document.getElementById('superGrowthChart').getContext('2d');
+var superGrowthChart = new Chart(ctxSuperGrowth, {
+  type: 'line',
+  data: {
+    labels: dashboardData.super.years,
+    datasets: [{
+      label: 'Super Growth',
+      data: dashboardData.super.values,
+      backgroundColor: 'rgba(59,179,195,0.15)',
+      borderColor: '#3bb3c3',
+      borderWidth: 2
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+
+// Drawdown Over Time Chart
+var ctxDrawdownOverTime = document.getElementById('drawdownChart').getContext('2d');
+var drawdownOverTimeChart = new Chart(ctxDrawdownOverTime, {
+  type: 'line',
+  data: {
+    labels: dashboardData.drawdown_over_time.months,
+    datasets: [{
+      label: 'Drawdown Over Time',
+      data: dashboardData.drawdown_over_time.values,
+      backgroundColor: 'rgba(26,127,140,0.15)',
+      borderColor: '#1a7f8c',
+      borderWidth: 2
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+// Income Sources Chart
+var ctxIncomeSources = document.getElementById('incomeSourcesChart').getContext('2d');
+var incomeLabels = dashboardData.income.items.map(item => item.label);
+var incomeValues = dashboardData.income.items.map(item => item.value);
+var incomeSourcesChart = new Chart(ctxIncomeSources, {
+  type: 'pie',
+  data: {
+    labels: incomeLabels,
+    datasets: [{
+      label: 'Income',
+      data: incomeValues,
+      backgroundColor: ['#e6f571', '#1a7f8c', '#ffe066', '#198754', '#6c757d', '#5275ed', '#cc917d', '#aa1349', '#be6559']
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: true } } }
+});
+
+// Income vs EXpenses Chart
+var ctxIncomeExpenses = document.getElementById('incomeExpensesChart').getContext('2d');
+var incomeExpensesChart = new Chart(ctxIncomeExpenses, {
+  type: 'bar',
+  data: {
+    labels: ['Income', 'Expenses'],
+    datasets: [{
+      label: 'Amount',
+      data: [dashboardData.income.total, dashboardData.expenses.total],
+      backgroundColor: ['#3bb3c3', '#1a7f8c']
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+</script>
+{% endblock %}

@@ -16,60 +16,81 @@ views = Blueprint('views', __name__)
 def home():
     return render_template('home.html')
 
-@views.route('/dashboard', methods=['GET', 'POST'])
+
+@views.route('/dashboard', methods=['GET'])
 def dashboard():
-    '''username = current_user.username
-    if not username:
-        flash("Please log in first", "error")
-        return redirect(url_for("auth.login"))'''
-    print(request.method)
-    mode = request.args.get('mode')
-    print('Mode-1:',mode)
+    return render_template('dashboard.html') 
 
-    if mode == 'summary':
-        summary_data = session.get('summary_data')
-        return render_template(
-                'dashboard.html',
-                mode='summary',
-                data=summary_data
-        )
-            
-    elif mode == 'spreadsheet':
-        
-        upload_folder = current_app.config['UPLOAD_FOLDER']
-        data = {}
-        print('Mode-2:',mode)
-        if os.path.exists(upload_folder):
-            files = [os.path.join(upload_folder, f) for f in os.listdir(upload_folder) if allowed_file(f)]
-            if files:
-                latest_file = max(files, key=os.path.getmtime)
-                data = parse_excel(latest_file)
 
-        return render_template('dashboard.html', data=data, mode='spreadsheet')
-        
-    else:
-        return render_template('dashboard.html', mode='none', data=None)
+# -------- spreadsheet option ---------------------------
+
+@views.route('/dashboard-spreadsheet', methods=['GET'])
+def dashboard_spreadsheet():
+    upload_folder = current_app.config['UPLOAD_FOLDER']
+    data = {}
+    if os.path.exists(upload_folder):
+        files = [os.path.join(upload_folder, f) for f in os.listdir(upload_folder) if allowed_file(f)]
+        if files:
+            latest_file = max(files, key=os.path.getmtime)
+            data = parse_excel(latest_file)
+
+    return render_template('dashboard-spreadsheet.html', data=data)
+
+
+
+
+# ------- Web calculator option --------------------
+
+@views.route('/dashboard-web-calculator')
+@login_required
+def dashboard_web_calculator():
+    user_id = current_user.id
+
+    # Pull summary data from your models
+    assets_total = sum(a.amount for a in Asset.query.filter_by(user_id=user_id).all() if a.include)
+    liabilities_total = sum(l.amount for l in Liability.query.filter_by(user_id=user_id).all())
+    income_annual = sum(i.amount for i in Income.query.filter_by(user_id=user_id).all() if i.include)
+    expenses_annual = sum(e.amount for e in Expense.query.filter_by(user_id=user_id).all())
+
+    net_worth = assets_total - liabilities_total
+    net_income = income_annual - expenses_annual
+
+    return render_template('dashboard-web-calculator.html',
+                           assets_total=assets_total,
+                           liabilities_total=liabilities_total,
+                           income_annual=income_annual,
+                           expenses_annual=expenses_annual,
+                           net_worth=net_worth,
+                           net_income=net_income)
+
 
 
 @views.route('/superannuation')
 def superannuation():
     return render_template('superannuation.html')
 
+
 @views.route('/learning-hub')
 def learninghub():
     return render_template('learninghub.html')
+
 
 @views.route('/learning-hub/workshops')
 def workshops():
     return render_template('learning_hub/workshops.html')
 
+
 @views.route('/learning-hub/webinars')
 def webinars():
     return render_template('learning_hub/webinars.html')
 
+
 @views.route("/eligibility-setup")
 def eligibility_setup():
     return render_template("eligibility_setup.html")
+
+
+# -------- Assessment ----------------------
 
 @views.route('/assessment_intro')
 def assessment_intro():
@@ -80,27 +101,34 @@ def assessment_intro():
 def assessment1():
     return render_template('selftest/assessment/assessment1.html')
 
+
+
 @views.route('/assessment2', methods=['GET', 'POST'])
 def assessment2():
     return render_template('selftest/assessment/assessment2.html')
+
 
 @views.route('/assessment3', methods=['GET', 'POST'])
 def assessment3():
     return render_template('selftest/assessment/assessment3.html')
 
+
 @views.route('/assessment4', methods=['GET', 'POST'])
 def assessment4():
     return render_template('selftest/assessment/assessment4.html')
+
 
 @views.route('/assessment5', methods=['GET', 'POST'])
 def assessment5():
     return render_template('selftest/assessment/assessment5.html')
 
+
 @views.route('/assessment6', methods=['GET', 'POST'])
 def assessment6():
     return render_template('selftest/assessment/assessment6.html')
 
-#--------------------------------------------------------------------------
+
+#-----------------------------------------
 # Upload Excel spreadsheet
 
 def allowed_file(filename):
@@ -124,10 +152,13 @@ def upload_excel():
         os.makedirs(upload_folder, exist_ok=True) 
         file.save(os.path.join(upload_folder, filename))
         flash("File uploaded successfully", "success")
-        return redirect(url_for('views.dashboard', mode='spreadsheet'))
+        return redirect(url_for('views.dashboard_spreadsheet'))
 
     flash("Invalid file format", "error")
     return redirect(request.url)
+
+
+
 
 @views.route('/download_budget')
 def download_budget():
@@ -341,12 +372,49 @@ def submit_assessment():
     )
 
 
-#----------------------------------------------------------
-#-----Tracker------
-    
+#--------------------------
+#--------Tracker-----------
+
 @views.route('/tracker')
 @login_required
 def tracker():
+    user_id = current_user.id
+
+    life = LifeExpectancy.query.filter_by(user_id=user_id).first()
+    assets = Asset.query.filter_by(user_id=user_id).all()
+    liabilities = Liability.query.filter_by(user_id=user_id).all()
+    income = Income.query.filter_by(user_id=user_id).all()
+    expenses = Expense.query.filter_by(user_id=user_id).all()
+    subscriptions = Subscription.query.filter_by(user_id=user_id).all()
+    future_budget = FutureBudget.query.filter_by(user_id=user_id).all()
+    epic = EpicExperience.query.filter_by(user_id=user_id).all()
+    income_layers = IncomeLayer.query.filter_by(user_id=user_id).all()
+    spending_allocation = SpendingAllocation.query.filter_by(user_id=user_id).all()
+
+
+    assets_total = sum(a.amount for a in assets if a.amount)
+    liabilities_total = sum(l.amount for l in liabilities if l.amount)
+    income_total = sum(i.amount for i in income if i.amount and i.include)
+    expenses_total = sum(e.amount for e in expenses if e.amount)
+    subscriptions_total = sum(s.annual_amount for s in subscriptions if s.include)
+    net_worth = assets_total - liabilities_total
+
+    # Merge subscriptions into expenses
+    expenses_total += subscriptions_total
+
+    completion_flags = {
+        "life": life is not None,
+        "assets": assets_total > 0,
+        "liabilities": liabilities_total > 0,
+        "income": income_total > 0,
+        "expenses": expenses_total > 0,
+        "future_budget": len(future_budget) > 0,
+        "epic": len(epic) > 0,
+        "income_layers": len(income_layers) > 0,
+        "spending_allocation": len(spending_allocation) > 0,
+        "summary": net_worth != 0
+    }
+
     instructions = [
         {"title": "Life Expectancy", "description": "Use this estimator to determine your expected lifespan. Select your gender, input your age and the sheet will calculate your estimated years remaining and the approximate year you might reach that age using the benchmarks that were published in Prime Time: 27 Lessons for the New Midlife."},
         {"title": "Assets", "description": "List everything you own that has a saleable value: your home, superannuation, investments, rental properties, cash and lifestyle assets. Indicate whether to include each in your net‑worth totals."},
@@ -363,7 +431,20 @@ def tracker():
         {"title": "Debt Paydown", "description": "Estimate how long it will take to repay your debts. For each debt, enter the principal, interest rate and monthly payment; the sheet calculates the number of years to pay it off using Excel’s NPER function."},
         {"title": "Enough Calculator", "description": "Estimate the lump sum needed to fund your retirement. Use the annual spending from your Future Budget or input your own amount, set your net real return assumption, and adjust for the Age Pension or other income and any part‑time work. The sheet shows both a rule‑of‑thumb and an annuity‑based lump sum."}
     ]
-    return render_template('calculators/tracker.html', instructions=instructions)
+
+    # Pass everything to the template
+    return render_template(
+        "calculators/tracker.html",
+        instructions=instructions,
+        completion_flags=completion_flags,
+        data={
+            "assets_total": assets_total,
+            "liabilities_total": liabilities_total,
+            "income_total": income_total,
+            "expenses_total": expenses_total,
+            "net_worth": net_worth
+        }
+    )
 
 
 
@@ -387,6 +468,31 @@ def submit_tracker():
 
     flash("Net Worth Tracker saved successfully!", "success")
     return redirect(url_for("views.tracker"))
+
+
+
+@views.route('/reset-tracker', methods=['POST'])
+@login_required
+def reset_tracker():
+    user_id = current_user.id
+
+    # Delete all relevant data for this user
+    from .models import (
+        LifeExpectancy, Asset, Liability, Income, Expense, Subscription,
+        FutureBudget, EpicExperience, IncomeLayer, SpendingAllocation
+    )
+
+    try:
+        for model in [LifeExpectancy, Asset, Liability, Income, Expense, Subscription,
+                      FutureBudget, EpicExperience, IncomeLayer, SpendingAllocation]:
+            model.query.filter_by(user_id=user_id).delete()
+
+        db.session.commit()
+        return jsonify({"success": True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
 
 
 #---------------------------------------------
