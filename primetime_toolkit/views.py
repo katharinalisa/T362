@@ -34,7 +34,9 @@ def dashboard_spreadsheet():
             latest_file = max(files, key=os.path.getmtime)
             data = parse_excel(latest_file)
 
-    return render_template('dashboard-spreadsheet.html', data=data)
+    net_worth = data.get("net_worth", 0)
+    return render_template('dashboard-spreadsheet.html', data=data, net_worth=net_worth)
+
 
 
 
