@@ -16,29 +16,29 @@ views = Blueprint('views', __name__)
 def home():
     return render_template('home.html')
 
-@views.route('/dashboard')
+@views.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     '''username = current_user.username
     if not username:
         flash("Please log in first", "error")
         return redirect(url_for("auth.login"))'''
-    
+    print(request.method)
     mode = request.args.get('mode')
+    print('Mode-1:',mode)
 
-    if request.method == 'GET':
-        if mode == 'summary':
-            summary_data = session.get('summary_data')
-            return render_template(
+    if mode == 'summary':
+        summary_data = session.get('summary_data')
+        return render_template(
                 'dashboard.html',
                 mode='summary',
                 data=summary_data
-            )
-        return render_template('dashboard.html', mode='none', data=None)
-    
-    elif request.method == 'POST':
+        )
+            
+    elif mode == 'spreadsheet':
+        
         upload_folder = current_app.config['UPLOAD_FOLDER']
         data = {}
-
+        print('Mode-2:',mode)
         if os.path.exists(upload_folder):
             files = [os.path.join(upload_folder, f) for f in os.listdir(upload_folder) if allowed_file(f)]
             if files:
@@ -46,6 +46,10 @@ def dashboard():
                 data = parse_excel(latest_file)
 
         return render_template('dashboard.html', data=data, mode='spreadsheet')
+        
+    else:
+        return render_template('dashboard.html', mode='none', data=None)
+
 
 @views.route('/superannuation')
 def superannuation():
@@ -120,7 +124,7 @@ def upload_excel():
         os.makedirs(upload_folder, exist_ok=True) 
         file.save(os.path.join(upload_folder, filename))
         flash("File uploaded successfully", "success")
-        return redirect(url_for('views.dashboard'))
+        return redirect(url_for('views.dashboard', mode='spreadsheet'))
 
     flash("Invalid file format", "error")
     return redirect(request.url)
@@ -1266,7 +1270,7 @@ def summary():
     }
 
     session['summary_data'] = summary_payload
-    
+
     return render_template(
         'calculators/summary.html',
         # Point-in-time
