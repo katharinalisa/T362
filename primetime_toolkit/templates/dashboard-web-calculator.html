@@ -60,29 +60,13 @@
     </h1>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const fileInput = document.getElementById('budget_file');
-  const uploadBtn = document.getElementById('uploadBtn');
-  fileInput.addEventListener('change', function() {
-    if (fileInput.files.length > 0) {
-      uploadBtn.disabled = false;
-      uploadBtn.classList.remove('btn-outline-primary');
-      uploadBtn.classList.add('btn-success');
-    } else {
-      uploadBtn.disabled = true;
-      uploadBtn.classList.remove('btn-success');
-      uploadBtn.classList.add('btn-outline-primary');
-    }
-  });
-});
-</script>
 
+    {% if net_worth is defined and net_worth is not none %}
 
-    {% if data.net_worth is defined and data.net_worth is not none %}
-      <p style="color:#787878">
-        This is your Dashboard based on your uploaded <strong style="color:#007f73">Excel spreadsheet</strong>. Here you can view your financial stability and evaluate your current financial situation. We recommend calculating your finances at least every 6 months.
-      </p>
+    <p style="color:#787878">
+      This is your Dashboard based on your <strong style="color:#007f73">Web Calculator</strong> results. Here you can view your financial stability and evaluate your current financial situation. We recommend calculating your finances at least every 6 months.
+    </p>
+
     {% else %}
       <br>
       <p class="fade-in-slow" style="font-size: 17px;">
@@ -95,7 +79,8 @@ document.addEventListener('DOMContentLoaded', function() {
 </section><br>
 
 
-{% if data.net_worth is defined and data.net_worth is not none and mode != 'none' %}
+{% if net_worth is defined and net_worth is not none and mode != 'none' %}
+
 
 <div class="container-fluid py-4">
   <!-- First row: three charts -->
@@ -105,8 +90,9 @@ document.addEventListener('DOMContentLoaded', function() {
         style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 style="margin-top: -35px" class="mb-2">Current Net Worth</h5><br>
         <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
-          {% if data.net_worth is defined and data.net_worth is not none %}
-            ${{ "{:,.2f}".format(data.net_worth) }}
+          {% if net_worth is defined and net_worth is not none %}
+            ${{ "{:,.2f}".format(net_worth) }}
+
           {% else %}
             <span class="text-muted">Please upload a spreadsheet to calculate your net worth</span>
           {% endif %}
@@ -128,8 +114,9 @@ document.addEventListener('DOMContentLoaded', function() {
         style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Monthly Savings</h5>
         <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
-          {% if data.net_worth is defined and data.net_worth is not none %}
-            ${{ "{:,.2f}".format(data.net_worth) }}
+          {% if net_worth is defined and net_worth is not none %}
+            ${{ "{:,.2f}".format(net_worth) }}
+
           {% else %}
             <span class="text-muted">Please upload a spreadsheet to calculate your net worth</span>
           {% endif %}
@@ -145,14 +132,9 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="dashboard-chart p-3 text-center"
         style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Subscription Amount ($)</h5>
-        {% if data.subscriptions is defined and data.subscriptions is not none %}
-          {% if mode == 'spreadsheet' %}
-            <canvas id="debtPaydownChart" style="max-width: 100%; max-height: 320px;"></canvas>
-          {% elif mode == 'summary' %}
-            ${{ "{:,.2f}".format(data.subscriptions.total) }}
-          {% endif %}
-        {% else %}
-          <span class="text-muted">Please calculate your subscriptions</span>
+        {% if subscriptions_total is defined and subscriptions_total is not none %}
+            ${{ "{:,.2f}".format(subscriptions_total) }}
+
         {% endif %}
       </div>
     </div>
@@ -160,12 +142,9 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="dashboard-chart p-3 text-center"
         style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Monthly Expenses</h5>
-        {% if data.expenses is defined and data.expenses is not none %}
-          {% if mode == 'spreadsheet' %}
-            <canvas id="monthlyExpensesChart" style="max-width: 100%; max-height: 320px;"></canvas>
-          {% elif mode == 'summary' %}
-            ${{ "{:,.2f}".format(data.expenses.total) }}
-          {% endif %}
+        {% if expenses_annual is defined and expenses_annual is not none %}
+           ${{ "{:,.2f}".format(expenses_annual) }}
+
         {% else %}
           <span class="text-muted">Please calculate your expenses</span>
         {% endif %}
@@ -178,12 +157,10 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="dashboard-chart p-3 text-center"
         style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Superannuation Growth</h5>
-        {% if data.super is defined and data.super is not none %}
-          {% if mode == 'spreadsheet' %}
-            <canvas id="superGrowthChart" style="max-width: 100%; max-height: 220px;"></canvas>
-          {% elif mode == 'summary' %}
-            ${{ "{:,.2f}".format(data.super.total) }}
-          {% endif %}
+        {% if super_total is defined and super_total is not none %}
+            ${{ "{:,.2f}".format(super_total) }}
+
+    
         {% else %}
           <span class="text-muted">Please calculate your superannuation growth</span>
         {% endif %}
@@ -229,7 +206,37 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-const dashboardData = {{ data|tojson }};
+const dashboardData = {
+  assets: { total: {{ assets_total|float }} },
+  liabilities: { total: {{ liabilities_total|float }} },
+  income: {
+    total: {{ income_annual|float }},
+    items: [
+      { label: "Annual Income", value: {{ income_annual|float }} }
+    ]
+  },
+  expenses: {
+    total: {{ expenses_annual|float }},
+    items: [
+      { label: "Annual Expenses", value: {{ expenses_annual|float }} }
+    ]
+  },
+  net_worth: {{ net_worth|float }},
+  drawdown_over_time: {
+    months: ["Year 1", "Year 2", "Year 3", "Year 4", "Year 5"],
+    values: [{{ net_worth|float }}, {{ net_worth|float * 0.9 }}, {{ net_worth|float * 0.75 }}, {{ net_worth|float * 0.6 }}, {{ net_worth|float * 0.45 }}]
+  },
+  super: {
+    years: ["2025", "2026", "2027", "2028", "2029"],
+    values: [{{ assets_total|float * 0.1 }}, {{ assets_total|float * 0.2 }}, {{ assets_total|float * 0.3 }}, {{ assets_total|float * 0.4 }}, {{ assets_total|float * 0.5 }}]
+  },
+  subscriptions: {
+    items: [
+      { label: "Placeholder Subscription", value: 0 }
+    ]
+  }
+};
+
 console.log(dashboardData);
 
 // Assets vs Liabilities Chart
@@ -305,27 +312,6 @@ var superGrowthChart = new Chart(ctxSuperGrowth, {
   options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
 });
 
-// Expense Breakdown Chart
-/*var ctxExpenseBreakdown = document.getElementById('expenseBreakdownChart').getContext('2d');
-var expenseBreakdownChart = new Chart(ctxExpenseBreakdown, {
-  type: 'bar',
-  data: {
-    labels: expenseLabels,
-    datasets: [{
-      label: 'Expenses',
-      data: expenseValues,
-      backgroundColor: '#dc3545'
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { display: false } },
-    scales: {
-      y: { beginAtZero: true },
-      x: { title: { display: true, text: 'Expense Category' } }
-    }
-  }
-});*/
 
 // Drawdown Over Time Chart
 var ctxDrawdownOverTime = document.getElementById('drawdownChart').getContext('2d');
@@ -376,19 +362,5 @@ var incomeExpensesChart = new Chart(ctxIncomeExpenses, {
   options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
 });
 
-// something
-var ctxInsuranceCoverage = document.getElementById('').getContext('2d');
-var insuranceCoverageChart = new Chart(ctxInsuranceCoverage, {
-  type: 'bar',
-  data: {
-    labels: [],
-    datasets: [{
-      label: '???',
-      data: [],
-      backgroundColor: '#6c757d'
-    }]
-  },
-  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-});
 </script>
 {% endblock %}

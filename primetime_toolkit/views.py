@@ -22,7 +22,7 @@ def dashboard():
     return render_template('dashboard.html') 
 
 
-
+# -------- spreadsheet option ---------------------------
 
 @views.route('/dashboard-spreadsheet', methods=['GET'])
 def dashboard_spreadsheet():
@@ -36,6 +36,32 @@ def dashboard_spreadsheet():
 
     return render_template('dashboard-spreadsheet.html', data=data)
 
+
+
+
+# ------- Web calculator option --------------------
+
+@views.route('/dashboard-web-calculator')
+@login_required
+def dashboard_web_calculator():
+    user_id = current_user.id
+
+    # Pull summary data from your models
+    assets_total = sum(a.amount for a in Asset.query.filter_by(user_id=user_id).all() if a.include)
+    liabilities_total = sum(l.amount for l in Liability.query.filter_by(user_id=user_id).all())
+    income_annual = sum(i.amount for i in Income.query.filter_by(user_id=user_id).all() if i.include)
+    expenses_annual = sum(e.amount for e in Expense.query.filter_by(user_id=user_id).all())
+
+    net_worth = assets_total - liabilities_total
+    net_income = income_annual - expenses_annual
+
+    return render_template('dashboard-web-calculator.html',
+                           assets_total=assets_total,
+                           liabilities_total=liabilities_total,
+                           income_annual=income_annual,
+                           expenses_annual=expenses_annual,
+                           net_worth=net_worth,
+                           net_income=net_income)
 
 
 
@@ -64,6 +90,7 @@ def eligibility_setup():
     return render_template("eligibility_setup.html")
 
 
+# -------- Assessment ----------------------
 
 @views.route('/assessment_intro')
 def assessment_intro():
@@ -101,7 +128,7 @@ def assessment6():
     return render_template('selftest/assessment/assessment6.html')
 
 
-#--------------------------------------------------------------------------
+#-----------------------------------------
 # Upload Excel spreadsheet
 
 def allowed_file(filename):
