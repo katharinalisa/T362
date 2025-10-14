@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
           {% if mode == 'spreadsheet' %}
             <canvas id="monthlyExpensesChart" style="max-width: 100%; max-height: 320px;"></canvas>
           {% elif mode == 'summary' %}
-            ${{ "{:,.2f}".format(data.subscriptions.total) }}
+            ${{ "{:,.2f}".format(data.expenses.total) }}
           {% endif %}
         {% else %}
           <span class="text-muted">Please calculate your expenses</span>
@@ -253,7 +253,15 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="dashboard-chart p-3 text-center"
         style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Superannuation Growth</h5>
-        <canvas id="superGrowthChart" style="max-width: 100%; max-height: 220px;"></canvas>
+        {% if data.super is defined and data.super is not none %}
+          {% if mode == 'spreadsheet' %}
+            <canvas id="superGrowthChart" style="max-width: 100%; max-height: 220px;"></canvas>
+          {% elif mode == 'summary' %}
+            ${{ "{:,.2f}".format(data.super.total) }}
+          {% endif %}
+        {% else %}
+          <span class="text-muted">Please calculate your superannuation growth</span>
+        {% endif %}
       </div>
     </div>
     <div class="col-md-4">
