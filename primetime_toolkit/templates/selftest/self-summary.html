@@ -80,7 +80,7 @@
         <div class="section-title">
           <h3>Areas to improve</h3>
         </div>
-        <p class="muted">We recommend focusing on the categories below — these scored <strong>below 40%</strong> and may have the biggest impact on your retirement confidence.</p>
+        <p class="muted">We recommend focusing on the categories below — these scored <strong>below 50%</strong> and may have the biggest impact on your retirement confidence.</p>
         {% set gaps = [] %}
         {% for label, key in [
           ("Purpose & Direction","purpose"),
@@ -91,7 +91,7 @@
           ("Planning Confidence","confidence")
         ] %}
           {% set score = category_scores[key]|default(0) %}
-          {% if score < 40 %}
+          {% if score < 50 %}
             {% set _ = gaps.append({'label': label, 'key': key, 'score': score}) %}
           {% endif %}
         {% endfor %}
@@ -126,7 +126,7 @@
           <li><strong>Review your spending patterns</strong> — Even with solid budgeting, reviewing your expenses can reveal new ways to save or invest with purpose.</li>
           <li><strong>Use the Budget Planner tool</strong> — Go to your Dashboard and choose one of two options to build a personalised overview of your income and expenses, so you can take more control moving forward.</li>
         </ol>
-        <p>To get started, head to your <strong>Dashboard</strong> or <strong>Web Calculator</strong>. You can choose the option that works best for you — whether it’s tracking your budget, setting goals, or reviewing your summary. Both tools support your Prime Time journey in different ways, and you can switch between them anytime.</p>
+        <p>To get started, head to your <strong>Dashboard</strong> or <strong>Web Calculator</strong>. You can choose the option that works best for you whether it’s tracking your budget, setting goals, or reviewing your summary. Both tools support your Prime Time journey in different ways, and you can switch between them anytime.</p>
         <div class="cta-row text-center my-5">
           <a href="{{ url_for('views.dashboard') }}" class="btn btn-start px-5 py-3 rounded-pill">
             Go to your Dashboard
