@@ -2,7 +2,7 @@
 {% extends'selftest/assessment_intro.html' %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
 {% set step_number = 1 %}
 {% set step_label = "Purpose & Direction" %}
 
@@ -33,17 +33,35 @@
     </div>
   </div>
 
-  <form method="POST" action="/assessment2">
+  <form method="POST" action="/assessment1">
     <div class="mb-4">
       <p class="fw-bold">1. I can explain how my financial choices align with my personal values.</p>
       <div class="likert">
-        <span class="likert-label">Not At All</span>
-        <label class="large"><input type="radio" name="q1" value="1" required></label>
-        <label class="medium"><input type="radio" name="q1" value="2"></label>
-        <label class="small"><input type="radio" name="q1" value="3"></label>
-        <label class="medium"><input type="radio" name="q1" value="4"></label>
-        <label class="large"><input type="radio" name="q1" value="5"></label>
-        <span class="likert-label">Very Likely</span>
+      <span class="likert-label">Not At All</span>
+
+      <label class="large">
+        <input type="radio" name="purpose_q1" value="1" {% if assessment and assessment.purpose_q1 == 1 %}checked{% endif %} required>
+      </label>
+
+      <label class="medium">
+        <input type="radio" name="purpose_q1" value="2" {% if assessment and assessment.purpose_q1 == 2 %}checked{% endif %}>
+      </label>
+
+      <label class="small">
+        <input type="radio" name="purpose_q1" value="3" {% if assessment and assessment.purpose_q1 == 3 %}checked{% endif %}>
+      </label>
+
+      <label class="medium">
+        <input type="radio" name="purpose_q1" value="4" {% if assessment and assessment.purpose_q1 == 4 %}checked{% endif %}>
+      </label>
+
+      <label class="large">
+        <input type="radio" name="purpose_q1" value="5" {% if assessment and assessment.purpose_q1 == 5 %}checked{% endif %}>
+      </label>
+
+      <span class="likert-label">Very Likely</span>
+
+
       </div>
     </div>
 
@@ -51,11 +69,11 @@
       <p class="fw-bold">2. I have defined what financial independence means for me.</p>
       <div class="likert">
         <span class="likert-label">Not At All</span>
-        <label class="large"><input type="radio" name="q2" value="1" required></label>
-        <label class="medium"><input type="radio" name="q2" value="2"></label>
-        <label class="small"><input type="radio" name="q2" value="3"></label>
-        <label class="medium"><input type="radio" name="q2" value="4"></label>
-        <label class="large"><input type="radio" name="q2" value="5"></label>
+        <label class="large"><input type="radio" name="purpose_q2" value="1" required></label>
+        <label class="medium"><input type="radio" name="purpose_q2" value="2"></label>
+        <label class="small"><input type="radio" name="purpose_q2" value="3"></label>
+        <label class="medium"><input type="radio" name="purpose_q2" value="4"></label>
+        <label class="large"><input type="radio" name="purpose_q2" value="5"></label>
         <span class="likert-label">Very Likely</span>
       </div>
     </div>
@@ -64,11 +82,11 @@
       <p class="fw-bold">3. I have clear life goals that guide my decision-making.</p>
       <div class="likert">
         <span class="likert-label">Not At All</span>
-        <label class="large"><input type="radio" name="q3" value="1" required></label>
-        <label class="medium"><input type="radio" name="q3" value="2"></label>
-        <label class="small"><input type="radio" name="q3" value="3"></label>
-        <label class="medium"><input type="radio" name="q3" value="4"></label>
-        <label class="large"><input type="radio" name="q3" value="5"></label>
+        <label class="large"><input type="radio" name="purpose_q3" value="1" required></label>
+        <label class="medium"><input type="radio" name="purpose_q3" value="2"></label>
+        <label class="small"><input type="radio" name="purpose_q3" value="3"></label>
+        <label class="medium"><input type="radio" name="purpose_q3" value="4"></label>
+        <label class="large"><input type="radio" name="purpose_q3" value="5"></label>
         <span class="likert-label">Very Likely</span>
       </div>
     </div>
@@ -77,11 +95,11 @@
       <p class="fw-bold">4. I feel empowered, not stuck, when thinking about my future.</p>
       <div class="likert">
         <span class="likert-label">Not At All</span>
-        <label class="large"><input type="radio" name="q4" value="1" required></label>
-        <label class="medium"><input type="radio" name="q4" value="2"></label>
-        <label class="small"><input type="radio" name="q4" value="3"></label>
-        <label class="medium"><input type="radio" name="q4" value="4"></label>
-        <label class="large"><input type="radio" name="q4" value="5"></label>
+        <label class="large"><input type="radio" name="purpose_q4" value="1" required></label>
+        <label class="medium"><input type="radio" name="purpose_q4" value="2"></label>
+        <label class="small"><input type="radio" name="purpose_q4" value="3"></label>
+        <label class="medium"><input type="radio" name="purpose_q4" value="4"></label>
+        <label class="large"><input type="radio" name="purpose_q4" value="5"></label>
         <span class="likert-label">Very Likely</span>
       </div>
     </div>

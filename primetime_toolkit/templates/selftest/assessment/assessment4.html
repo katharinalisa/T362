@@ -2,7 +2,7 @@
 {% extends'selftest/assessment_intro.html' %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
 {% set step_number = 4 %}
 {% set step_label = "Debt & Financial Stress" %}
 
@@ -35,16 +35,16 @@
     </div>
   </div>
 
-  <form method="POST" action="/assessment5">
+  <form method="POST" action="/assessment4">
     <div class="mb-4">
       <p class="fw-bold">1. I know exactly how much I owe and to whom.</p>
       <div class="likert">
         <span class="likert-label">Not At All</span>
-        <label class="large"><input type="radio" name="q1" value="1" required></label>
-        <label class="medium"><input type="radio" name="q1" value="2"></label>
-        <label class="small"><input type="radio" name="q1" value="3"></label>
-        <label class="medium"><input type="radio" name="q1" value="4"></label>
-        <label class="large"><input type="radio" name="q1" value="5"></label>
+        <label class="large"><input type="radio" name="debt_q1" value="1" required></label>
+        <label class="medium"><input type="radio" name="debt_q1" value="2"></label>
+        <label class="small"><input type="radio" name="debt_q1" value="3"></label>
+        <label class="medium"><input type="radio" name="debt_q1" value="4"></label>
+        <label class="large"><input type="radio" name="debt_q1" value="5"></label>
         <span class="likert-label">Very Likely</span>
       </div>
     </div>
@@ -53,11 +53,11 @@
       <p class="fw-bold">2. I have a plan in place to repay any outstanding debts.</p>
       <div class="likert">
         <span class="likert-label">Not At All</span>
-        <label class="large"><input type="radio" name="q2" value="1" required></label>
-        <label class="medium"><input type="radio" name="q2" value="2"></label>
-        <label class="small"><input type="radio" name="q2" value="3"></label>
-        <label class="medium"><input type="radio" name="q2" value="4"></label>
-        <label class="large"><input type="radio" name="q2" value="5"></label>
+        <label class="large"><input type="radio" name="debt_q2" value="1" required></label>
+        <label class="medium"><input type="radio" name="debt_q2" value="2"></label>
+        <label class="small"><input type="radio" name="debt_q2" value="3"></label>
+        <label class="medium"><input type="radio" name="debt_q2" value="4"></label>
+        <label class="large"><input type="radio" name="debt_q2" value="5"></label>
         <span class="likert-label">Very Likely</span>
       </div>
     </div>
@@ -66,11 +66,11 @@
       <p class="fw-bold">3. I avoid using debt to fund my lifestyle.</p>
       <div class="likert">
         <span class="likert-label">Not At All</span>
-        <label class="large"><input type="radio" name="q3" value="1" required></label>
-        <label class="medium"><input type="radio" name="q3" value="2"></label>
-        <label class="small"><input type="radio" name="q3" value="3"></label>
-        <label class="medium"><input type="radio" name="q3" value="4"></label>
-        <label class="large"><input type="radio" name="q3" value="5"></label>
+        <label class="large"><input type="radio" name="debt_q3" value="1" required></label>
+        <label class="medium"><input type="radio" name="debt_q3" value="2"></label>
+        <label class="small"><input type="radio" name="debt_q3" value="3"></label>
+        <label class="medium"><input type="radio" name="debt_q3" value="4"></label>
+        <label class="large"><input type="radio" name="debt_q3" value="5"></label>
         <span class="likert-label">Very Likely</span>
       </div>
     </div>
@@ -79,11 +79,11 @@
       <p class="fw-bold">4. I feel in control of my debts.</p>
       <div class="likert">
         <span class="likert-label">Not At All</span>
-        <label class="large"><input type="radio" name="q4" value="1" required></label>
-        <label class="medium"><input type="radio" name="q4" value="2"></label>
-        <label class="small"><input type="radio" name="q4" value="3"></label>
-        <label class="medium"><input type="radio" name="q4" value="4"></label>
-        <label class="large"><input type="radio" name="q4" value="5"></label>
+        <label class="large"><input type="radio" name="debt_q4" value="1" required></label>
+        <label class="medium"><input type="radio" name="debt_q4" value="2"></label>
+        <label class="small"><input type="radio" name="debt_q4" value="3"></label>
+        <label class="medium"><input type="radio" name="debt_q4" value="4"></label>
+        <label class="large"><input type="radio" name="debt_q4" value="5"></label>
         <span class="likert-label">Very Likely</span>
       </div>
     </div>

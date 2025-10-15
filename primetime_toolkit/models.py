@@ -4,25 +4,60 @@ from datetime import datetime
 from flask_login import UserMixin
 
 
+
 class Assessment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    q1 = db.Column(db.Integer, nullable=False)
-    q2 = db.Column(db.Integer, nullable=False)
-    q3 = db.Column(db.Integer, nullable=False)
-    q4 = db.Column(db.Integer, nullable=False)
-    q5 = db.Column(db.Integer, nullable=False)
-    q6 = db.Column(db.Integer, nullable=False)
-    q7 = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    submitted_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Purpose & direction
+    purpose_q1 = db.Column(db.Integer, nullable=True)
+    purpose_q2 = db.Column(db.Integer, nullable=True)
+    purpose_q3 = db.Column(db.Integer, nullable=True)
+    purpose_q4 = db.Column(db.Integer, nullable=True)
+
+    
+
+    # Spending & cashflow
+    spending_q1 = db.Column(db.Integer, nullable=True)
+    spending_q2 = db.Column(db.Integer, nullable=True)
+    spending_q3 = db.Column(db.Integer, nullable=True)
+    spending_q4 = db.Column(db.Integer, nullable=True)
+
+    # Saving & emergency
+    saving_q1 = db.Column(db.Integer, nullable=True)
+    saving_q2 = db.Column(db.Integer, nullable=True)
+    saving_q3 = db.Column(db.Integer, nullable=True)
+    saving_q4 = db.Column(db.Integer, nullable=True)
+
+    # Debt & confidence
+    debt_q1 = db.Column(db.Integer, nullable=True)
+    debt_q2 = db.Column(db.Integer, nullable=True)
+    debt_q3 = db.Column(db.Integer, nullable=True)
+    debt_q4 = db.Column(db.Integer, nullable=True)
+
+    # Superannuation
+    super_q1 = db.Column(db.Integer, nullable=True)
+    super_q2 = db.Column(db.Integer, nullable=True)
+    super_q3 = db.Column(db.Integer, nullable=True)
+    super_q4 = db.Column(db.Integer, nullable=True)
+
+    # Protection & planning
+    protection_q1 = db.Column(db.Integer, nullable=True)
+    protection_q2 = db.Column(db.Integer, nullable=True)
+    protection_q3 = db.Column(db.Integer, nullable=True)
+    protection_q4 = db.Column(db.Integer, nullable=True)
 
 
-    def __init__(self, q1, q2, q3, q4, q5, q6, q7):
-        self.q1 = q1
-        self.q2 = q2
-        self.q3 = q3
-        self.q4 = q4
-        self.q5 = q5
-        self.q6 = q6
-        self.q7 = q7
+    total_score = db.Column(db.Integer)
+    result_message = db.Column(db.String(20))
+    category_scores = db.Column(db.JSON) 
+
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

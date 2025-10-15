@@ -2,7 +2,7 @@
 {% extends'selftest/assessment_intro.html' %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
 {% set step_number = 3 %}
 {% set step_label = "Saving & Emergency Planning" %}
 
@@ -35,16 +35,17 @@
     </div>
   </div>
 
-<form method="POST" action="/assessment4">
+  <form method="POST" action="{{ url_for('views.assessment3') }}">
+
   <div class="mb-4">
     <p class="fw-bold">1. I have an emergency fund that could cover 3+ months of expenses.</p>
     <div class="likert">
       <span class="likert-label">Not At All</span>
-      <label class="large"><input type="radio" name="q1" value="1" required></label>
-      <label class="medium"><input type="radio" name="q1" value="2"></label>
-      <label class="small"><input type="radio" name="q1" value="3"></label>
-      <label class="medium"><input type="radio" name="q1" value="4"></label>
-      <label class="large"><input type="radio" name="q1" value="5"></label>
+      <label class="large"><input type="radio" name="saving_q1" value="1" required></label>
+      <label class="medium"><input type="radio" name="saving_q1" value="2"></label>
+      <label class="small"><input type="radio" name="saving_q1" value="3"></label>
+      <label class="medium"><input type="radio" name="saving_q1" value="4"></label>
+      <label class="large"><input type="radio" name="saving_q1" value="5"></label>
       <span class="likert-label">Very Likely</span>
     </div>
   </div>
@@ -53,11 +54,11 @@
     <p class="fw-bold">2. I save consistently, even if the amount is small.</p>
     <div class="likert">
       <span class="likert-label">Not At All</span>
-      <label class="large"><input type="radio" name="q2" value="1" required></label>
-      <label class="medium"><input type="radio" name="q2" value="2"></label>
-      <label class="small"><input type="radio" name="q2" value="3"></label>
-      <label class="medium"><input type="radio" name="q2" value="4"></label>
-      <label class="large"><input type="radio" name="q2" value="5"></label>
+      <label class="large"><input type="radio" name="saving_q2" value="1" required></label>
+      <label class="medium"><input type="radio" name="saving_q2" value="2"></label>
+      <label class="small"><input type="radio" name="saving_q2" value="3"></label>
+      <label class="medium"><input type="radio" name="saving_q2" value="4"></label>
+      <label class="large"><input type="radio" name="saving_q2" value="5"></label>
       <span class="likert-label">Very Likely</span>
     </div>
   </div>
@@ -66,11 +67,11 @@
     <p class="fw-bold">4. I have long-term savings goals (e.g., home upgrades, care costs).</p>
     <div class="likert">
       <span class="likert-label">Not At All</span>
-      <label class="large"><input type="radio" name="q4" value="1" required></label>
-      <label class="medium"><input type="radio" name="q4" value="2"></label>
-      <label class="small"><input type="radio" name="q4" value="3"></label>
-      <label class="medium"><input type="radio" name="q4" value="4"></label>
-      <label class="large"><input type="radio" name="q4" value="5"></label>
+      <label class="large"><input type="radio" name="saving_q3" value="1" required></label>
+      <label class="medium"><input type="radio" name="saving_q3" value="2"></label>
+      <label class="small"><input type="radio" name="saving_q3" value="3"></label>
+      <label class="medium"><input type="radio" name="saving_q3" value="4"></label>
+      <label class="large"><input type="radio" name="saving_q3" value="5"></label>
       <span class="likert-label">Very Likely</span>
     </div>
   </div>
@@ -79,11 +80,11 @@
     <p class="fw-bold">5. I automate part of my income into savings.</p>
     <div class="likert">
       <span class="likert-label">Not At All</span>
-      <label class="large"><input type="radio" name="q5" value="1" required></label>
-      <label class="medium"><input type="radio" name="q5" value="2"></label>
-      <label class="small"><input type="radio" name="q5" value="3"></label>
-      <label class="medium"><input type="radio" name="q5" value="4"></label>
-      <label class="large"><input type="radio" name="q5" value="5"></label>
+      <label class="large"><input type="radio" name="saving_q4" value="1" required></label>
+      <label class="medium"><input type="radio" name="saving_q4" value="2"></label>
+      <label class="small"><input type="radio" name="saving_q4" value="3"></label>
+      <label class="medium"><input type="radio" name="saving_q4" value="4"></label>
+      <label class="large"><input type="radio" name="saving_q4" value="5"></label>
       <span class="likert-label">Very Likely</span>
     </div>
   </div>

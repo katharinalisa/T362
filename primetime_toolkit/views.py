@@ -3,10 +3,11 @@ from . import mail
 from flask import current_app
 from flask_mail import Mail, Message
 from flask_login import login_required, current_user
+from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
 import json
-from primetime_toolkit.models import IncomeLayer, LifeExpectancy, SpendingAllocation, db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience, DebtPaydown, EnoughCalculator
+from primetime_toolkit.models import Assessment, IncomeLayer, LifeExpectancy, SpendingAllocation, db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience, DebtPaydown, EnoughCalculator
 from sqlalchemy import func, case
 from .excel_parser import parse_excel
 
@@ -100,35 +101,248 @@ def assessment_intro():
     return render_template('selftest/assessment_intro.html')
 
 
-@views.route('/assessment1')
+@views.route('/assessment1', methods=['GET', 'POST'])
+@login_required
 def assessment1():
-    return render_template('selftest/assessment/assessment1.html')
+    assessment_id = session.get('assessment_id')
+    assessment = Assessment.query.get(assessment_id) if assessment_id else None
+
+    if request.method == 'POST':
+        try:
+            assessment = Assessment(
+                user_id=current_user.id,
+                submitted_at=datetime.utcnow(),
+                purpose_q1=int(request.form['purpose_q1']),
+                purpose_q2=int(request.form['purpose_q2']),
+                purpose_q3=int(request.form['purpose_q3']),
+                purpose_q4=int(request.form['purpose_q4']),
+            )
+            db.session.add(assessment)
+            db.session.commit()
+            session['assessment_id'] = assessment.id
+            return redirect(url_for('views.assessment2'))
+        except (KeyError, TypeError, ValueError):
+            flash("Please answer all questions before continuing.")
+            return redirect(url_for('views.assessment1'))
+
+    return render_template('selftest/assessment/assessment1.html', assessment=assessment)
 
 
 
 @views.route('/assessment2', methods=['GET', 'POST'])
+@login_required
 def assessment2():
+    assessment_id = session.get('assessment_id')
+    assessment = Assessment.query.get(assessment_id)
+
+    if not assessment:
+        flash("Assessment not found. Please restart.")
+        return redirect(url_for('views.assessment_intro'))
+
+    if request.method == 'POST':
+        required_fields = ['spending_q1', 'spending_q2', 'spending_q3', 'spending_q4']
+        missing = [f for f in required_fields if not request.form.get(f)]
+
+        if missing:
+            flash("Please answer all questions before continuing.")
+            return redirect(url_for('views.assessment2')) 
+
+        try:
+            assessment.spending_q1 = int(request.form['spending_q1'])
+            assessment.spending_q2 = int(request.form['spending_q2'])
+            assessment.spending_q3 = int(request.form['spending_q3'])
+            assessment.spending_q4 = int(request.form['spending_q4'])
+
+            db.session.commit()
+            return redirect(url_for('views.assessment3'))
+        except ValueError:
+            flash("Invalid input. Please use numbers only.")
+            return redirect(url_for('views.assessment2'))
+
     return render_template('selftest/assessment/assessment2.html')
 
 
+
 @views.route('/assessment3', methods=['GET', 'POST'])
+@login_required
 def assessment3():
+    assessment_id = session.get('assessment_id')
+    assessment = Assessment.query.get(assessment_id)
+
+    if request.method == 'POST':
+        try:
+            assessment.saving_q1 = int(request.form['saving_q1'])
+            assessment.saving_q2 = int(request.form['saving_q2'])
+            assessment.saving_q3 = int(request.form['saving_q3'])
+            assessment.saving_q4 = int(request.form['saving_q4'])
+
+            db.session.commit()
+            return redirect(url_for('views.assessment4'))
+        except (KeyError, TypeError, ValueError):
+            flash("Please answer all questions before continuing.")
+            return redirect(url_for('views.assessment3'))
+
     return render_template('selftest/assessment/assessment3.html')
 
 
+
 @views.route('/assessment4', methods=['GET', 'POST'])
+@login_required
 def assessment4():
+    assessment_id = session.get('assessment_id')
+    assessment = Assessment.query.get(assessment_id)
+
+    if request.method == 'POST':
+        try:
+            assessment.debt_q1 = int(request.form['debt_q1'])
+            assessment.debt_q2 = int(request.form['debt_q2'])
+            assessment.debt_q3 = int(request.form['debt_q3'])
+            assessment.debt_q4 = int(request.form['debt_q4'])
+
+            db.session.commit()
+            return redirect(url_for('views.assessment5'))
+        except (KeyError, TypeError, ValueError):
+            flash("Please answer all questions before continuing.")
+            return redirect(url_for('views.assessment4'))
+
     return render_template('selftest/assessment/assessment4.html')
 
 
+
 @views.route('/assessment5', methods=['GET', 'POST'])
+@login_required
 def assessment5():
+    assessment_id = session.get('assessment_id')
+    assessment = Assessment.query.get(assessment_id)
+
+    if request.method == 'POST':
+        try:
+            assessment.super_q1 = int(request.form['super_q1'])
+            assessment.super_q2 = int(request.form['super_q2'])
+            assessment.super_q3 = int(request.form['super_q3'])
+            assessment.super_q4 = int(request.form['super_q4'])
+
+            db.session.commit()
+            return redirect(url_for('views.assessment6'))
+        except (KeyError, TypeError, ValueError):
+            flash("Please answer all questions before continuing.")
+            return redirect(url_for('views.assessment5'))
+
     return render_template('selftest/assessment/assessment5.html')
 
 
+
 @views.route('/assessment6', methods=['GET', 'POST'])
+@login_required
 def assessment6():
+    assessment_id = session.get('assessment_id')
+    assessment = Assessment.query.get(assessment_id)
+
+    if request.method == 'POST':
+        try:
+            assessment.protection_q1 = int(request.form['protection_q1'])
+            assessment.protection_q2 = int(request.form['protection_q2'])
+            assessment.protection_q3 = int(request.form['protection_q3'])
+            assessment.protection_q4 = int(request.form['protection_q4'])
+
+            db.session.commit()
+            return redirect(url_for('views.submit_assessment'))
+        except (KeyError, TypeError, ValueError):
+            flash("Please answer all questions before continuing.")
+            return redirect(url_for('views.assessment6'))
+
     return render_template('selftest/assessment/assessment6.html')
+
+
+
+#------------------------------
+# submit self assessment block
+#-----------------------------
+
+@views.route('/submit-assessment', methods=['GET', 'POST'])
+@login_required
+def submit_assessment():
+    assessment_id = session.get('assessment_id')
+    assessment = Assessment.query.get(assessment_id)
+
+    if not assessment_id or not assessment:
+        flash("Session expired or assessment not started.")
+        return redirect(url_for('views.assessment_intro'))
+
+    # Define categories and thresholds
+    categories = ["purpose", "spending", "saving", "debt", "super", "protection"]
+    question_keys = [f"{cat}_q{i}" for cat in categories for i in range(1, 5)]
+    status_thresholds = {"strong": 75, "moderate": 40}
+
+    # Collect and validate answers
+    raw_answers = {}
+    total_score = 0
+    max_total = len(question_keys) * 5
+
+    for key in question_keys:
+        val = getattr(assessment, key)
+        raw_answers[key] = val
+        if val is not None:
+            total_score += val
+
+    missing_fields = [k for k in question_keys if raw_answers.get(k) is None]
+    if missing_fields:
+        flash(f"Missing answers for: {', '.join(missing_fields)}")
+        return redirect(url_for('views.assessment_intro'))
+
+    total_percent = round((total_score / max_total) * 100) if max_total > 0 else 0
+
+    # Calculate category scores
+    category_scores = {}
+    for cat in categories:
+        cat_keys = [f"{cat}_q{i}" for i in range(1, 5)]
+        cat_sum = sum(getattr(assessment, key) or 0 for key in cat_keys)
+        max_cat_total = len(cat_keys) * 5
+        cat_percent = round((cat_sum / max_cat_total) * 100) if max_cat_total > 0 else 0
+        category_scores[cat] = cat_percent
+
+    # Determine result band
+    if total_percent <= 50:
+        band = "Inactive"
+    elif total_percent <= 89:
+        band = "Reactive"
+    else:
+        band = "Proactive"
+
+    # Update assessment record
+    assessment.total_score = total_percent
+    assessment.result_message = band
+    assessment.category_scores = category_scores
+    db.session.commit()
+    session.pop('assessment_id', None)
+
+    # Prepare summary display
+    category_names = {
+        "purpose": "Purpose & Direction",
+        "spending": "Spending & Cashflow",
+        "saving": "Saving & Emergency",
+        "debt": "Debt & Financial Stress",
+        "super": "Superannuation & Retirement Readiness",
+        "protection": "Protecting & Preparing"
+    }
+
+    key_strengths = [
+        category_names[cat] for cat in categories if category_scores.get(cat, 0) >= status_thresholds["strong"]
+    ]
+    key_weaknesses = [
+        category_names[cat] for cat in categories if category_scores.get(cat, 0) < status_thresholds["moderate"]
+    ]
+
+    return render_template(
+        'selftest/self-summary.html',
+        result_message=band,
+        band=band,
+        total_score=total_percent,
+        category_scores=category_scores,
+        key_strengths=key_strengths,
+        key_weaknesses=key_weaknesses,
+        status_thresholds=status_thresholds
+    )
 
 
 #-----------------------------------------
@@ -238,141 +452,6 @@ def subscribe():
 
     return redirect(url_for('views.home'))
 
-# submit self assessment block
-@views.route('/submit-assessment', methods=['POST'])
-def submit_assessment():
-    # 1) Find all question keys like 'q1','q2',... and sort them
-    q_keys = [k for k in request.form.keys() if k.startswith('q')]
-    q_nums = []
-    for k in q_keys:
-        try:
-            n = int(k.lstrip('q'))
-            q_nums.append(n)
-        except Exception:
-            continue
-    q_nums = sorted(set(q_nums))
-
-   
-    if not q_nums:
-        max_q = 24
-        q_nums = list(range(1, max_q + 1))
-    else:
-        max_q = max(q_nums)
-
-    # 2) Compute total_score and max_total from actual answered questions
-    total_score = 0
-    max_total = 0
-    for n in q_nums:
-        val = request.form.get(f'q{n}')
-        if val is not None and val != '':
-            try:
-                iv = int(val)
-                total_score += iv
-                max_total += 5  # Each question is out of 5
-            except ValueError:
-                continue
-    total_percent = int(round((total_score / max_total) * 100)) if max_total > 0 else 0
-
-    # 3) Build category buckets (we need keys: purpose, spending, saving, debt, super, protection)
-
-    if max_q >= 24:
-        cat_ranges = {
-            "purpose": [1, 2, 3, 4],
-            "spending": [5, 6, 7, 8],
-            "saving": [9, 10, 11, 12],
-            "debt": [13, 14, 15, 16],
-            "super": [17, 18, 19, 20],
-            "protection": [21, 22, 23, 24],
-        }
-    else:
-
-        nums = q_nums[:] 
-        L = len(nums)
-        chunks = []
-        base = L // 6
-        rem = L % 6
-        idx = 0
-        for i in range(6):
-            size = base + (1 if i < rem else 0)
-            if size > 0:
-                chunks.append(nums[idx: idx + size])
-            else:
-                chunks.append([])
-            idx += size
-        # assign names in order
-        cat_ranges = {
-            "purpose": chunks[0],
-            "spending": chunks[1],
-            "saving": chunks[2],
-            "debt": chunks[3],
-            "super": chunks[4],
-            "protection": chunks[5],
-        }
-
-    # 4) Calculate category scores as percent (0-100) for each category
-    category_scores = {}
-    for cat, rng in cat_ranges.items():
-        q_list = list(rng)
-        if not q_list:
-            category_scores[cat] = 0
-            continue
-        cat_sum = 0
-        answered = 0
-        for n in q_list:
-            val = request.form.get(f'q{n}')
-            if val is None or val == '':
-                continue
-            try:
-                iv = int(val)
-                cat_sum += iv
-                answered += 1
-            except Exception:
-                continue
-        # If none answered in this category, compute relative to full bucket size
-        bucket_len = len(q_list)
-        max_cat_total = bucket_len * 5 if bucket_len > 0 else 1
-        cat_percent = int(round((cat_sum / max_cat_total) * 100)) if max_cat_total > 0 else 0
-        category_scores[cat] = cat_percent
-
-    category_names = {
-        "purpose": "Purpose & Direction",
-        "spending": "Spending & Cashflow",
-        "saving": "Saving & Emergency",
-        "debt": "Debt & Financial Stress",
-        "super": "Superannuation & Retirement Readiness",
-        "protection": "Protecting & Preparing"
-    }
-
-    key_strengths = [
-        category_names[cat] for cat in cat_ranges.keys()
-        if category_scores.get(cat, 0) >= 75
-    ]
-
-    key_weaknesses = [
-        category_names[cat] for cat in cat_ranges.keys()
-        if category_scores.get(cat, 0) < 40
-    ]
-
-    # 5) Determine band based on overall percent (0-100)
-    if total_percent <= 50:
-        band = "Inactive"
-    elif total_percent <= 89:
-        band = "Reactive"
-    else:
-        band = "Proactive"
-
-    result_message = band  
-
-    # 6) Render template with required context (category_scores always present)
-    return render_template(
-        'selftest/self-summary.html',
-        result_message=result_message,
-        band=band,
-        total_score=total_percent,            
-        category_scores=category_scores,
-        key_strengths=key_strengths,
-        key_weaknesses=key_weaknesses
-    )
 
 
 #--------------------------

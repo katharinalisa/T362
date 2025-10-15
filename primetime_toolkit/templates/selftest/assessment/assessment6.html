@@ -4,7 +4,8 @@
 {% set step_number = 6 %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+
 
 
 <br>  
@@ -34,16 +35,16 @@
     </div>
   </div>
 
-  <form method="POST" action="{{ url_for('views.submit_assessment') }}">
+  <form method="POST" action="/assessment6">
     <div class="mb-4">
       <p class="fw-bold">1. I feel protected against major financial shocks.</p>
       <div class="likert">
         <span class="likert-label">Not At All</span>
-        <label class="large"><input type="radio" name="q1" value="1" required></label>
-        <label class="medium"><input type="radio" name="q1" value="2"></label>
-        <label class="small"><input type="radio" name="q1" value="3"></label>
-        <label class="medium"><input type="radio" name="q1" value="4"></label>
-        <label class="large"><input type="radio" name="q1" value="5"></label>
+        <label class="large"><input type="radio" name="protection_q1" value="1" required></label>
+        <label class="medium"><input type="radio" name="protection_q1" value="2"></label>
+        <label class="small"><input type="radio" name="protection_q1" value="3"></label>
+        <label class="medium"><input type="radio" name="protection_q1" value="4"></label>
+        <label class="large"><input type="radio" name="protection_q1" value="5"></label>
         <span class="likert-label">Very Likely</span>
       </div>
     </div>
@@ -52,11 +53,11 @@
       <p class="fw-bold">2. I have someone I trust for financial guidance or advice.</p>
       <div class="likert">
         <span class="likert-label">Not At All</span>
-        <label class="large"><input type="radio" name="q2" value="1" required></label>
-        <label class="medium"><input type="radio" name="q2" value="2"></label>
-        <label class="small"><input type="radio" name="q2" value="3"></label>
-        <label class="medium"><input type="radio" name="q2" value="4"></label>
-        <label class="large"><input type="radio" name="q2" value="5"></label>
+        <label class="large"><input type="radio" name="protection_q2" value="1" required></label>
+        <label class="medium"><input type="radio" name="protection_q2" value="2"></label>
+        <label class="small"><input type="radio" name="protection_q2" value="3"></label>
+        <label class="medium"><input type="radio" name="protection_q2" value="4"></label>
+        <label class="large"><input type="radio" name="protection_q2" value="5"></label>
         <span class="likert-label">Very Likely</span>
       </div>
     </div>
@@ -65,11 +66,13 @@
       <p class="fw-bold">3. I feel prepared for ageing-related needs (e.g., care, housing).</p>
       <div class="likert" style="display: flex; align-items: center; justify-content: center;">
         <span class="likert-label" style="margin-right: 10px;">Not At All</span>
-        <label class="large"><input type="radio" name="q3" value="1" required></label>
-        <label class="medium"><input type="radio" name="q3" value="2"></label>
-        <label class="small"><input type="radio" name="q3" value="3"></label>
-        <label class="medium"><input type="radio" name="q3" value="4"></label>
-        <label class="large"><input type="radio" name="q3" value="5"></label>
+
+        <label class="large"><input type="radio" name="protection_q3" value="1" required></label>
+        <label class="medium"><input type="radio" name="protection_q3" value="2"></label>
+        <label class="small"><input type="radio" name="protection_q3" value="3"></label>
+        <label class="medium"><input type="radio" name="protection_q3" value="4"></label>
+        <label class="large"><input type="radio" name="protection_q3" value="5"></label>
+
         <span class="likert-label" style="margin-left: 10px;">Very Likely</span>
       </div>
     </div>
@@ -78,11 +81,13 @@
       <p class="fw-bold">4. I’ve updated my will and legal documents within the last 5 years.</p>
       <div class="likert" style="display: flex; align-items: center; justify-content: center;">
         <span class="likert-label" style="margin-right: 10px;">Not At All</span>
-        <label class="large"><input type="radio" name="q4" value="1" required></label>
-        <label class="medium"><input type="radio" name="q4" value="2"></label>
-        <label class="small"><input type="radio" name="q4" value="3"></label>
-        <label class="medium"><input type="radio" name="q4" value="4"></label>
-        <label class="large"><input type="radio" name="q4" value="5"></label>
+
+        <label class="large"><input type="radio" name="protection_q4" value="1" required></label>
+        <label class="medium"><input type="radio" name="protection_q4" value="2"></label>
+        <label class="small"><input type="radio" name="protection_q4" value="3"></label>
+        <label class="medium"><input type="radio" name="protection_q4" value="4"></label>
+        <label class="large"><input type="radio" name="protection_q4" value="5"></label>
+
         <span class="likert-label" style="margin-left: 10px;">Very Likely</span>
       </div>
     </div>

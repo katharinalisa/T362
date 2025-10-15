@@ -62,10 +62,10 @@
                 <td style="padding:8px">{{ label }}</td>
                 <td style="padding:8px">{{ score }}%</td>
                 <td style="padding:8px">
-                  {% if score < 8 %}
+                  {% if score < status_thresholds.moderate %}
                     ⚠ Needs Focus
-                  {% elif score < 15 %}
-                     Moderate
+                  {% elif score < status_thresholds.strong %}
+                    Moderate
                   {% else %}
                     Strong
                   {% endif %}
@@ -105,12 +105,12 @@
               <p>Spending & Cashflow needs attention. Tracking your spending and identifying consistent patterns is essential. Building a realistic budget that prioritises essentials and sets achievable savings goals can help improve financial stability.</p>
             {% elif g.key == 'saving' %}
               <p>Saving & Emergency requires focus. Aim to save at least three months of essential expenses and establish automatic transfers to build consistency. This approach will strengthen your financial resilience in case of emergencies.</p>
+            {% elif g.key == 'debt' %}
+              <p>Your debt planning needs improvement. </p>
             {% elif g.key == 'super' %}
-              <p>Superannuation should be reviewed. Checking your account balance, understanding your fees, and considering consolidating multiple super accounts can enhance your retirement savings and reduce unnecessary costs.</p>
+              <p>Your current progress suggests there may be gaps in your long-term planning. Consider reviewing your super contributions, checking your fund’s performance, and exploring whether your retirement goals are still aligned with your current strategy.</p>
             {% elif g.key == 'protection' %}
               <p>Protection is an important area to address. Ensure you have basic insurance coverage and review your estate planning documents, such as a will or power of attorney, to safeguard your financial future and that of your loved ones.</p>
-            {% elif g.key == 'confidence' %}
-              <p>Planning Confidence can be improved by learning the basics of money management and setting simple weekly financial tasks. Building confidence in your financial decisions will support long-term success.</p>
             {% endif %}
           {% endfor %}
         {% endif %}
