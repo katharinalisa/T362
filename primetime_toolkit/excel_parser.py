@@ -60,6 +60,30 @@ def find_sheet(sheets, keywords):
     return None
 
 
+def extract_total_assets(path, sheet_name):
+    df = pd.read_excel(path, sheet_name=sheet_name)
+    for _, row in df.iterrows():
+        label = str(row[0]).strip().lower()
+        if "total assets" in label or "assets total" in label:
+            try:
+                return float(row[1])
+            except:
+                continue
+    return None
+
+
+def extract_net_worth(path, sheet_name):
+    df = pd.read_excel(path, sheet_name=sheet_name)
+    for _, row in df.iterrows():
+        label = str(row[0]).strip().lower()
+        if "net worth" in label:
+            try:
+                return float(row[1])
+            except:
+                continue
+    return None
+
+
 def parse_excel(path):
     sheets = pd.ExcelFile(path).sheet_names
     print(f"\nParsing Excel file: {path}")
@@ -67,14 +91,27 @@ def parse_excel(path):
 
     # --- Assets ---
     assets_name = find_sheet(sheets, ["asset"])
-    assets_items, assets_total = extract_items_auto(path, assets_name) if assets_name else ([], 0)
+    explicit_assets_total = extract_total_assets(path, assets_name) if assets_name else None
+    assets_items, calculated_assets_total = extract_items_auto(path, assets_name) if assets_name else ([], 0)
+    assets_total = explicit_assets_total if explicit_assets_total is not None else calculated_assets_total
 
     # --- Liabilities ---
     liab_name = find_sheet(sheets, ["liab", "debt", "loan", "mortgage"])
     liab_items, liab_total = extract_items_auto(path, liab_name) if liab_name else ([], 0)
 
-    net_worth = assets_total - liab_total
+
+
+
+
+    # --- Net Worth (explicit override if available) ---
+    nw_sheet = find_sheet(sheets, ["summary", "overview", "net worth"])
+    explicit_net_worth = extract_net_worth(path, nw_sheet) if nw_sheet else None
+    net_worth = explicit_net_worth if explicit_net_worth is not None else assets_total - liab_total
+
     print(f"Net Worth = {net_worth}\n")
+
+
+
 
     # --- Expenses ---
     exp_name = find_sheet(sheets, ["expense", "spending"])
