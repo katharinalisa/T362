@@ -1,62 +1,144 @@
 {% extends 'layout.html' %} {% block content %}
 
 <style>
-  .dashboard-chart {
-    box-shadow: 0 8px 32px rgba(34, 60, 80, 0.18);
-    transition: box-shadow 0.2s, transform 0.2s;
-    border-radius: 30px;
-    border: none;
-    background: #fff;
-  }
-  .dashboard-chart:hover {
-    box-shadow: 0 16px 48px rgba(34, 60, 80, 0.32);
-    transform: translateY(-8px) scale(1.04);
-    z-index: 2;
-  }
-
-  @keyframes fadeInSlow {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* ====== Palette & tokens (light-touch) ====== */
+  :root {
+    --brand: #009687;
+    --brand-700: #007f73;
+    --ink-900: #0f172a;
+    --ink-600: #334155;
+    --ink-400: #94a3b8;
+    --surface: #ffffff;
+    --soft-1: #f5faff;
+    --soft-2: #effdfa;
+    --ring: rgba(2,6,23,.08);
+    --radius-lg: 16px;
   }
 
-  .fade-in-slow {
-    animation: fadeInSlow 1.8s ease-out forwards;
-    animation-delay: 1s;
+  /* Page title */
+  .section-title {
+    font-weight: 800;
+    letter-spacing: -.4px;
+    color: var(--ink-900);
   }
 
+  /* Cards */
   .option-card {
-    background: linear-gradient(100deg, #eaf1fe 0%, #e6fcfa 100%);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: linear-gradient(120deg, var(--soft-1) 0%, var(--soft-2) 100%);
+    border: 1px solid var(--ring);
+    border-radius: 20px;
+    box-shadow: 0 10px 24px rgba(2,6,23,.06);
+    transition: transform .18s ease, box-shadow .18s ease;
   }
-
   .option-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 18px 36px rgba(2,6,23,.10);
+  }
+  .option-card .card-body { padding: 24px; }
+  .card-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: .8rem; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--ink-400);
+    background: #fff; border: 1px solid var(--ring);
+    padding: 4px 10px; border-radius: 999px;
   }
 
+  /* Primary/secondary buttons */
   .btn-start {
-    background-color: #009687;
-    color: #fff;
-    border: none;
-    transition: background-color 0.3s ease;
+    background-color: var(--brand); color: #fff; border: 0;
+    transition: background-color .18s ease, transform .1s ease;
     text-decoration: none;
   }
+  .btn-start:hover { background-color: var(--brand-700); color: #fff; transform: translateY(-1px); }
+  .btn-secondary {
+    background-color: #e2e8f0; color: var(--ink-900); border: none;
+    transition: background-color .18s ease;
+  }
+  .btn-secondary:hover { background-color: #cbd5e1; }
 
-  .btn-start:hover {
-    background-color: #007f73; /* darker shade for hover */
-    color: #fff;
+  /* Accessibility helpers */
+  .sr-only {
+    position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  /* Upload dropzone */
+  .upload-dropzone {
+    border: 2px dashed rgba(0,0,0,0.12);
+    border-radius: 16px; padding: 28px;
+    background: linear-gradient(100deg, #f7fbff 0%, #f5fffd 100%);
+    cursor: pointer;
+    transition: border-color .2s ease, background .2s ease, transform .2s ease;
+  }
+  .upload-dropzone:hover { transform: translateY(-2px); }
+  .upload-dropzone.dragover { border-color: var(--brand); background: #effdfa; }
+
+  /* ---- Email pill combo (with arrow & dropdown) ---- */
+  .email-combo {
+    position: relative; max-width: 720px; margin: 6px auto 0;
+    border-radius: 999px; border: 4px solid #ffffff; padding: 6px; background: transparent;
+  }
+  .email-input-pill {
+    width: 100%; height: 56px; border-radius: 999px; border: 0;
+    background: #5d5a68; color: #ffffff;
+    padding: 0 70px 0 20px; font-size: 1.1rem; line-height: 56px;
+  }
+  .email-input-pill::placeholder { color: rgba(255,255,255,0.88); }
+  .email-input-pill:focus { outline: none; box-shadow: inset 0 0 0 2px rgba(255,255,255,0.55); }
+
+  .email-arrow {
+    position: absolute; top: 50%; right: 8px; transform: translateY(-50%);
+    width: 48px; height: 48px; border-radius: 50%;
+    border: 2px solid #ffffff; background: #ffffff; color: #0b0b0b;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0; cursor: pointer;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.25) inset;
+    transition: transform .12s ease, box-shadow .2s ease;
+  }
+  .email-arrow:hover { transform: translateY(-50%) scale(1.03); }
+  .email-arrow:active { transform: translateY(-50%) scale(0.98); }
+  .email-arrow:disabled { opacity: .6; cursor: not-allowed; }
+
+  /* Dropdown */
+  .email-options {
+    position: absolute; top: 100%; right: 0; margin-top: 8px;
+    min-width: 230px; background: #fff; border: 1px solid var(--ring);
+    border-radius: 12px; box-shadow: 0 18px 36px rgba(2,6,23,.14);
+    padding: 6px; z-index: 9999; animation: fadeInEmail .18s ease-out;
+  }
+  .email-options[hidden] { display: none !important; }
+  .option-btn {
+    display: block; width: 100%; padding: 10px 12px; border-radius: 8px;
+    border: 0; background: transparent; text-align: left; color: var(--ink-900);
+    font-size: .95rem; cursor: pointer;
+  }
+  .option-btn:hover { background: #f1f5f9; }
+  .option-btn i {
+    font-size: 1.1rem;
+  }
+  @keyframes fadeInEmail { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
+
+  /* Utilities */
+  .muted { color: var(--ink-400); }
+  @media (max-width: 768px){
+    .section-title { font-size: 2rem !important; }
+    .email-combo { max-width: 100%; }
   }
 </style>
 
-<section
-  class="hero-section text-center py-4"
-  style="width: 100vw; margin-left: calc(-50vw + 50%); margin-top: -28px">
+<!-- Bootstrap Icons -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+/>
+
+<section class="text-center py-4">
   <div class="container"><br>
     <h1
       class="display-1 section-title mb-2"
-      style="font-size: 3rem; font-weight: 800; text-align: center; letter-spacing: -0.6px;"
+      style="font-size: 2.6rem; font-weight: 800; text-align: center; letter-spacing: -0.6px;"
     >
-      Choose one of two options below
+      Choose how you’d like to get started
     </h1>
 
 
@@ -68,19 +150,42 @@
       <div class="card option-card compact-card text-center w-100">
         <div class="card-body d-flex flex-column justify-content-between">
           <div>
-            <span class="fs-2 text-primary"><i class="bi bi-file-earmark-arrow-down"></i></span>
+            <img src="{{ url_for('static', filename='img/excel_icon.png') }}" alt="Spreadsheet icon" width="70" height="70" class="mb-2">
+            <div class="card-eyebrow">Offline option</div>
             <h6 class="fw-bold mt-3">Excel Spreadsheet Calculators</h6>
             <p class="small text-muted">Receive our Excel spreadsheet over Email, fill it out offline, and upload it in the below section.</p>
           </div>
-          <form id="spreadsheetForm" action="{{ url_for('views.send_email') }}" method="POST">
-            <input type="email" name="email" class="form-control mb-2 rounded-pill" placeholder="Your email" required>
-            <button type="submit" class="btn btn-start rounded-pill px-4 mt-2" style="width:310px;">Send Spreadsheet</button>
+          <form id="spreadsheetForm" action="{{ url_for('views.send_email') }}" method="POST" novalidate>
+            <label for="email-input" class="sr-only">Email address</label>
+            <div class="email-combo">
+              <input id="email-input" type="email" name="email" class="email-input-pill"
+                     placeholder="Enter your email" required aria-required="true" autocomplete="email">
+              <button id="emailSendBtn" type="submit" class="email-arrow" aria-label="Send Spreadsheet" title="Send Spreadsheet" aria-expanded="false" aria-haspopup="true" aria-controls="emailOptions">
+                <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+              <div id="emailOptions" class="email-options" hidden>
+                <button type="submit" class="option-btn d-flex align-items-center gap-2" role="menuitem">
+                  <i class="bi bi-envelope-fill text-primary"></i>
+                  Send to my email
+                </button>
+                <a href="{{ url_for('static', filename='files/Prime_Time_Big_Financial_Picture_Tool.xlsx') }}"
+                   download class="option-btn d-flex align-items-center gap-2" role="menuitem">
+                  <i class="bi bi-download text-success"></i>
+                  Download now
+                </a>
+              </div>
+            </div>
             <div id="loadingSpinner" style="display:none; margin-top:10px;">
-              <div class="spinner-border text-info" role="status">
+              <div class="spinner-border text-info" role="status" aria-live="polite" aria-label="Sending">
                 <span class="visually-hidden">Sending...</span>
               </div>
               <span class="ms-2">Sending...</span>
             </div>
+            <div id="emailStatus" class="small text-muted mt-2" aria-live="polite"></div>
           </form>
         </div>
       </div>
@@ -91,11 +196,14 @@
       <div class="card option-card compact-card text-center w-100">
         <div class="card-body d-flex flex-column justify-content-between">
           <div>
-            <span class="fs-2 text-success"><i class="bi bi-calculator"></i></span>
+            <img src="{{ url_for('static', filename='img/webcal_icon.png') }}" alt="Web calculator icon" width="70" height="70" class="mb-2">
+            <div class="card-eyebrow">Online option</div>
             <h6 class="fw-bold mt-3">Web Calculators</h6>
             <p class="small text-muted">This is an online tool which saves your progress as you go. Step through each calculator directly from this website.</p>
           </div>
-          <a href="{{ url_for('views.tracker') }}" class="btn btn-start rounded-pill px-4 mt-2" style="text-decoration: none;">Start Online Calculators</a>
+          <a href="{{ url_for('views.tracker') }}" class="btn btn-start rounded-pill px-4 mt-2" style="text-decoration: none;">
+            Start Online Calculators
+          </a>
         </div>
       </div>
     </div>
@@ -114,11 +222,17 @@
           <p class="text-muted mb-4" style="max-width: 500px;">
             If you have completed your spreadsheet, upload it here to unlock your personalized dashboard and insights.
           </p>
-          <form action="{{ url_for('views.upload_excel') }}" method="POST" enctype="multipart/form-data" style="width: 100%; max-width: 500px;">
-            <input type="file" name="budget_file" id="budget_file" class="form-control mb-3 rounded-pill" accept=".xlsx,.xls" required />
-            <button type="submit" id="uploadBtn" class="btn btn-brand rounded-pill px-4 py-2 w-100" disabled>
+          <form id="uploadForm" action="{{ url_for('views.upload_excel') }}" method="POST" enctype="multipart/form-data" style="width: 100%; max-width: 500px;">
+            <div id="dropzone" class="upload-dropzone mb-3">
+              <div class="small text-muted">Drop your completed Excel here or click to browse.</div>
+              <div class="fw-semibold mt-1">Accepted: .xlsx, .xls</div>
+            </div>
+            <input type="file" name="budget_file" id="budget_file" class="form-control mb-3 rounded-pill" accept=".xlsx,.xls" required hidden />
+            <div id="fileName" class="small text-muted mb-2" aria-live="polite"></div>
+            <button type="submit" id="uploadBtn" class="btn btn-start rounded-pill px-4 py-2 w-100" disabled>
               Upload Spreadsheet
             </button>
+            <div id="uploadStatus" class="small text-muted mt-2" aria-live="polite"></div>
           </form>
         </div>
       </div>
@@ -129,19 +243,93 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // Email send: show spinner and disable button
+  const spreadsheetForm = document.getElementById('spreadsheetForm');
+  const emailSendBtn = document.getElementById('emailSendBtn');
+  const loadingSpinner = document.getElementById('loadingSpinner');
+  const emailStatus = document.getElementById('emailStatus');
+
+  spreadsheetForm?.addEventListener('submit', function(e) {
+    if (!spreadsheetForm.checkValidity()) {
+      e.preventDefault();
+      emailStatus.textContent = 'Please enter a valid email address.';
+      return;
+    }
+    emailSendBtn.disabled = true;
+    loadingSpinner.style.display = 'inline-block';
+  });
+
+  // Upload: drag & drop + enable button
+  const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('budget_file');
   const uploadBtn = document.getElementById('uploadBtn');
-  fileInput.addEventListener('change', function() {
-    if (fileInput.files.length > 0) {
-      uploadBtn.disabled = false;
-      uploadBtn.classList.remove('btn-outline-primary');
-      uploadBtn.classList.add('btn-success');
+  const fileName = document.getElementById('fileName');
+  const uploadForm = document.getElementById('uploadForm');
+
+  const activateUpload = (file) => {
+    if (!file) return;
+    fileName.textContent = 'Selected: ' + file.name;
+    uploadBtn.disabled = false;
+  };
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault(); dropzone.classList.remove('dragover');
+    const f = e.dataTransfer.files[0];
+    if (f && /\.(xlsx|xls)$/i.test(f.name)) {
+      fileInput.files = e.dataTransfer.files;
+      activateUpload(f);
     } else {
-      uploadBtn.disabled = true;
-      uploadBtn.classList.remove('btn-success');
-      uploadBtn.classList.add('btn-outline-primary');
+      fileName.textContent = 'Please drop a valid Excel file (.xlsx or .xls).';
     }
   });
+
+  fileInput.addEventListener('change', () => activateUpload(fileInput.files[0]));
+
+  // Arrow dropdown: choose Send vs Download
+  const arrowBtn = document.getElementById('emailSendBtn');
+  const optionsMenu = document.getElementById('emailOptions');
+  const emailInput = document.getElementById('email-input');
+
+  function closeEmailMenu() {
+    if (optionsMenu) optionsMenu.setAttribute('hidden', true);
+    if (arrowBtn) arrowBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  if (arrowBtn && optionsMenu) {
+    arrowBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const hidden = optionsMenu.hasAttribute('hidden');
+      document.querySelectorAll('.email-options').forEach(el => el.setAttribute('hidden', true));
+      if (hidden) {
+        optionsMenu.removeAttribute('hidden');
+        arrowBtn.setAttribute('aria-expanded', 'true');
+      } else {
+        closeEmailMenu();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!optionsMenu.contains(e.target) && e.target !== arrowBtn) closeEmailMenu();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeEmailMenu(); });
+
+    // Ensure email is valid before allowing submit from menu
+    const sendBtnInMenu = optionsMenu.querySelector('button[type="submit"]');
+    if (sendBtnInMenu) {
+      sendBtnInMenu.addEventListener('click', (e) => {
+        if (!emailInput.checkValidity()) {
+          e.preventDefault();
+          document.getElementById('emailStatus').textContent = 'Please enter a valid email address.';
+          closeEmailMenu();
+          emailInput.focus();
+        }
+      });
+    }
+  }
 });
 </script>
 </section><br><br><br>
