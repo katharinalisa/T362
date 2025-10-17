@@ -20,6 +20,8 @@
     font-weight: 800;
     letter-spacing: -.4px;
     color: var(--ink-900);
+    font-size: 2.4rem;
+    text-align: center;
   }
 
   /* Cards */
@@ -29,12 +31,17 @@
     border-radius: 20px;
     box-shadow: 0 10px 24px rgba(2,6,23,.06);
     transition: transform .18s ease, box-shadow .18s ease;
+    min-height: 420px;
   }
   .option-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 18px 36px rgba(2,6,23,.10);
   }
   .option-card .card-body { padding: 24px; }
+  .option-card .card-body { height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+  .option-card img { margin-bottom: 0.5rem; }
+  .option-card h6 { margin-top: 1rem; margin-bottom: 0.5rem; }
+  .option-card p.small { min-height: 60px; }
   .card-eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
     font-size: .8rem; text-transform: uppercase; letter-spacing: .08em;
@@ -45,9 +52,16 @@
 
   /* Primary/secondary buttons */
   .btn-start {
-    background-color: var(--brand); color: #fff; border: 0;
-    transition: background-color .18s ease, transform .1s ease;
+    background-color: var(--brand);
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 0.9rem 2rem;
+    font-size: 1.05rem;
+    transition: all 0.18s ease;
     text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0, 150, 135, 0.25);
   }
   .btn-start:hover { background-color: var(--brand-700); color: #fff; transform: translateY(-1px); }
   .btn-secondary {
@@ -55,6 +69,18 @@
     transition: background-color .18s ease;
   }
   .btn-secondary:hover { background-color: #cbd5e1; }
+
+  /* Pill button */
+  .btn-pill {
+    width: 100%;
+    height: auto;
+    border-radius: 50px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   /* Accessibility helpers */
   .sr-only {
@@ -75,20 +101,20 @@
 
   /* ---- Email pill combo (with arrow & dropdown) ---- */
   .email-combo {
-    position: relative; max-width: 720px; margin: 6px auto 0;
+    position: relative; max-width: 100%; margin: 6px 0 0;
     border-radius: 999px; border: 4px solid #ffffff; padding: 6px; background: transparent;
   }
   .email-input-pill {
-    width: 100%; height: 56px; border-radius: 999px; border: 0;
+    width: 100%; height: 46px; border-radius: 999px; border: 0;
     background: #5d5a68; color: #ffffff;
-    padding: 0 70px 0 20px; font-size: 1.1rem; line-height: 56px;
+    padding: 0 70px 0 20px; font-size: 1rem; line-height: 46px;
   }
   .email-input-pill::placeholder { color: rgba(255,255,255,0.88); }
   .email-input-pill:focus { outline: none; box-shadow: inset 0 0 0 2px rgba(255,255,255,0.55); }
 
   .email-arrow {
     position: absolute; top: 50%; right: 8px; transform: translateY(-50%);
-    width: 48px; height: 48px; border-radius: 50%;
+    width: 40px; height: 40px; border-radius: 50%;
     border: 2px solid #ffffff; background: #ffffff; color: #0b0b0b;
     display: inline-flex; align-items: center; justify-content: center;
     padding: 0; cursor: pointer;
@@ -124,6 +150,9 @@
     .section-title { font-size: 2rem !important; }
     .email-combo { max-width: 100%; }
   }
+  @media (max-width: 992px) {
+    .row.flex-nowrap { flex-wrap: wrap !important; }
+  }
 </style>
 
 <!-- Bootstrap Icons -->
@@ -133,22 +162,23 @@
 />
 
 <section class="text-center py-4">
-  <div class="container"><br>
+  <div class="container">
     <h1
       class="display-1 section-title mb-2"
       style="font-size: 2.6rem; font-weight: 800; text-align: center; letter-spacing: -0.6px;"
     >
       Choose how you’d like to get started
     </h1>
+    <p class="text-muted mb-4">Pick the offline spreadsheet or jump straight into the online calculators. You can upload your finished spreadsheet below.</p>
 
 
   <div class="container my-5">
-    <div class="row justify-content-center align-items-stretch g-4">
+    <div class="row justify-content-center align-items-start g-4 g-lg-5">
 
     <!-- Download Spreadsheet -->
-    <div class="col-md-5 col-lg-4 d-flex">
+    <div class="col-md-4 col-lg-4 d-flex align-items-stretch">
       <div class="card option-card compact-card text-center w-100">
-        <div class="card-body d-flex flex-column justify-content-between">
+        <div class="card-body d-flex flex-column justify-content-between align-items-center text-center h-100">
           <div>
             <img src="{{ url_for('static', filename='img/excel_icon.png') }}" alt="Spreadsheet icon" width="70" height="70" class="mb-2">
             <div class="card-eyebrow">Offline option</div>
@@ -167,17 +197,14 @@
                   <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
               </button>
-              <div id="emailOptions" class="email-options" hidden>
-                <button type="submit" class="option-btn d-flex align-items-center gap-2" role="menuitem">
-                  <i class="bi bi-envelope-fill text-primary"></i>
-                  Send to my email
-                </button>
-                <a href="{{ url_for('static', filename='files/Prime_Time_Big_Financial_Picture_Tool.xlsx') }}"
-                   download class="option-btn d-flex align-items-center gap-2" role="menuitem">
-                  <i class="bi bi-download text-success"></i>
-                  Download now
-                </a>
               </div>
+            <div class="mt-3 w-100">
+              <a href="{{ url_for('static', filename='files/Prime_Time_Big_Financial_Picture_Tool.xlsx') }}"
+                 download
+                 class="btn btn-secondary btn-pill w-80 d-inline-flex align-items-center justify-content-center gap-2">
+                <i class="bi bi-download"></i>
+                Download Spreadsheet
+              </a>
             </div>
             <div id="loadingSpinner" style="display:none; margin-top:10px;">
               <div class="spinner-border text-info" role="status" aria-live="polite" aria-label="Sending">
@@ -192,16 +219,16 @@
     </div>
 
     <!-- Web Calculator -->
-    <div class="col-md-5 col-lg-4 d-flex">
+    <div class="col-md-4 col-lg-4 d-flex align-items-stretch">
       <div class="card option-card compact-card text-center w-100">
-        <div class="card-body d-flex flex-column justify-content-between">
+        <div class="card-body d-flex flex-column justify-content-between align-items-center text-center h-100">
           <div>
             <img src="{{ url_for('static', filename='img/webcal_icon.png') }}" alt="Web calculator icon" width="70" height="70" class="mb-2">
             <div class="card-eyebrow">Online option</div>
             <h6 class="fw-bold mt-3">Web Calculators</h6>
             <p class="small text-muted">This is an online tool which saves your progress as you go. Step through each calculator directly from this website.</p>
           </div>
-          <a href="{{ url_for('views.tracker') }}" class="btn btn-start rounded-pill px-4 mt-2" style="text-decoration: none;">
+          <a href="{{ url_for('views.tracker') }}" class="btn btn-start btn-pill mt-3 w-100" style="text-decoration: none;">
             Start Online Calculators
           </a>
         </div>
@@ -229,7 +256,7 @@
             </div>
             <input type="file" name="budget_file" id="budget_file" class="form-control mb-3 rounded-pill" accept=".xlsx,.xls" required hidden />
             <div id="fileName" class="small text-muted mb-2" aria-live="polite"></div>
-            <button type="submit" id="uploadBtn" class="btn btn-start rounded-pill px-4 py-2 w-100" disabled>
+            <button type="submit" id="uploadBtn" class="btn btn-start btn-pill" disabled>
               Upload Spreadsheet
             </button>
             <div id="uploadStatus" class="small text-muted mt-2" aria-live="polite"></div>
@@ -238,7 +265,7 @@
       </div>
     </div>
   </div>
-</div><br><br>
+</div>
 
 
 <script>
@@ -332,5 +359,5 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
-</section><br><br><br>
+</section>
 {% endblock %}
