@@ -1,4 +1,4 @@
-(() => {
+document.addEventListener('DOMContentLoaded', () => {
   // ===== DOM =====
   const table = document.getElementById('incomeTable');
   const tbody = table?.querySelector('tbody');
@@ -6,7 +6,7 @@
   const addRowBtn = document.getElementById('addRowBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
   const saveAndNextBtn = document.getElementById('saveAndNextBtn');
-  const saveBtn = document.getElementById('saveIncomeBtn');
+  const saveBtn = document.getElementById('saveBtn') || document.getElementById('saveIncomeBtn');
 
   if (!table || !tbody || !rowTemplate) return;
 
@@ -21,6 +21,25 @@
     return Number.isFinite(n) ? Number(n.toFixed(2)) : 0;
   };
 
+  // Canonical income categories (to normalise any prefill values)
+  const INCOME_CATEGORIES = [
+    'Income from working (After tax)',
+    'Partner income from working (After tax)',
+    'Side-hustle or business income',
+    'Dividends',
+    'Rental income (net)',
+    'Interest income',
+    'Superannuation income',
+    'Age pension',
+    'Other income'
+  ];
+  const INCOME_LC = INCOME_CATEGORIES.map(c => c.toLowerCase());
+  function normaliseIncomeCategory(val) {
+    if (!val) return '';
+    const i = INCOME_LC.indexOf(String(val).toLowerCase());
+    return i >= 0 ? INCOME_CATEGORIES[i] : '';
+  }
+
   function markStepComplete(stepKey) {
     let completed = JSON.parse(localStorage.getItem("completedSteps") || "[]");
     if (!completed.includes(stepKey)) {
@@ -34,9 +53,18 @@
     const frag = rowTemplate.content.cloneNode(true);
     const row = frag.querySelector('tr.income-row');
 
-    row.querySelector('.source').value = prefill.source || '';
+    // Accept multiple possible keys from older saves: source | category | type
+    const rawSource = prefill.source ?? prefill.category ?? prefill.type ?? '';
+    const srcEl = row.querySelector('.source');
+    if (srcEl && srcEl.tagName === 'SELECT') {
+      srcEl.value = normaliseIncomeCategory(rawSource) || '';
+    } else if (srcEl) {
+      srcEl.value = rawSource || '';
+    }
     row.querySelector('.amount').value = prefill.amount ? to2(prefill.amount).toFixed(2) : '';
-    row.querySelector('.frequency').value = prefill.frequency || '';
+    if (prefill.frequency) {
+      row.querySelector('.frequency').value = prefill.frequency;
+    }
     row.querySelector('.notes').value = prefill.notes || '';
     row.querySelector('.include-toggle').checked = prefill.include !== false;
 
@@ -120,6 +148,9 @@
     if (btn) {
       const row = btn.closest('tr.income-row');
       if (row) row.remove();
+      if (tbody.querySelectorAll('tr.income-row').length === 0) {
+        addRow();
+      }
       updateTotals();
     }
   });
@@ -138,6 +169,7 @@
       }
       t.value = v;
     }
+    // If the category select changes, no math changes, but keep totals refreshed
     updateTotals();
   });
 
@@ -153,21 +185,36 @@
   // ===== Save helper =====
   async function saveAll() {
     const incomes = getRows();
+    const payload = { incomes };
+    const primaryUrl = table?.dataset?.saveUrl || '/save-income';
+    const fallbackUrl = window.location?.pathname || '/income';
     try {
-      const res = await fetch('/save-income', {
+      let res = await fetch(primaryUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ incomes })
+        body: JSON.stringify(payload)
       });
       if (res.status === 401) {
         alert('Please log in to save your income.');
         window.location.href = '/login';
         return null;
       }
-      if (!res.ok) throw new Error();
+      if (res.status === 404 && primaryUrl !== fallbackUrl) {
+        res = await fetch(fallbackUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      }
+      if (!res.ok) {
+        let msg = '';
+        try { msg = await res.text(); } catch {}
+        alert(`Error saving income. (HTTP ${res.status}) ${msg || ''}`.trim());
+        return null;
+      }
       return await res.json();
-    } catch {
-      alert('Error saving income.');
+    } catch (e) {
+      alert(`Error saving income. ${e?.message ? '(' + e.message + ')' : ''}`);
       return null;
     }
   }
@@ -197,7 +244,9 @@
     try {
       const data = await saveAll();
       if (data) markStepComplete('income');
-      if (data && !data.redirect) {
+      if (data?.redirect) {
+        window.location.href = data.redirect;
+      } else if (data) {
         alert(data.message || 'Income saved!');
       }
     } finally {
@@ -208,16 +257,33 @@
 
   // ===== Init =====
   tbody.innerHTML = '';
-  if (window.incomePrefill?.length > 0) {
+  const defaultIncomes = [
+    { source: 'Income from working (After tax)', include: true },
+    { source: 'Partner income from working (After tax)', include: true },
+    { source: 'Side-hustle or business income', include: true },
+    { source: 'Dividends', include: true },
+    { source: 'Rental income (net)', include: true },
+    { source: 'Interest income', include: true },
+    { source: 'Superannuation income', include: true },
+    { source: 'Age pension', include: true },
+    { source: 'Other income', include: true },
+    { source: '', include: true },  // -- Select category --
+  ];
+  const hasValidPrefill = Array.isArray(window.incomePrefill) &&
+    window.incomePrefill.some(r => r && (r.source || r.category || r.type));
+
+  if (hasValidPrefill) {
     window.incomePrefill.forEach(addRow);
   } else {
-    addRow();
+    defaultIncomes.forEach(addRow);
   }
-
+  // Normalise inputs on load
   tbody.querySelectorAll('.amount').forEach(inp => {
     const n = parseAmount(inp.value);
     inp.value = Number.isFinite(n) ? n.toFixed(2) : '';
   });
-
+  tbody.querySelectorAll('tr.income-row .source').forEach(sel => {
+    if (sel.tagName === 'SELECT' && !sel.value) sel.value = '';
+  });
   updateTotals();
-})();
+});
