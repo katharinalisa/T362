@@ -1,4 +1,4 @@
-(() => {
+document.addEventListener('DOMContentLoaded', () => {
   // ===== DOM =====
   const table = document.getElementById('futureBudgetTable');
   const tbody = table?.querySelector('tbody');
@@ -151,8 +151,12 @@
   // ===== Save helpers =====
   async function saveAll() {
     const budgets = collectRows();
+    // Allow overriding the save endpoint via data attribute
+    const primaryUrl = table?.dataset?.saveUrl || '/save-future-budget';
+    const fallbackUrl = window.location?.pathname || '/future_budget';
+
     try {
-      const res = await fetch('/save-future-budget', {
+      let res = await fetch(primaryUrl, {
         method: 'POST',
         headers: { 'Content-Type':'application/json' },
         body: JSON.stringify({ budgets })
@@ -162,24 +166,39 @@
         window.location.href = '/login';
         return null;
       }
-      if (!res.ok) throw new Error();
+      // If the configured URL is wrong, retry to current page path
+      if (res.status === 404 && primaryUrl !== fallbackUrl) {
+        res = await fetch(fallbackUrl, {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json' },
+          body: JSON.stringify({ budgets })
+        });
+      }
+      if (!res.ok) {
+        let msg = '';
+        try { msg = await res.text(); } catch {}
+        alert(`Error saving Future Budget. (HTTP ${res.status}) ${msg || ''}`.trim());
+        return null;
+      }
       return await res.json(); // { message, redirect? }
-    } catch {
-      alert('Error saving Future Budget.');
+    } catch (err) {
+      alert(`Error saving Future Budget. ${err?.message ? '(' + err.message + ')' : ''}`);
       return null;
     }
   }
 
-  // Save & Next: redirects only if backend provides `redirect`
+  // Save & Next: prefer server redirect; else use button's data-next-url if provided
   saveAndNextBtn?.addEventListener('click', async () => {
     const original = saveAndNextBtn.textContent;
+    const nextUrl = saveAndNextBtn.dataset.nextUrl || '';
     saveAndNextBtn.disabled = true;
     saveAndNextBtn.textContent = 'Saving…';
     try {
       const data = await saveAll();
       if (data) { markStepComplete('future_budget'); }
-      if (data?.redirect) {
-        window.location.href = data.redirect; // e.g., /epic or next step
+      const target = (data && data.redirect) ? data.redirect : nextUrl;
+      if (target) {
+        window.location.href = target;
       } else if (data) {
         alert(data.message || 'Future Budget saved!');
       }
@@ -197,7 +216,9 @@
     try {
       const data = await saveAll();
       if (data) { markStepComplete('future_budget'); }
-      if (data && !data.redirect) {
+      if (data?.redirect) {
+        window.location.href = data.redirect;
+      } else if (data) {
         alert(data.message || 'Future Budget saved!');
       }
     } finally {
@@ -208,10 +229,24 @@
 
   // ===== Init (prefill like assets/subscriptions) =====
   tbody.innerHTML = '';
-  if (Array.isArray(window.futureBudgetPrefill) && window.futureBudgetPrefill.length > 0) {
+  const hasValidPrefill = Array.isArray(window.futureBudgetPrefill) &&
+    window.futureBudgetPrefill.some(r => r && (r.phase || r.age_range || r.baseline_cost || r.oneoff_costs || r.epic_experiences));
+
+  if (hasValidPrefill) {
     window.futureBudgetPrefill.forEach(addRow);
   } else {
-    addRow();
+    // Seed standard phases with age hints; amounts/years left blank for the user
+    const DEFAULT_PHASES = [
+      'Set-up',
+      'Lifestyling',
+      'Part-timing',
+      'Epic retirement',
+      'Passive retirement/ageing',
+      'Frailty'
+    ];
+    DEFAULT_PHASES.forEach(p => {
+      addRow({ phase: p, age_range: PHASE_AGE_HINT[p] || '' });
+    });
   }
   recalcAll();
-})();
+});
