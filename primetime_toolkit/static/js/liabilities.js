@@ -252,32 +252,64 @@
 
 
     function getLiabilityRows() {
-      return Array.from(tbody.querySelectorAll('tr.liability-row')).map(row => ({
-        category: row.querySelector('.category')?.value || '',
-        name: row.querySelector('.name')?.value || '', 
-        amount: to2(row.querySelector('.amount')?.value),
-        monthly: to2(row.querySelector('.monthly')?.value),
-        notes: row.querySelector('.notes')?.value || ''
-      }));
+      return Array.from(tbody.querySelectorAll('tr.liability-row')).map(row => {
+        const category = row.querySelector('.category')?.value || '';
+        const name = row.querySelector('.name')?.value || '';
+        const amount = to2(row.querySelector('.amount')?.value);
+        const monthly = to2(row.querySelector('.monthly')?.value);
+        const notes = row.querySelector('.notes')?.value || '';
+        return {
+          // keep existing keys for frontend usage
+          category,
+          name,
+          amount,
+          monthly,
+          notes,
+          // add API-compat key expected by backend
+          type: category
+        };
+      });
     }
 
     async function saveAll() {
       const liabilities = getLiabilityRows();
+
+      // Prefer table data attribute; fallback to legacy endpoint
+      const primaryUrl = table?.dataset?.saveUrl || '/save-liabilities';
+      const fallbackUrl = window.location?.pathname || '/liabilities';
+
       try {
-        const res = await fetch('/save-liabilities', {
+        let res = await fetch(primaryUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ liabilities })
         });
+
         if (res.status === 401) {
           alert('Please log in to save your liabilities.');
           window.location.href = '/login';
           return null;
         }
-        if (!res.ok) throw new Error();
+
+        // If the configured URL is wrong, retry the current page path
+        if (res.status === 404 && primaryUrl !== fallbackUrl) {
+          res = await fetch(fallbackUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ liabilities })
+          });
+        }
+
+        if (!res.ok) {
+          let msg = '';
+          try { msg = await res.text(); } catch {}
+          alert(`Error saving liabilities. (HTTP ${res.status}) ${msg || ''}`.trim());
+          return null;
+        }
+
         return await res.json(); // { message, redirect? }
-      } catch {
-        alert('Error saving liabilities.');
+      } catch (err) {
+        alert(`Error saving liabilities. ${err?.message ? '(' + err.message + ')' : ''}`);
         return null;
       }
     }
@@ -295,14 +327,15 @@
 
     saveAndNextBtn?.addEventListener('click', async () => {
       const original = saveAndNextBtn.textContent;
+      const nextUrl = saveAndNextBtn.dataset?.nextUrl || '';
       saveAndNextBtn.disabled = true;
       saveAndNextBtn.textContent = 'Saving…';
       try {
         const data = await saveAll();
-        // Auto-apply progress: mark Liabilities step complete on successful save
         if (data) { markStepComplete('liabilities'); }
-        if (data?.redirect) {
-          window.location.href = data.redirect;
+        const target = (data && data.redirect) ? data.redirect : nextUrl;
+        if (target) {
+          window.location.href = target;
         } else if (data) {
           alert(data.message || 'Liabilities saved!');
         }
@@ -319,7 +352,9 @@
       try {
         const data = await saveAll();
         if (data) { markStepComplete('liabilities'); }
-        if (data && !data.redirect) {
+        if (data?.redirect) {
+          window.location.href = data.redirect;
+        } else if (data) {
           alert(data.message || 'Liabilities saved!');
         }
       } finally {
