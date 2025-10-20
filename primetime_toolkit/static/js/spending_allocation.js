@@ -179,11 +179,29 @@
   // Init
   document.addEventListener('DOMContentLoaded', async () => {
     tbody.innerHTML = '';
-    if (window.spendingPrefill && Array.isArray(window.spendingPrefill) && window.spendingPrefill.length > 0) {
+
+    const hasMeaningfulPrefill =
+      Array.isArray(window.spendingPrefill) &&
+      window.spendingPrefill.some(r =>
+        r && (r.phase || r.cost_base || r.cost_life || r.cost_save || r.cost_health || r.cost_other)
+      );
+
+    if (hasMeaningfulPrefill) {
       window.spendingPrefill.forEach(addRow);
     } else {
-      addRow();
+      // Seed default phases for first-time users (like Epic/Future Budget)
+      const DEFAULT_PHASES = [
+        'Set-up',
+        'Lifestyling',
+        'Part-timing',
+        'Epic retirement',
+        'Passive retirement/ageing',
+        'Frailty'
+      ];
+      DEFAULT_PHASES.forEach(p => addRow({ phase: p }));
     }
+
     await pullBudget();
+    recalcAll();
   });
 })();
