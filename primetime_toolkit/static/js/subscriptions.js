@@ -51,31 +51,71 @@ function addRow(prefill = {}) {
   const frag = rowTemplate.content.cloneNode(true);
   const row = frag.querySelector('tr.subs-row');
 
+  // Accept multiple possible keys for service name
   const serviceEl = row.querySelector('.service');
-  if (prefill.name && serviceEl) {
-    serviceEl.value = prefill.name;
+  const otherEl = row.querySelector('.service-other');
+  const rawName = prefill.name ?? prefill.service ?? '';
+  if (serviceEl && rawName) {
+    const opts = Array.from(serviceEl.options).map(o => o.value);
+    if (opts.includes(rawName)) {
+      serviceEl.value = rawName;
+      if (otherEl) {
+        if (rawName === 'Other subscription') {
+          // If prefill selects "Other subscription", show the input so user can type
+          otherEl.classList.remove('d-none');
+          otherEl.value = otherEl.value || '';
+        } else {
+          otherEl.classList.add('d-none');
+          otherEl.value = '';
+        }
+      }
+    } else {
+      // Unknown service -> select "Other subscription" and show text input with the name
+      if (opts.includes('Other subscription')) {
+        serviceEl.value = 'Other subscription';
+        if (otherEl) { otherEl.classList.remove('d-none'); otherEl.value = rawName; }
+      } else {
+        // Fallback: keep select placeholder and at least fill text
+        if (otherEl) { otherEl.classList.remove('d-none'); otherEl.value = rawName; }
+      }
+    }
   }
 
   const providerEl = row.querySelector('.provider');
-  if (prefill.provider && providerEl) {
+  if (providerEl && (prefill.provider ?? '') !== '') {
     providerEl.value = prefill.provider;
   }
 
   const amountEl = row.querySelector('.amount');
-  if (amountEl && prefill.amount != null) {
-    amountEl.value = prefill.amount;
+  if (amountEl) {
+    if (prefill.amount != null && prefill.amount !== '') {
+      const n = parseAmount(prefill.amount);
+      amountEl.value = Number.isFinite(n) ? n.toFixed(2) : '';
+    } else {
+      amountEl.value = '';
+    }
   }
 
   const freqEl = row.querySelector('.freq');
-  if (freqEl && prefill.frequency) {
-    freqEl.value = normFreq(prefill.frequency) || 'monthly';
+  if (freqEl) {
+    if (prefill.frequency) {
+      freqEl.value = normFreq(prefill.frequency) || 'monthly';
+    } else {
+      // keep template default if present; else set monthly
+      if (!freqEl.value) freqEl.value = 'monthly';
+    }
   }
 
   const includeEl = row.querySelector('.include');
-  if (includeEl && prefill.include !== undefined) {
-    includeEl.checked = !!prefill.include;
+  if (includeEl) {
+    if (prefill.include !== undefined) {
+      includeEl.checked = !!prefill.include;
+    } else {
+      includeEl.checked = true; // default on
+    }
   }
 
+  // Show prefilled annual if provided
   const annualCell = row.querySelector('.annual');
   if (annualCell && prefill.annual_amount != null) {
     setCurrency(annualCell, prefill.annual_amount);
@@ -129,7 +169,9 @@ function recalcTotals() {
   // ====== Gather payload ======
   function getSubsRows() {
     return Array.from(tbody.querySelectorAll('tr.subs-row')).map(row => {
-      const name = row.querySelector('.service')?.value?.trim() || '';
+      const sel = row.querySelector('.service')?.value?.trim() || '';
+      const other = row.querySelector('.service-other')?.value?.trim() || '';
+      const name = (sel === 'Other subscription' && other) ? other : (sel || other);
       const provider = row.querySelector('.provider')?.value?.trim() || '';
       const amount = parseAmount(row.querySelector('.amount')?.value);
       const frequency = normFreq(row.querySelector('.freq')?.value || 'monthly');
@@ -151,6 +193,7 @@ function recalcTotals() {
       t.classList.contains('freq') ||
       t.classList.contains('include') ||
       t.classList.contains('service') ||
+      t.classList.contains('service-other') ||
       t.classList.contains('provider')
     ) {
       recalcTotals();
@@ -174,8 +217,105 @@ function recalcTotals() {
   addRowBtn?.addEventListener('click', () => { addRow(); recalcTotals(); });
   clearAllBtn?.addEventListener('click', clearAll);
   tbody.addEventListener('input', onTbodyInput);
-  tbody.addEventListener('change', onTbodyInput);
+  // As the user types a custom service name, reflect it in the select
+  tbody.addEventListener('input', (e) => {
+    const t = e.target;
+    if (!t) return;
+
+    if (t.classList.contains('service-other')) {
+      const row = t.closest('tr.subs-row');
+      const serviceEl = row?.querySelector('.service');
+      if (!serviceEl) return;
+
+      const txt = t.value.trim();
+
+      // Remove any extra custom options (keep at most one)
+      const customOpts = Array.from(serviceEl.options).filter(o => o.dataset.custom === '1');
+      for (let i = 1; i < customOpts.length; i++) {
+        customOpts[i].remove();
+      }
+
+      if (txt) {
+        // Create or update the single custom option
+        let opt = customOpts[0];
+        if (!opt) {
+          opt = document.createElement('option');
+          opt.dataset.custom = '1';
+          serviceEl.appendChild(opt);
+        }
+        opt.value = txt;
+        opt.textContent = txt;
+
+        // Select the typed custom option (so “Other subscription” is no longer shown)
+        serviceEl.value = txt;
+      } else {
+        // If cleared, remove the custom option and revert to Other/placeholder
+        if (customOpts[0]) customOpts[0].remove();
+        const hasOther = Array.from(serviceEl.options).some(o => o.value === 'Other subscription');
+        serviceEl.value = hasOther ? 'Other subscription' : '';
+      }
+    }
+  });
+
+  // When user finishes typing in "Other", hide the textbox and keep select on the custom value
+  tbody.addEventListener('blur', (e) => {
+    const t = e.target;
+    if (!t) return;
+    if (t.classList.contains('service-other')) {
+      const txt = t.value.trim();
+      const row = t.closest('tr.subs-row');
+      const serviceEl = row?.querySelector('.service');
+      if (!serviceEl) return;
+
+      // Deduplicate custom options (keep only one)
+      const customOpts = Array.from(serviceEl.options).filter(o => o.dataset.custom === '1');
+      for (let i = 1; i < customOpts.length; i++) {
+        customOpts[i].remove();
+      }
+
+      if (txt) {
+        let opt = customOpts[0];
+        if (!opt) {
+          opt = document.createElement('option');
+          opt.dataset.custom = '1';
+          serviceEl.appendChild(opt);
+        }
+        opt.value = txt;
+        opt.textContent = txt;
+        serviceEl.value = txt;
+
+        // Hide the "Other" input now that selection reflects the text
+        t.classList.add('d-none');
+      } else {
+        // No text -> ensure no stray custom option remains
+        if (customOpts[0]) customOpts[0].remove();
+        const hasOther = Array.from(serviceEl.options).some(o => o.value === 'Other subscription');
+        serviceEl.value = hasOther ? 'Other subscription' : '';
+        // keep the input visible for user to type
+      }
+    }
+  }, true); // use capture to catch blur events
+
   tbody.addEventListener('click', onTbodyClick);
+
+  tbody.addEventListener('change', (e) => {
+    const t = e.target;
+    if (!t) return;
+    if (t.classList.contains('service')) {
+      const row = t.closest('tr.subs-row');
+      const otherEl = row?.querySelector('.service-other');
+      if (otherEl) {
+        if (t.value === 'Other subscription') {
+          otherEl.classList.remove('d-none');
+          otherEl.focus();
+        } else {
+          otherEl.classList.add('d-none');
+          otherEl.value = '';
+        }
+      }
+    }
+    onTbodyInput(e); // keep totals updated
+  });
 
   // ====== Save helper ======
   async function saveAll() {
@@ -233,16 +373,31 @@ function recalcTotals() {
     }
   });
 
-  tbody.addEventListener('input', onTbodyInput);
-  tbody.addEventListener('change', onTbodyInput);
-
 
   // ====== Init ======
   tbody.innerHTML = '';
-  if (Array.isArray(window.subscriptionsPrefill) && window.subscriptionsPrefill.length > 0) {
+
+  const hasValidPrefill = Array.isArray(window.subscriptionsPrefill) &&
+    window.subscriptionsPrefill.some(r => r && (r.name || r.service));
+
+  const defaultSubscriptions = [
+    { name: 'Streaming service (Netflix)', include: true },
+    { name: 'Music streaming (Spotify)', include: true },
+    { name: 'Cloud storage (iCloud)', include: true },
+    { name: 'Gym membership', include: true },
+    { name: 'News subscription', include: true },
+    { name: 'Magazine subscription', include: true },
+    { name: 'Software subscription', include: true },
+    { name: 'Video streaming (Stan)', include: true },
+    { name: 'Amazon Prime', include: true },
+    { name: 'Other subscription', include: true }
+  ];
+
+  if (hasValidPrefill) {
     window.subscriptionsPrefill.forEach(row => addRow(row));
   } else {
-    addRow();
+    defaultSubscriptions.forEach(row => addRow(row));
   }
+
   recalcTotals();
 })();
