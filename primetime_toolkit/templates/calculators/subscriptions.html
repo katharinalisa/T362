@@ -18,22 +18,9 @@
       Track your recurring services or direct debits. Enter the cost and frequency; annual totals are calculated automatically.
     </p>
 
-    <!-- Suggestions -->
-    <datalist id="subServiceOptions">
-      <option value="Streaming service (Netflix)" />
-      <option value="Music streaming (Spotify)" />
-      <option value="Cloud storage (iCloud)" />
-      <option value="Gym membership" />
-      <option value="News subscription" />
-      <option value="Magazine subscription" />
-      <option value="Software subscription" />
-      <option value="Video streaming (Stan)" />
-      <option value="Amazon Prime" />
-      <option value="Other subscription" />
-    </datalist>
 
     <div class="table-responsive shadow-sm rounded">
-      <table id="subsTable" class="table table-bordered mb-0 align-middle">
+      <table id="subsTable" class="table table-bordered mb-0 align-middle" data-save-url="/save-subscriptions">
         <thead>
           <tr class="table-light">
             <th style="width:36px;"></th>
@@ -56,7 +43,7 @@
       <div class="col-lg-6">
         <div class="totals-box p-3 border rounded bg-light">
           <div class="row">
-            <div class="col-7 fw-bold">TOTAL SUBSCRIPTION</div>
+            <div class="col-7 fw-bold">TOTAL SUBSCRIPTIONS</div>
             <div class="col-5 text-end fw-bold" id="totalSubsAmount">$0</div>
           </div>
         </div>
@@ -70,11 +57,24 @@
       <td class="text-center">
         <button class="btn btn-outline-danger btn-sm remove-row" type="button" aria-label="Remove row">&times;</button>
       </td>
-      <td>
-        <input class="form-control form-control-sm service" list="subServiceOptions" placeholder="e.g., Streaming service (Netflix)" />
+      <td class="service-cell">
+        <select class="form-select form-select-sm service">
+          <option value="" disabled selected>-- Select service --</option>
+          <option value="Streaming service (Netflix)">Streaming service (Netflix)</option>
+          <option value="Music streaming (Spotify)">Music streaming (Spotify)</option>
+          <option value="Cloud storage (iCloud)">Cloud storage (iCloud)</option>
+          <option value="Gym membership">Gym membership</option>
+          <option value="News subscription">News subscription</option>
+          <option value="Magazine subscription">Magazine subscription</option>
+          <option value="Software subscription">Software subscription</option>
+          <option value="Video streaming (Stan)">Video streaming (Stan)</option>
+          <option value="Amazon Prime">Amazon Prime</option>
+          <option value="Other subscription">Other subscription</option>
+        </select>
+        <input type="text" class="form-control form-control-sm service-other mt-1 d-none" placeholder="Enter other service name" />
       </td>
       <td>
-        <input class="form-control form-control-sm provider" placeholder="(for example: Netflix, Microsoft Office)" />
+        <input class="form-control form-control-sm provider" placeholder="(for example: Netflix, Microsoft)" />
       </td>
       <td>
         <input type="number" min="0" step="0.01" class="form-control form-control-sm amount" placeholder="0.00" />
