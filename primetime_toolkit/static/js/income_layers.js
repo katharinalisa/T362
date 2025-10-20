@@ -108,10 +108,22 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     tbody.innerHTML = '';
-    if (Array.isArray(window.incomeLayersPrefill) && window.incomeLayersPrefill.length > 0) {
+
+    const hasPrefill = Array.isArray(window.incomeLayersPrefill) && window.incomeLayersPrefill.length > 0;
+
+    if (hasPrefill) {
       window.incomeLayersPrefill.forEach(addRow);
     } else {
-      addRow();
+      // Seed default income layers for first-time users
+      const DEFAULT_LAYERS = [
+        'Employment income',
+        'Superannuation pension',
+        'Investment income',
+        'Age pension',
+        'Rental/business income',
+        'Other'
+      ];
+      DEFAULT_LAYERS.forEach(layer => addRow({ layer }));
     }
   });
 
@@ -151,12 +163,4 @@
     }
   });
 
-  document.addEventListener('DOMContentLoaded', () => {
-    tbody.innerHTML = '';
-    if (Array.isArray(window.incomeLayersPrefill) && window.incomeLayersPrefill.length > 0) {
-      window.incomeLayersPrefill.forEach(addRow);
-    } else {
-      addRow();
-    }
-  });
 })();
