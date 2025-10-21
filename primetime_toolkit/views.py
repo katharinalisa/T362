@@ -65,7 +65,8 @@ def dashboard_web_calculator():
         surplus_annual=summary["surplus_annual"],
         surplus_monthly=summary["surplus_monthly"],
         actual_breakdown=summary["actual_breakdown"],
-        budget_targets=summary["budget_targets"]
+        budget_targets=summary["budget_targets"],
+        subs_breakdown=summary["subs_breakdown"]
     )
 
 
@@ -1335,7 +1336,9 @@ def summary():
         surplus_annual=summary["surplus_annual"],
         surplus_monthly=summary["surplus_monthly"],
         actual_breakdown=summary["actual_breakdown"],
-        budget_targets=summary["budget_targets"]
+        budget_targets=summary["budget_targets"],
+        subs_breakdown=summary["subs_breakdown"]
+
     )
 
 
@@ -1352,6 +1355,8 @@ def get_calculator_summary(user_id):
     liabilities_total = db.session.query(
         func.coalesce(func.sum(Liability.amount), 0.0)
     ).filter(Liability.user_id == uid).scalar()
+
+
 
     # ---------- Income: annualise amount * factor(frequency) ----------
     income_factor = case(
@@ -1376,7 +1381,7 @@ def get_calculator_summary(user_id):
         for src, total in income_breakdown_rows
     ]
 
-    # ---------- Subscriptions: prefer stored annual_amount, else amount * factor ----------
+    # ---------- Subscriptions ------------
     sub_factor = case(
         (Subscription.frequency.ilike('weekly'),      52),
         (Subscription.frequency.ilike('fortnightly'), 26),
@@ -1395,6 +1400,24 @@ def get_calculator_summary(user_id):
         ), 0.0)
     ).filter(Subscription.user_id == uid, Subscription.include == True).scalar()
 
+
+    # ---------- Subscription ----------
+    subs_rows = db.session.query(
+        Subscription.name,
+        func.coalesce(
+            case(
+                (Subscription.annual_amount.isnot(None), Subscription.annual_amount),
+                else_=Subscription.amount * sub_factor
+            ), 0.0
+        )
+    ).filter(Subscription.user_id == user_id, Subscription.include == True).all()
+
+    subs_breakdown = [
+        {"label": name or "Unnamed", "value": float(amount or 0.0)}
+        for name, amount in subs_rows
+    ]
+
+    
     # ---------- Expenses (annualised from Expense table) ----------
     expense_factor = case(
         (Expense.frequency.ilike('weekly'),      52),
@@ -1485,6 +1508,7 @@ def get_calculator_summary(user_id):
         "income_annual": income_annual,
         "income_breakdown": income_breakdown,
         "subs_annual": subs_annual,
+        "subs_breakdown": subs_breakdown,
         "expense_buckets_sum": expense_buckets_sum,
         "epic_annual": epic_annual,
         "expenses_annual": expenses_annual,
@@ -1493,4 +1517,5 @@ def get_calculator_summary(user_id):
         "surplus_monthly": surplus_monthly,
         "actual_breakdown": actual_breakdown,
         "budget_targets": budget_targets
+
     }
