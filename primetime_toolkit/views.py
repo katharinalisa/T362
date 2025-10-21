@@ -262,11 +262,10 @@ def assessment6():
 @views.route('/submit-assessment', methods=['GET', 'POST'])
 @login_required
 def submit_assessment():
-    assessment_id = session.get('assessment_id')
-    assessment = Assessment.query.get(assessment_id)
+    assessment = Assessment.query.filter_by(user_id=current_user.id).order_by(Assessment.submitted_at.desc()).first()
 
-    if not assessment_id or not assessment:
-        flash("Session expired or assessment not started.")
+    if not assessment:
+        flash("It seems that your last assessment was incomplete. Please redo the assessment to receive accurate results.")
         return redirect(url_for('views.assessment_intro'))
 
     # Define categories and thresholds
@@ -314,7 +313,6 @@ def submit_assessment():
     assessment.result_message = band
     assessment.category_scores = category_scores
     db.session.commit()
-    session.pop('assessment_id', None)
 
     # Prepare summary display
     category_names = {

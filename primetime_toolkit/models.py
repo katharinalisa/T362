@@ -4,7 +4,6 @@ from datetime import datetime
 from flask_login import UserMixin
 
 
-
 class Assessment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -17,12 +16,12 @@ class Assessment(db.Model):
     purpose_q4 = db.Column(db.Integer, nullable=True)
 
     
-
     # Spending & cashflow
     spending_q1 = db.Column(db.Integer, nullable=True)
     spending_q2 = db.Column(db.Integer, nullable=True)
     spending_q3 = db.Column(db.Integer, nullable=True)
     spending_q4 = db.Column(db.Integer, nullable=True)
+
 
     # Saving & emergency
     saving_q1 = db.Column(db.Integer, nullable=True)
@@ -30,17 +29,20 @@ class Assessment(db.Model):
     saving_q3 = db.Column(db.Integer, nullable=True)
     saving_q4 = db.Column(db.Integer, nullable=True)
 
+
     # Debt & confidence
     debt_q1 = db.Column(db.Integer, nullable=True)
     debt_q2 = db.Column(db.Integer, nullable=True)
     debt_q3 = db.Column(db.Integer, nullable=True)
     debt_q4 = db.Column(db.Integer, nullable=True)
 
+
     # Superannuation
     super_q1 = db.Column(db.Integer, nullable=True)
     super_q2 = db.Column(db.Integer, nullable=True)
     super_q3 = db.Column(db.Integer, nullable=True)
     super_q4 = db.Column(db.Integer, nullable=True)
+
 
     # Protection & planning
     protection_q1 = db.Column(db.Integer, nullable=True)
