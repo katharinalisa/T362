@@ -178,6 +178,7 @@ class EpicExperience(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    epic_years = 10
 
     item = db.Column(db.String(160), nullable=False)        
     amount = db.Column(db.Float, default=0.0)               

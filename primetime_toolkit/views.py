@@ -10,6 +10,7 @@ import json
 from primetime_toolkit.models import Assessment, IncomeLayer, LifeExpectancy, SpendingAllocation, db, Subscriber, Asset, Liability, Income, Expense, Subscription, FutureBudget, EpicExperience, DebtPaydown, EnoughCalculator
 from sqlalchemy import func, case
 from .excel_parser import parse_excel
+import math
 
 views = Blueprint('views', __name__)
 
@@ -51,6 +52,19 @@ def dashboard_spreadsheet():
 def dashboard_web_calculator():
     user_id = current_user.id
     summary = get_calculator_summary(user_id)
+    epic_years = session.get("epic_years", 10)
+    epic_items = EpicExperience.query.filter_by(user_id=user_id, include=True).all()
+
+    epic_annual = sum(
+        e.amount * (
+            1 if e.frequency == 'Once only' else
+            epic_years if e.frequency == 'Every year' else
+            math.floor(epic_years / 2)
+        )
+        for e in epic_items
+    ) / epic_years
+
+    post_epic_surplus = summary["surplus_annual"] - epic_annual
 
     return render_template('dashboard-web-calculator.html',
         net_worth=summary["net_worth"],
@@ -60,13 +74,14 @@ def dashboard_web_calculator():
         income_breakdown=summary["income_breakdown"],
         subs_annual=summary["subs_annual"],
         expense_buckets_sum=summary["expense_buckets_sum"],
-        epic_annual=summary["epic_annual"],
         expenses_annual=summary["expenses_annual"],
         surplus_annual=summary["surplus_annual"],
         surplus_monthly=summary["surplus_monthly"],
         actual_breakdown=summary["actual_breakdown"],
         budget_targets=summary["budget_targets"],
-        subs_breakdown=summary["subs_breakdown"]
+        subs_breakdown=summary["subs_breakdown"],
+        epic_annual=epic_annual,
+        post_epic_surplus=post_epic_surplus,
     )
 
 
@@ -489,6 +504,7 @@ def tracker():
         "liabilities": liabilities_total > 0,
         "income": income_total > 0,
         "expenses": expenses_total > 0,
+        "subscriptions": subscriptions_total > 0,
         "future_budget": len(future_budget) > 0,
         "epic": len(epic) > 0,
         "income_layers": len(income_layers) > 0,
@@ -1009,13 +1025,15 @@ def epic():
                            epic_data=epic_data or [],
                            epic_years=epic_years)
 
+
+
 @views.route('/save-epic', methods=['POST'])
 @login_required
 def save_epic():
     try:
-        payload = request.get_json(silent=True) or {}
-        items = payload.get('items', [])
-        # settings = payload.get('settings', {})  # contains {"years": N} if you decide to persist it
+        data = request.get_json()
+        epic_items = data.get("items", [])
+        epic_years = data.get("settings", {}).get("years", 10)
 
         EpicExperience.query.filter_by(user_id=current_user.id).delete()
 
@@ -1025,7 +1043,7 @@ def save_epic():
             except (TypeError, ValueError):
                 return 0.0
 
-        for it in items:
+        for it in epic_items:
             db.session.add(EpicExperience(
                 user_id=current_user.id,
                 item=it.get('item', ''),
@@ -1034,8 +1052,8 @@ def save_epic():
                 include=bool(it.get('include', True)),
             ))
         db.session.commit()
+        session["epic_years"] = epic_years
         flash('Epic experiences saved successfully!', 'success')
-        # after Epic, your flow goes to Spending Allocation
         return jsonify({'redirect': url_for('views.income_layers')})
     except Exception as e:
         db.session.rollback()
