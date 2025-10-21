@@ -219,8 +219,14 @@
                   <div class="title">Calculator Options</div>
                   <div class="desc">At‑a‑glance charts for net worth, cash flow, and progress.</div>
                 </div>
-                <div class="thumb"></div>
+                <div class="thumb">
+                  <img src="{{ url_for('static', filename='img/cal.png') }}" alt="Self Assessment" style="width:100%; height:100%; object-fit:cover; display:block; border-radius:inherit;">
+                </div>
+               
+
               </a>
+
+
               <a class="mega-item" href="{{ url_for('views.tracker') }}">
                 <div class="flex-grow-1">
                   <div class="title">Web Calculators</div>
