@@ -235,10 +235,10 @@
           <li class="nav-item"><a class="nav-link px-3" href="https://www.becwilson.net/">About Bec Wilson</a></li>
           {% if current_user.is_authenticated %}
             <li class="nav-item dropdown">
-              <a class="nav-link d-flex align-items-center dropdown-toggle" href="#" id="profileMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="{{ (current_user.avatar_url if (current_user is defined and current_user.avatar_url is defined and current_user.avatar_url) else url_for('static', filename='img/avatar_default.png')) }}" alt="{{ current_user.name }}" class="rounded-circle" style="width:32px;height:32px;object-fit:cover;">
+              <a class="nav-link px-3 d-flex align-items-center dropdown-toggle" href="#" id="profileMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="{{ (current_user.avatar_url if (current_user is defined and current_user.avatar_url is defined and current_user.avatar_url) else url_for('static', filename='img/avatar_default.png')) }}" alt="{{ current_user.name }}" class="rounded-circle" style="width:32px;height:32px;object-fit:cover;margin-left:4px;">
               </a>
-              <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="profileMenu" style="min-width: 220px;">
+              <ul class="dropdown-menu dropdown-menu-end shadow w-100 w-md-auto" aria-labelledby="profileMenu" style="min-width: 195px;">
                 <li class="dropdown-header fw-semibold">{{ current_user.name }}</li>
                 <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}"><i class="bi bi-person me-2"></i>Profile</a></li>
                 <li><a class="dropdown-item" href="{{ url_for('views.dashboard') }}"><i class="bi bi-puzzle me-2"></i>Dashboard</a></li>
