@@ -196,12 +196,12 @@
           <li class="nav-item dropdown">
             <a class="nav-link px-3 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">Overview</a>
             <div class="dropdown-menu mega-menu">
-               <a class="mega-item" href="{{ url_for('views.learninghub') }}">
+              <a class="mega-item" href="{{ url_for('views.learninghub') }}">
                 <div class="flex-grow-1">
                   <div class="title">Learning Hub</div>
                   <div class="desc">Bite‑size guides and explainers to build money confidence.</div>
                 </div>
-                <div class="thumb">
+                <div class="thumb" style="width:120px; height:72px; border-radius:12px; overflow:hidden;">
                   <img src="{{ url_for('static', filename='img/lh.png') }}" alt="Self Assessment" style="width:100%; height:100%; object-fit:cover; display:block; border-radius:inherit;">
                 </div>
               </a>
@@ -210,7 +210,7 @@
                   <div class="title">Self‑Assessment</div>
                   <div class="desc">Kick off with a quick check‑in to map your goals and current position.</div>
                 </div>
-                <div class="thumb">
+                <div class="thumb" style="width:120px; height:72px; border-radius:12px; overflow:hidden;">
                   <img src="{{ url_for('static', filename='img/sa.png') }}" alt="Self Assessment" style="width:100%; height:100%; object-fit:cover; display:block; border-radius:inherit;">
                 </div>  
               </a>
@@ -219,14 +219,16 @@
                   <div class="title">Calculator Options</div>
                   <div class="desc">At‑a‑glance charts for net worth, cash flow, and progress.</div>
                 </div>
-                <div class="thumb"></div>
+                <div class="thumb" style="width:120px; height:72px; border-radius:12px; overflow:hidden;">
+                  <img src="{{ url_for('static', filename='img/cal.png') }}" alt="Self Assessment" style="width:100%; height:100%; object-fit:cover; display:block; border-radius:inherit;">
+                </div>
               </a>
               <a class="mega-item" href="{{ url_for('views.tracker') }}">
                 <div class="flex-grow-1">
                   <div class="title">Web Calculators</div>
                   <div class="desc">Quick calculators for savings, super, subscriptions and more.</div>
                 </div>
-                <div class="thumb">
+                <div class="thumb" style="width:120px; height:72px; border-radius:12px; overflow:hidden;">
                   <img src="{{ url_for('static', filename='img/calculator.png') }}" alt="Self Assessment" style="width:100%; height:100%; object-fit:cover; display:block; border-radius:inherit;">
                 </div>
               </a>
