@@ -85,9 +85,9 @@
 <div class="container-fluid py-4">
   <!-- First row: three charts -->
   <div class="row g-4 mb-5">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <div class="dashboard-chart p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 style="margin-top: -35px" class="mb-2">Current Net Worth</h5>
         <div style="font-size:2.5rem; font-weight:700; color:#198754">
           {% if net_worth is defined and net_worth is not none %}
@@ -95,18 +95,30 @@
             <canvas id="netWorthChart" style="max-width: 100%; max-height: 220px; display:none;"></canvas>
           {% endif %}
         </div>
-        <span class="text-muted mt-2">Assets minus Liabilities</span>
 
       </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
       <div class="dashboard-chart p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Assets vs Liabilities</h5><br>
         <canvas id="assetsLiabilitiesChart" style="max-width: 100%; max-height: 220px;"></canvas>
-      </div><br>
+        <span class="text-muted mt-2">Assets minus Liabilities</span>
+      </div>
     </div>
-    
+
+    <div class="col-md-4">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Income vs Expenses</h5><br>
+        <canvas id="incomeVsExpensesChart" style="max-width: 100%; max-height: 200px;"></canvas>
+        <span class="text-muted mt-2">All expenses including subscriptions, excluding one-offs.</span>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="row g-4 mb-4">
     <div class="col-md-6">
       <div class="dashboard-chart p-3 text-center"
         style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -121,24 +133,22 @@
           {% if surplus_annual is defined and surplus_annual is not none %}
             <br>
             <h5 class="mb-2">Post-Epic Annual Surplus / Deficit</h5>
-             ${{ "{:,.2f}".format(post_epic_surplus) }}
+              ${{ "{:,.2f}".format(post_epic_surplus) }}
           {% endif %}
         </div>
-       <span class="text-muted mt-2">Total income minus total expenses, <strong>including</strong> one-offs.</span>
+        <span class="text-muted mt-2">Annual Surplus / Deficit after one-offs.</span>
       </div>
     </div>
+
     <div class="col-md-6">
       <div class="dashboard-chart p-3 text-center"
         style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Income vs Expenses</h5>
-        <canvas id="incomeVsExpensesChart" style="max-width: 100%; max-height: 200px;"></canvas>
-        <span class="text-muted mt-2">All expenses including subscriptions, excluding one-offs.</span>
+        <h5 class="mb-2">Expense Breakdown</h5>
+        <canvas id="expensesBreakdownChart" style="max-width: 100%; max-height: 220px;"></canvas>
       </div>
     </div>
-  </div>
+  </div><br>
 
-
-  
   <div class="col-md-12">
     <div class="dashboard-chart p-3 text-center"
       style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -147,32 +157,11 @@
     </div>
   </div><br><br>
 
-  <div class="row g-4 mb-5">
-    <div class="col-md-6">
-      <div class="dashboard-chart p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Expense Breakdown</h5>
-        <canvas id="expensesBreakdownChart" style="max-width: 100%; max-height: 220px;"></canvas>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="dashboard-chart p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Drawdown Over Time</h5>
-        <span class="text-muted mt-2">How long would your savings last if you were to stop making any income?</span>
-        <canvas id="drawdownChart" style="max-width: 100%; max-height: 220px;"></canvas>
-      </div>
-    </div>
-  </div>
-
-
-  
 
   <div class="row g-4 mb-5">
     <div class="col-md-8">
       <div class="dashboard-chart p-3 text-center"
-        style="height: 350px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Subscription Breakdown</h5><br>
         {% if subs_annual is defined and subs_annual is not none %}
             <canvas id="subscriptionChart" style="max-width: 100%; max-height: 220px;"></canvas>
@@ -181,8 +170,8 @@
     </div>
     <div class="col-md-4">
       <div class="dashboard-chart p-3 text-center"
-        style="height: 350px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Subscription Amount ($)</h5>
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 style="margin-top:120px;" class="mb-2">Subscription Amount ($)</h5>
         <div style="font-size:2.5rem; font-weight:700; color:#198754;">
         {% if subs_annual is defined and subs_annual is not none %}
             ${{ "{:,.2f}".format(subs_annual) }}
@@ -192,6 +181,23 @@
       </div>
     </div>
   </div>
+
+
+<div class="row">
+  <div class="col-md-12 text-center mt-4">
+    <hr>💌
+    <p class="text-muted fst-italic mb-1">
+      More charts and insights are currently being developed and you can find them here once they are released. <br>Until then, we wish you a wonderful pre-retirement journey!
+    </p>
+    <br>
+    <p class="text-muted fst-italic">
+      With care,
+      <br><strong>Your PrimeTime Toolkit Team</strong>
+    </p><br>
+  </div><hr>
+</div><br><br>
+
+
 
 {% endif %}
 
