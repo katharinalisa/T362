@@ -13,6 +13,7 @@ from .excel_parser import parse_excel
 
 views = Blueprint('views', __name__)
 
+
 @views.route('/')
 def home():
     return render_template('home.html')
@@ -49,24 +50,23 @@ def dashboard_spreadsheet():
 @login_required
 def dashboard_web_calculator():
     user_id = current_user.id
-
-    # Pull summary data from your models
-    assets_total = sum(a.amount for a in Asset.query.filter_by(user_id=user_id).all() if a.include)
-    liabilities_total = sum(l.amount for l in Liability.query.filter_by(user_id=user_id).all())
-    income_annual = sum(i.amount for i in Income.query.filter_by(user_id=user_id).all() if i.include)
-    expenses_annual = sum(e.amount for e in Expense.query.filter_by(user_id=user_id).all())
-
-    net_worth = assets_total - liabilities_total
-    net_income = income_annual - expenses_annual
+    summary = get_calculator_summary(user_id)
 
     return render_template('dashboard-web-calculator.html',
-                           assets_total=assets_total,
-                           liabilities_total=liabilities_total,
-                           income_annual=income_annual,
-                           expenses_annual=expenses_annual,
-                           net_worth=net_worth,
-                           net_income=net_income)
-
+        net_worth=summary["net_worth"],
+        assets_total=summary["assets_total"],
+        liabilities_total=summary["liabilities_total"],
+        income_annual=summary["income_annual"],
+        income_breakdown=summary["income_breakdown"],
+        subs_annual=summary["subs_annual"],
+        expense_buckets_sum=summary["expense_buckets_sum"],
+        epic_annual=summary["epic_annual"],
+        expenses_annual=summary["expenses_annual"],
+        surplus_annual=summary["surplus_annual"],
+        surplus_monthly=summary["surplus_monthly"],
+        actual_breakdown=summary["actual_breakdown"],
+        budget_targets=summary["budget_targets"]
+    )
 
 
 @views.route('/superannuation')
@@ -1313,15 +1313,37 @@ def debug_income():
 
 
 
-#---------------------------------------------------
-# ------ Calculator Summary ---------------
+#------------------------------------------------
+# ------------ Calculator Summary ---------------
+#------------------------------------------------
 
 @views.route('/summary')
 @login_required
 def summary():
+    user_id = current_user.id
+    summary = get_calculator_summary(user_id)
+    return render_template('calculators/summary.html',
+        net_worth=summary["net_worth"],
+        assets_total=summary["assets_total"],
+        liabilities_total=summary["liabilities_total"],
+        income_annual=summary["income_annual"],
+        income_breakdown=summary["income_breakdown"],
+        subs_annual=summary["subs_annual"],
+        expense_buckets_sum=summary["expense_buckets_sum"],
+        epic_annual=summary["epic_annual"],
+        expenses_annual=summary["expenses_annual"],
+        surplus_annual=summary["surplus_annual"],
+        surplus_monthly=summary["surplus_monthly"],
+        actual_breakdown=summary["actual_breakdown"],
+        budget_targets=summary["budget_targets"]
+    )
+
+
+
+def get_calculator_summary(user_id):
     uid = current_user.id
 
-    # ---------- Assets (included only) ----------
+        # ---------- Assets (included only) ----------
     assets_total = db.session.query(
         func.coalesce(func.sum(Asset.amount), 0.0)
     ).filter(Asset.user_id == uid, Asset.include == True).scalar()
@@ -1403,12 +1425,12 @@ def summary():
     epic_regular = db.session.query(
         func.coalesce(func.sum(func.coalesce(EpicExperience.amount, 0.0) * epic_factor), 0.0)
     ).filter(EpicExperience.user_id == uid, EpicExperience.include == True,
-             ~EpicExperience.frequency.ilike('once only')).scalar()
+            ~EpicExperience.frequency.ilike('once only')).scalar()
     # One-off epics spread across epic_years
     epic_oneoff = db.session.query(
         func.coalesce(func.sum(func.coalesce(EpicExperience.amount, 0.0)), 0.0)
     ).filter(EpicExperience.user_id == uid, EpicExperience.include == True,
-             EpicExperience.frequency.ilike('once only')).scalar()
+            EpicExperience.frequency.ilike('once only')).scalar()
     epic_annual = (epic_regular or 0.0) + ( (epic_oneoff or 0.0) / float(epic_years or 1) )
 
     # ---------- Future Budget (targets) ----------
@@ -1456,25 +1478,19 @@ def summary():
     }
 
     session['summary_data'] = summary_payload
-
-    return render_template(
-        'calculators/summary.html',
-        # Point-in-time
-        net_worth=float(net_worth or 0.0),
-        assets_total=float(assets_total or 0.0),
-        liabilities_total=float(liabilities_total or 0.0),
-        # Inflows
-        income_annual=float(income_annual or 0.0),
-        income_breakdown=income_breakdown,
-        # Outflows (actuals)
-        subs_annual=float(subs_annual or 0.0),
-        expense_buckets_sum=float(expense_buckets_sum or 0.0),
-        epic_annual=float(epic_annual or 0.0),
-        expenses_annual=float(expenses_annual or 0.0),
-        actual_breakdown=actual_breakdown,
-        # Budgets (targets)
-        budget_targets=budget_targets,
-        # Surplus
-        surplus_annual=float(surplus_annual or 0.0),
-        surplus_monthly=float(surplus_monthly or 0.0)
-    )
+    # Return a dictionary of all the values you need
+    return {
+        "assets_total": assets_total,
+        "liabilities_total": liabilities_total,
+        "income_annual": income_annual,
+        "income_breakdown": income_breakdown,
+        "subs_annual": subs_annual,
+        "expense_buckets_sum": expense_buckets_sum,
+        "epic_annual": epic_annual,
+        "expenses_annual": expenses_annual,
+        "net_worth": net_worth,
+        "surplus_annual": surplus_annual,
+        "surplus_monthly": surplus_monthly,
+        "actual_breakdown": actual_breakdown,
+        "budget_targets": budget_targets
+    }

@@ -85,9 +85,8 @@
           <img src="{{ url_for('static', filename='img/asset.png') }}" alt="Total Assets" style="width:32px; height:32px; object-fit:contain;">
         </div>
         <div>
-          <p class="kpi-title mb-1">Total Assets</p>
+          <p class="kpi-title mb-1">Current Total Assets</p>
           <p class="kpi-value mb-1">{{ "${:,.0f}".format(assets_total|default(0)) }}</p>
-          <p class="kpi-sub">Current total</p>
         </div>
       </div>
     </div>
@@ -99,9 +98,8 @@
           <img src="{{ url_for('static', filename='img/liability.png') }}" alt="Total Liabilities" style="width:32px; height:32px; object-fit:contain;">
         </div>
         <div>
-          <p class="kpi-title mb-1">Total Liabilities</p>
+          <p class="kpi-title mb-1">Current Total Liabilities</p>
           <p class="kpi-value mb-1">{{ "${:,.0f}".format(liabilities_total|default(0)) }}</p>
-          <p class="kpi-sub">Current total</p>
         </div>
       </div>
     </div>
@@ -114,7 +112,7 @@
           <img src="{{ url_for('static', filename='img/netincome.png') }}" alt="Net Income" style="width:32px; height:32px; object-fit:contain;">
         </div>
         <div>
-          <p class="kpi-title mb-1">Net Worth</p>
+          <p class="kpi-title mb-1">Current Net Worth</p>
           <p class="kpi-value mb-1">
             {{ "${:,.0f}".format((assets_total|default(0)) - (liabilities_total|default(0))) }}
           </p>
@@ -132,9 +130,8 @@
           <img src="{{ url_for('static', filename='img/income.png') }}" alt="Total Income" style="width:32px; height:32px; object-fit:contain;">
         </div>
         <div>
-          <p class="kpi-title mb-1">Total Income</p>
+          <p class="kpi-title mb-1">Total Annual Income</p>
           <p class="kpi-value mb-1">{{ "${:,.0f}".format(income_annual|default(0)) }}</p>
-          <p class="kpi-sub">Current total</p>
         </div>
       </div>
     </div>
@@ -147,9 +144,9 @@
           <img src="{{ url_for('static', filename='img/expense.png') }}" alt="Total Expenses" style="width:32px; height:32px; object-fit:contain;">
         </div>
         <div>
-          <p class="kpi-title mb-1">Total Expenses</p>
+          <p class="kpi-title mb-1">Total Annual Expenses</p>
           <p class="kpi-value mb-1">{{ "${:,.0f}".format(expenses_annual|default(0)) }}</p>
-          <p class="kpi-sub">Current total</p>
+          <p class="kpi-sub">Including subscriptions</p>
         </div>
       </div>
     </div>
@@ -162,7 +159,7 @@
           <img src="{{ url_for('static', filename='img/netincome.png') }}" alt="Net Income" style="width:32px; height:32px; object-fit:contain;">
         </div>
         <div>
-          <p class="kpi-title mb-1">Net Income</p>
+          <p class="kpi-title mb-1">Annual Net Income</p>
           <p class="kpi-value mb-1">{{ "${:,.0f}".format(((income_annual|default(0)) - (expenses_annual|default(0)))) }}</p>
           <p class="kpi-sub">Income − Expenses</p>
         </div>
@@ -176,7 +173,7 @@
   <div class="card shadow-sm p-2 mt-4 mx-auto" style="background: linear-gradient(to right, #fcffff, #fcffff); width:900px;">
     <div class="container text-center mt-5">
     <h2 class="fw-bold text-primary">Next Steps</h2>
-    <p class="text-muted">Choose an action or explore more tools</p>
+    <p class="text-muted">Choose an action or jump to your Dashboard</p>
   </div>
 
     <div class="btn-toolbar justify-content-center gap-2 mt-4 mb-3" role="toolbar">
@@ -199,7 +196,7 @@
         Ready for More Calculations?
       </span><br>
       <span>
-        Discover our <strong>advanced calculators</strong> including Super Projection, Debt Paydown, and "Enough" calculators. These optional tools are designed to give you deeper understanding and you can find more information about them once you proceed. You can also go straight to <a href="{{ url_for('views.dashboard_spreadsheet') }}">the Dashboards Overview</a> to view your results visually.
+        Discover our <strong>advanced calculators</strong> including Super Projection, Debt Paydown, and the "Enough" calculator. These optional tools are designed to give you deeper insights and plan for an even better retirement. You can find more information about the calculators once you proceed.
       </span>
     </p><br>
 
@@ -234,7 +231,16 @@
     })();
   </script>
 
-
+  <script>
+    const summaryData = {
+      assets: {{ assets_total|default(0)|float }},
+      liabilities: {{ liabilities_total|default(0)|float }},
+      netWorth: {{ (assets_total|default(0) - liabilities_total|default(0))|float }},
+      income: {{ income_annual|default(0)|float }},
+      expenses: {{ expenses_annual|default(0)|float }},
+      netIncome: {{ (income_annual|default(0) - expenses_annual|default(0))|float }}
+    };
+  </script>
 
   <script>
     (function(){

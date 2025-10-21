@@ -92,14 +92,11 @@
         <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
           {% if net_worth is defined and net_worth is not none %}
             ${{ "{:,.2f}".format(net_worth) }}
-
-          {% else %}
-            <span class="text-muted">Please upload a spreadsheet to calculate your net worth</span>
+            <canvas id="netWorthChart" style="max-width: 100%; max-height: 220px; display:none;"></canvas>
           {% endif %}
         </div>
-
         <span class="text-muted mt-2">Calculated from your assets and liabilities</span>
-        <canvas id="netWorthChart" style="max-width: 100%; max-height: 220px; display:none;"></canvas>
+
       </div>
     </div>
     <div class="col-md-4 ">
@@ -114,7 +111,8 @@
         style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Monthly Savings</h5>
         <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
-   
+          <canvas id="monthlySavingsChart" style="max-width: 100%; max-height: 220px;"></canvas>
+
         
         </div>
         <span class="text-muted mt-2">Income minus expenses</span>
@@ -128,8 +126,10 @@
       <div class="dashboard-chart p-3 text-center"
         style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Subscription Amount ($)</h5>
-        {% if subscriptions_total is defined and subscriptions_total is not none %}
-            ${{ "{:,.2f}".format(subscriptions_total) }}
+        {% if subs_annual is defined and subs_annual is not none %}
+            ${{ "{:,.2f}".format(subs_annual) }}
+
+            <canvas id="subscriptionChart" style="max-width: 100%; max-height: 220px;"></canvas>
 
         {% endif %}
       </div>
@@ -137,12 +137,10 @@
     <div class="col-md-6">
       <div class="dashboard-chart p-3 text-center"
         style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Monthly Expenses</h5>
+        <h5 class="mb-2">Annual Expenses</h5>
         {% if expenses_annual is defined and expenses_annual is not none %}
            ${{ "{:,.2f}".format(expenses_annual) }}
-
-        {% else %}
-          <span class="text-muted">Please calculate your expenses</span>
+          <canvas id="expenseBreakdownChart" style="max-width: 100%; max-height: 220px;"></canvas>
         {% endif %}
       </div>
     </div>
@@ -155,10 +153,7 @@
         <h5 class="mb-2">Superannuation Growth</h5>
         {% if super_total is defined and super_total is not none %}
             ${{ "{:,.2f}".format(super_total) }}
-
-    
-        {% else %}
-          <span class="text-muted">Please calculate your superannuation growth</span>
+            <canvas id="superGrowthChart" style="max-width: 100%; max-height: 220px;"></canvas>
         {% endif %}
       </div>
     </div>
@@ -201,7 +196,17 @@
 <!-- Chart.js scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+
+
 <script>
+
+  const expensesBreakdown = {
+    essentials: {{ expense_buckets_sum|float }},
+    subscriptions: {{ subs_annual|float }},
+    oneOffs: {{ epic_annual|float }}
+  };
+
+
 const dashboardData = {
   assets: { total: {{ assets_total|float }} },
   liabilities: { total: {{ liabilities_total|float }} },
@@ -235,6 +240,10 @@ const dashboardData = {
 
 console.log(dashboardData);
 
+
+
+// ---------------------Start of Charts --------------------------
+
 // Assets vs Liabilities Chart
 var ctxAssetsLiabilities = document.getElementById('assetsLiabilitiesChart').getContext('2d');
 var assetsLiabilitiesChart = new Chart(ctxAssetsLiabilities, {
@@ -250,24 +259,8 @@ var assetsLiabilitiesChart = new Chart(ctxAssetsLiabilities, {
   options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
 });
 
-// Subscription Amount Chart
-var ctxDebtPaydown = document.getElementById('debtPaydownChart').getContext('2d');
-var subsLabels = dashboardData.subscriptions.items.map(item => item.label);
-var subsValues = dashboardData.subscriptions.items.map(item => item.value);
-var debtPaydownChart = new Chart(ctxDebtPaydown, {
-  type: 'bar',
-  data: {
-    labels: subsLabels,
-    datasets: [{
-      label: 'Subscriptions',
-      data: subsValues,
-      backgroundColor: '#ffe066'
-    }]
-  },
-  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-});
 
-// Monthly Expenses Chart
+// Annual Expenses Chart
 var ctxMonthlyExpenses = document.getElementById('monthlyExpensesChart').getContext('2d');
 var expenseLabels = dashboardData.expenses.items.map(item => item.label);
 var expenseValues = dashboardData.expenses.items.map(item => item.value);
@@ -290,6 +283,40 @@ var monthlyExpensesChart = new Chart(ctxMonthlyExpenses, {
     }
   }
 });
+
+
+const ctxExpensesBreakdown = document.getElementById('expensesBreakdownChart').getContext('2d');
+new Chart(ctxExpensesBreakdown, {
+  type: 'bar',
+  data: {
+    labels: ['Essentials', 'Subscriptions', 'One-Offs'],
+    datasets: [{
+      label: 'Annual Cost',
+      data: [
+        expensesBreakdown.essentials,
+        expensesBreakdown.subscriptions,
+        expensesBreakdown.oneOffs
+      ],
+      backgroundColor: ['#6c757d', '#ffe066', '#cc917d']
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `$${ctx.parsed.toLocaleString()}`
+        }
+      }
+    },
+    scales: {
+      y: { beginAtZero: true }
+    }
+  }
+});
+
+
 
 // Superannuation Growth Chart
 var ctxSuperGrowth = document.getElementById('superGrowthChart').getContext('2d');
@@ -343,7 +370,7 @@ var incomeSourcesChart = new Chart(ctxIncomeSources, {
   options: { responsive: true, plugins: { legend: { display: true } } }
 });
 
-// Income vs EXpenses Chart
+// Income vs Expenses Chart
 var ctxIncomeExpenses = document.getElementById('incomeExpensesChart').getContext('2d');
 var incomeExpensesChart = new Chart(ctxIncomeExpenses, {
   type: 'bar',
