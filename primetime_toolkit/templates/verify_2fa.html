@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block title %}Verify your Account - PrimeTime{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2>Enable Two-Factor Authentication</h2>
+    <p>Scan the QR code below with your authenticator app, then enter the 6-digit code it generates.</p>
+
+    <img src="data:image/png;base64,{{ qr_code }}" style="width:180px;" alt="2FA QR Code" class="mb-3"><br><br>
+
+
+    <form method="POST">
+        <input type="text" name="code" maxlength="6" class="form-control d-inline-block w-auto" placeholder="Enter the 6-digit code"><br>
+        <button type="submit" class="btn btn-primary mt-2">Verify</button>
+    </form><br>
+
+
+    <form method="POST" action="{{ url_for('auth.skip_2fa') }}">
+        <button type="submit" class="btn btn-secondary mt-2">Skip for Now</button>
+    </form>
+
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} mt-3">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+</div><br><br>
+{% endblock %}

@@ -66,11 +66,13 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(150), nullable=False)
     email = db.Column(db.String(150), nullable=False, unique=True)
     pword = db.Column(db.String(200), nullable=False)
+    two_factor_secret = db.Column(db.String(16), nullable=True)
+    is_2fa_enabled = db.Column(db.Boolean, default=False)
 
-    def __init__(self, name, email, password):
+    def __init__(self, name, email, pword):
         self.name = name
         self.email = email
-        self.pword = generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
+        self.pword = pword
 
 
     
@@ -208,15 +210,14 @@ class SpendingAllocation(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    # e.g., "Lifestyle", "Set-up", "Part-timing", etc.
+    # e.g. Lifestyle, Set up, etc...
     phase = db.Column(db.String(120), nullable=False)
 
-    # Buckets (per-annum amounts)
-    cost_base   = db.Column(db.Float, default=0.0)   # Cost of living baseline
-    cost_life   = db.Column(db.Float, default=0.0)   # Lifestyle discretionary
-    cost_save   = db.Column(db.Float, default=0.0)   # Saving & investing
-    cost_health = db.Column(db.Float, default=0.0)   # Health & care
-    cost_other  = db.Column(db.Float, default=0.0)   # Other
+    cost_base   = db.Column(db.Float, default=0.0) 
+    cost_life   = db.Column(db.Float, default=0.0) 
+    cost_save   = db.Column(db.Float, default=0.0)
+    cost_health = db.Column(db.Float, default=0.0)
+    cost_other  = db.Column(db.Float, default=0.0) 
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -238,9 +239,9 @@ class DebtPaydown(db.Model):
 
     name = db.Column(db.String(120), default='')
     principal = db.Column(db.Float, default=0.0)                 # starting balance
-    annual_interest_rate = db.Column(db.Float, default=0.0)      # percent, e.g. 18.0
+    annual_interest_rate = db.Column(db.Float, default=0.0) 
     monthly_payment = db.Column(db.Float, default=0.0)
-    years_to_repay = db.Column(db.Float)                         # optional (UI can compute)
+    years_to_repay = db.Column(db.Float)
     include = db.Column(db.Boolean, default=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -253,10 +254,10 @@ class EnoughCalculator(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
 
     # inputs
-    use_future_budget = db.Column(db.String(8), nullable=False, default='Yes')  # 'Yes' or 'No'
-    manual_annual     = db.Column(db.Float, default=0.0)                        # if use_future_budget == 'No'
+    use_future_budget = db.Column(db.String(8), nullable=False, default='Yes')  # yes or no
+    manual_annual     = db.Column(db.Float, default=0.0)                        # if use_future_budget == no
     real_rate         = db.Column(db.Float, default=0.0)                        # % real per year
-    years             = db.Column(db.Integer, default=0)                        # retirement duration (years)
+    years             = db.Column(db.Integer, default=0)                        # retirement duration
     pension           = db.Column(db.Float, default=0.0)                        # $/year
     part_time_income  = db.Column(db.Float, default=0.0)                        # $/year
     part_time_years   = db.Column(db.Float, default=0.0)                        # years of part-time work

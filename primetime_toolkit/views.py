@@ -286,7 +286,7 @@ def submit_assessment():
         flash("It seems that your last assessment was incomplete. Please redo the assessment to receive accurate results.")
         return redirect(url_for('views.assessment_intro'))
 
-    # Define categories and thresholds
+    # Define categories
     categories = ["purpose", "spending", "saving", "debt", "super", "protection"]
     question_keys = [f"{cat}_q{i}" for cat in categories for i in range(1, 5)]
     status_thresholds = {"strong": 75, "moderate": 40}
@@ -318,7 +318,6 @@ def submit_assessment():
         cat_percent = round((cat_sum / max_cat_total) * 100) if max_cat_total > 0 else 0
         category_scores[cat] = cat_percent
 
-    # Determine result band
     if total_percent <= 50:
         band = "Inactive"
     elif total_percent <= 89:
@@ -332,7 +331,7 @@ def submit_assessment():
     assessment.category_scores = category_scores
     db.session.commit()
 
-    # Prepare summary display
+
     category_names = {
         "purpose": "Purpose & Direction",
         "spending": "Spending & Cashflow",
@@ -394,12 +393,13 @@ def upload_excel():
 
 
 
-
 @views.route('/download_budget')
 def download_budget():
     from flask import send_from_directory
     file_path = os.path.join(current_app.root_path, 'static', 'files')
     return send_from_directory(file_path, 'Budget_Template.xlsx', as_attachment=True)
+
+
 
 # ---------------------------------------------------------------------
 # Subscribe to newsletter block 
@@ -429,7 +429,7 @@ def subscribe():
         recipients=[email]
     )
 
-    # Plain text fallback
+  
     msg.body = (
         f"Hi {name},\n\n"
         "Thanks for subscribing to Bec Wilson's Newsletter!\n"
@@ -500,7 +500,7 @@ def tracker():
     subscriptions_total = sum(s.annual_amount for s in subscriptions if s.include)
     net_worth = assets_total - liabilities_total
 
-    # Merge subscriptions into expenses
+    # merging subscriptions into expenses
     expenses_total += subscriptions_total
 
     completion_flags = {
@@ -534,7 +534,7 @@ def tracker():
         {"title": "Enough Calculator", "description": "Estimate the lump sum needed to fund your retirement. Use the annual spending from your Future Budget or input your own amount, set your net real return assumption, and adjust for the Age Pension or other income and any part‑time work. The sheet shows both a rule‑of‑thumb and an annuity‑based lump sum."}
     ]
 
-    # Pass everything to the template
+    # Passing everything to the template
     return render_template(
         "calculators/tracker.html",
         instructions=instructions,
@@ -580,7 +580,7 @@ def submit_tracker():
 def reset_tracker():
     user_id = current_user.id
 
-    # Delete all data for this user
+    # Delete all data for the current user
     from .models import (
         LifeExpectancy, Asset, Liability, Income, Expense, Subscription,
         FutureBudget, EpicExperience, IncomeLayer, SpendingAllocation
@@ -644,9 +644,11 @@ def send_email():
 
 
 
-#--------------------------------------------------------
-#-------------------------------------------------------
-# ------------WEB CALCULATOR------------
+#---------------------------------------------------
+# ---------------- WEB CALCULATORs -----------------
+#---------------------------------------------------
+
+
 #-----------------------------------------------------
 #------------ Life Expectancy ------------
 
@@ -682,8 +684,9 @@ def save_life_expectancy():
     flash("Life expectancy saved successfully!", "success")
     return jsonify({'redirect': url_for('views.assets')})
 
-#------------------------------------------------------
-#------------ Assets ------------
+
+#--------------------------------------------------
+#--------- Assets -----------
 
 @views.route('/assets')
 @login_required
@@ -708,7 +711,7 @@ def assets():
 def save_assets():
     data = request.get_json()
     assets = data.get('assets', [])
-    # Delete old assets for this user first
+
     Asset.query.filter_by(user_id=current_user.id).delete()
     for a in assets:
         asset = Asset(
@@ -727,7 +730,7 @@ def save_assets():
 
 
 #-------------------------------------------------------
-# ---- Liabilities ----
+# ------- Liabilities --------
 
 @views.route('/liabilities')
 @login_required
@@ -770,7 +773,7 @@ def save_liabilities():
 
 
 #------------------------------------------------------
-# ---- Income ----
+# -------- Income --------
 
 @views.route('/income')
 @login_required
@@ -841,7 +844,6 @@ def save_expenses():
         data = request.get_json() or {}
         expenses = data.get('expenses', [])
 
-        # Clear old expenses for this user
         Expense.query.filter_by(user_id=current_user.id).delete()
 
         for e in expenses:
@@ -867,7 +869,7 @@ def save_expenses():
 
 
 #---------------------------------------------------
-# ---- Subscriptions ----
+# ------ Subscriptions ------
 
 @views.route('/subscriptions')
 @login_required
@@ -946,7 +948,7 @@ def save_subscriptions():
             ))
 
         db.session.commit()
-        # chain to Future Budget
+       
         return jsonify({'redirect': url_for('views.future_budget')})
     except Exception as e:
         db.session.rollback()
@@ -1309,6 +1311,7 @@ def summary():
         budget_targets=summary["budget_targets"],
         subs_breakdown=summary["subs_breakdown"]
     )
+
 
 
 # ---------- HELPER FUNCTION -----------
