@@ -6,6 +6,7 @@ from flask_login import login_user, current_user, logout_user
 from email_validator import validate_email, EmailNotValidError
 from .forms import RegisterForm
 from .extension import limiter
+from werkzeug.security import generate_password_hash
 
 
 
@@ -53,12 +54,15 @@ def register():
             flash('Email already registered!', 'error')
             return redirect(url_for('auth.register'))
 
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
+        new_user = User(name=name, email=email, password=hashed_password)
         new_user = User(name=name, email=email, password=password)
         try:
             db.session.add(new_user)
             db.session.commit()
         except Exception as e:
             db.session.rollback()
+            print(f"Registration failed: {e}") 
             flash('Something went wrong. Please try again.', 'error')
             return redirect(url_for('auth.register'))
 

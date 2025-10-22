@@ -3,7 +3,7 @@ from flask import Flask
 from .extension import db, mail, login_manager
 from datetime import timedelta
 from .extension import limiter
-
+from .extension import migrate
 
 
 def create_app():
@@ -31,6 +31,7 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     limiter.init_app(app)
+    migrate.init_app(app, db)
 
 
     from .models import User
