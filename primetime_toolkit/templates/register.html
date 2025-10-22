@@ -19,19 +19,27 @@
 
     <form method="POST" action="{{ url_for('auth.register') }}">
       <div class="mb-3">
-        <label for="name" class="form-label">Full Name</label>
-        <input type="text" name="name" class="form-control" id="name" placeholder="Your full name" required>
+        <label for="name" class="form-label">Given Name</label>
+        <input type="text" name="name" class="form-control" id="name" required>
       </div>
-      <div class="mb-3">
-        <label for="email" class="form-label">Email Address</label>
-        <input type="email" name="email" class="form-control" id="email" placeholder="Your email" required>
+      <div class="form-group mb-3">
+          {{ form.email.label(class="form-label") }}
+          {{ form.email(class="form-control", placeholder="e.g. example@gmail.com") }}
+          {% for error in form.email.errors %}
+            <div class="text-danger small">{{ error }}</div>
+          {% endfor %}
       </div>
-      <div class="mb-3">
-        <label for="password" class="form-label">Create Password</label>
-        <input type="password" name="password" class="form-control" id="password" placeholder="Create password" required>
-      </div>
+      <div class="form-group">
+          {{ form.password.label(class="form-label") }}
+          {{ form.password(class="form-control") }}
+          {% for error in form.password.errors %}
+            <div class="text-danger small">{{ error }}</div>
+          {% endfor %}
+      </div><br>
       <button type="submit" class="btn-login w-100 mt-2">Sign Up</button>
     </form>
+
+
 
     <div class="text-center mt-3">
       <p>Already have an account? <a href="{{ url_for('auth.login') }}">Log In</a></p>

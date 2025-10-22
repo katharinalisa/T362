@@ -1,11 +1,17 @@
 import os
 from flask import Flask
 from .extension import db, mail, login_manager
+from datetime import timedelta
+from .extension import limiter
+
 
 
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'our-secret'
+    app.config['SESSION_COOKIE_HTTPONLY'] = True 
+    app.config['SESSION_COOKIE_SECURE'] = True 
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///primetime.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['UPLOAD_FOLDER'] = os.path.join(app.static_folder, 'uploads')
@@ -16,11 +22,15 @@ def create_app():
     app.config['MAIL_USERNAME'] = 'ka.gremer@gmail.com'
     app.config['MAIL_PASSWORD'] = 'ioof gbxq cali qgow'
 
+    app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
+    login_manager.session_protection = "strong" 
+
 
     db.init_app(app)
     mail.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
+    limiter.init_app(app)
 
 
     from .models import User
