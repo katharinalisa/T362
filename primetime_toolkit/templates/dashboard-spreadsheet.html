@@ -59,26 +59,6 @@
       Your Financial Dashboard
     </h1>
 
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const fileInput = document.getElementById('budget_file');
-  const uploadBtn = document.getElementById('uploadBtn');
-  fileInput.addEventListener('change', function() {
-    if (fileInput.files.length > 0) {
-      uploadBtn.disabled = false;
-      uploadBtn.classList.remove('btn-outline-primary');
-      uploadBtn.classList.add('btn-success');
-    } else {
-      uploadBtn.disabled = true;
-      uploadBtn.classList.remove('btn-success');
-      uploadBtn.classList.add('btn-outline-primary');
-    }
-  });
-});
-</script>
-
-
     {% if data.net_worth is defined and data.net_worth is not none %}
       <p style="color:#787878">
         This is your Dashboard based on your uploaded <strong style="color:#007f73">Excel spreadsheet</strong>. Here you can view your financial stability and evaluate your current financial situation. We recommend calculating your finances at least every 6 months.
@@ -94,8 +74,28 @@ document.addEventListener('DOMContentLoaded', function() {
   <a href="{{ url_for('views.dashboard') }}" class="btn btn-outline-secondary mt-4">Back to Dashboard Options</a>
 </section><br>
 
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
 
-{% if data.net_worth is defined and data.net_worth is not none and mode != 'none' %}
+      const fileInput = document.getElementById('budget_file');
+      const uploadBtn = document.getElementById('uploadBtn');
+
+      if (fileInput != null) {
+        fileInput.addEventListener('change', function() {
+          if (fileInput.files.length > 0) {
+            uploadBtn.disabled = false;
+            uploadBtn.classList.remove('btn-outline-primary');
+            uploadBtn.classList.add('btn-success');
+          } else {
+            uploadBtn.disabled = true;
+            uploadBtn.classList.remove('btn-success');
+            uploadBtn.classList.add('btn-outline-primary');
+          }
+        });
+      }
+        
+    });
+</script>
 
 <div class="container-fluid py-4">
   <!-- First row: three charts -->
@@ -128,10 +128,13 @@ document.addEventListener('DOMContentLoaded', function() {
         style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Monthly Savings</h5>
         <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
-  <!-- monthly surplus or deficit -->
-          
+          <!-- monthly surplus or deficit -->
+           {% if data.monthly_savings is defined and data.monthly_savings is not none %}
+            ${{ "{:,.2f}".format(data.monthly_savings) }}
+           {% else %}
+            <span class="text-muted mt-2">Income minus expenses</span>
+          {% endif %}
         </div>
-        <span class="text-muted mt-2">Income minus expenses</span>
       </div>
     </div>
   </div>
@@ -140,32 +143,28 @@ document.addEventListener('DOMContentLoaded', function() {
   <div class="row g-4 mb-5">
     <div class="col-md-6">
       <div class="dashboard-chart p-3 text-center"
-        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Subscription Amount ($)</h5>
-        {% if data.subscriptions is defined and data.subscriptions is not none %}
-          {% if mode == 'spreadsheet' %}
-            <canvas id="debtPaydownChart" style="max-width: 100%; max-height: 320px;"></canvas>
-          {% elif mode == 'summary' %}
+        <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
+          {% if data.subscriptions is defined and data.subscriptions is not none %}
             ${{ "{:,.2f}".format(data.subscriptions.total) }}
+          {% else %}
+            <span class="text-muted">Please provide your subscriptions in spreadsheet subscriptions</span>
           {% endif %}
-        {% else %}
-          <span class="text-muted">Please calculate your subscriptions</span>
-        {% endif %}
+        </div>
       </div>
     </div>
     <div class="col-md-6">
       <div class="dashboard-chart p-3 text-center"
-        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Monthly Expenses</h5>
-        {% if data.expenses is defined and data.expenses is not none %}
-          {% if mode == 'spreadsheet' %}
-            <canvas id="monthlyExpensesChart" style="max-width: 100%; max-height: 320px;"></canvas>
-          {% elif mode == 'summary' %}
+        <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
+          {% if data.expenses is defined and data.expenses is not none %}
             ${{ "{:,.2f}".format(data.expenses.total) }}
+          {% else %}
+            <span class="text-muted">Please provide your expenses in spreadsheet</span>
           {% endif %}
-        {% else %}
-          <span class="text-muted">Please calculate your expenses</span>
-        {% endif %}
+        </div>
       </div>
     </div>
   </div>
@@ -176,11 +175,8 @@ document.addEventListener('DOMContentLoaded', function() {
         style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h5 class="mb-2">Superannuation Growth</h5>
         {% if data.super is defined and data.super is not none %}
-          {% if mode == 'spreadsheet' %}
             <canvas id="superGrowthChart" style="max-width: 100%; max-height: 220px;"></canvas>
-          {% elif mode == 'summary' %}
-            ${{ "{:,.2f}".format(data.super.total) }}
-          {% endif %}
+           
         {% else %}
           <span class="text-muted">Please calculate your superannuation growth</span>
         {% endif %}
@@ -220,172 +216,295 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 
-{% endif %}
-
 <!-- Chart.js scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-const dashboardData = {{ data|tojson }};
-console.log(dashboardData);
+  const dashboardData = JSON.parse(`{{ data|tojson|safe }}`);
+  console.log("Dashboard Data:", dashboardData);
 
-// Assets vs Liabilities Chart
-var ctxAssetsLiabilities = document.getElementById('assetsLiabilitiesChart').getContext('2d');
-var assetsLiabilitiesChart = new Chart(ctxAssetsLiabilities, {
-  type: 'bar',
-  data: {
-    labels: ['Assets', 'Liabilities'],
-    datasets: [{
-      label: 'Amount',
-      data: [dashboardData.assets.total, dashboardData.liabilities.total],
-      backgroundColor: ['#3bb3c3', '#1a7f8c']
-    }]
-  },
-  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-});
+  //  Helper to get safe values
+  const safe = (obj, path, def = 0) =>
+    path.split('.').reduce((o, p) => (o ? o[p] : def), obj) ?? def;
 
-// Subscription Amount Chart
-var ctxDebtPaydown = document.getElementById('debtPaydownChart').getContext('2d');
-var subsLabels = dashboardData.subscriptions.items.map(item => item.label);
-var subsValues = dashboardData.subscriptions.items.map(item => item.value);
-var debtPaydownChart = new Chart(ctxDebtPaydown, {
-  type: 'bar',
-  data: {
-    labels: subsLabels,
-    datasets: [{
-      label: 'Subscriptions',
-      data: subsValues,
-      backgroundColor: '#ffe066'
-    }]
-  },
-  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-});
-
-// Monthly Expenses Chart
-var ctxMonthlyExpenses = document.getElementById('monthlyExpensesChart').getContext('2d');
-var expenseLabels = dashboardData.expenses.items.map(item => item.label);
-var expenseValues = dashboardData.expenses.items.map(item => item.value);
-var monthlyExpensesChart = new Chart(ctxMonthlyExpenses, {
-  type: 'bar',
-  data: {
-    labels: expenseLabels,
-    datasets: [{
-      label: 'Expenses',
-      data: expenseValues,
-      backgroundColor: '#dc3545'
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { display: false } },
-    scales: {
-      y: { beginAtZero: true },
-      x: { title: { display: true, text: 'Expense Category' } }
+ 
+    // ================================
+    //  1. Assets vs Liabilities
+    // ================================
+    const assetsTotal = safe(dashboardData, 'assets.total');
+    const liabilitiesTotal = safe(dashboardData, 'liabilities.total');
+    console.log("Total assets : ", assetsTotal);
+    const assetsChartEl = document.getElementById('assetsLiabilitiesChart');
+    if (assetsChartEl && (assetsTotal || liabilitiesTotal)) {
+      new Chart(document.getElementById('assetsLiabilitiesChart'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Assets', 'Liabilities'],
+          datasets: [{
+            data: [assetsTotal, liabilitiesTotal],
+            backgroundColor: ['#4CAF50', '#F44336'],
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' },
+            title: { display: true, text: 'Assets vs Liabilities' }
+          }
+        }
+      });
+    } else {
+      document.getElementById('assetsLiabilitiesChart').style.display = 'none';
     }
-  }
-});
 
-// Superannuation Growth Chart
-var ctxSuperGrowth = document.getElementById('superGrowthChart').getContext('2d');
-var superGrowthChart = new Chart(ctxSuperGrowth, {
-  type: 'line',
-  data: {
-    labels: dashboardData.super.years,
-    datasets: [{
-      label: 'Super Growth',
-      data: dashboardData.super.values,
-      backgroundColor: 'rgba(59,179,195,0.15)',
-      borderColor: '#3bb3c3',
-      borderWidth: 2
-    }]
-  },
-  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-});
+    // ================================
+    //  2. Subscription Amount Chart
+    // ================================
+    /*const subItems = dashboardData.subscriptions?.items || [];
+    if (subItems.length > 0) {
+      const subLabels = subItems.map(item => item.name);
+      const subValues = subItems.map(item => item.amount);
 
-// Expense Breakdown Chart
-/*var ctxExpenseBreakdown = document.getElementById('expenseBreakdownChart').getContext('2d');
-var expenseBreakdownChart = new Chart(ctxExpenseBreakdown, {
-  type: 'bar',
-  data: {
-    labels: expenseLabels,
-    datasets: [{
-      label: 'Expenses',
-      data: expenseValues,
-      backgroundColor: '#dc3545'
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { display: false } },
-    scales: {
-      y: { beginAtZero: true },
-      x: { title: { display: true, text: 'Expense Category' } }
+      new Chart(document.getElementById('debtPaydownChart'), {
+        type: 'bar',
+        data: {
+          labels: subLabels,
+          datasets: [{
+            label: 'Amount ($)',
+            data: subValues,
+            backgroundColor: '#3bb3c3',
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'Subscriptions' }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    } else {
+      document.getElementById('debtPaydownChart').style.display = 'none';
     }
-  }
-});*/
+    */
+   
+    // ================================
+    //  3. Superannuation Growth
+    // ================================
+    const superYears = dashboardData.super?.years || [];
+    const superBalance = dashboardData.super?.balance || [];
 
-// Drawdown Over Time Chart
-var ctxDrawdownOverTime = document.getElementById('drawdownChart').getContext('2d');
-var drawdownOverTimeChart = new Chart(ctxDrawdownOverTime, {
-  type: 'line',
-  data: {
-    labels: dashboardData.drawdown_over_time.months,
-    datasets: [{
-      label: 'Drawdown Over Time',
-      data: dashboardData.drawdown_over_time.values,
-      backgroundColor: 'rgba(26,127,140,0.15)',
-      borderColor: '#1a7f8c',
-      borderWidth: 2
-    }]
-  },
-  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-});
+    if (superYears.length && superBalance.length) {
+      new Chart(document.getElementById('superGrowthChart'), {
+        type: 'line',
+        data: {
+          labels: superYears,
+          datasets: [{
+            label: 'Balance ($)',
+            data: superBalance,
+            borderColor: '#4e73df',
+            fill: false,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'Superannuation Over Time' }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    } else {
+      document.getElementById('superGrowthChart').style.display = 'none';
+    }
+   
+    // ================================
+    //  4. Expense Breakdown by Category
+    // ================================
+    const expenseItems = dashboardData.expenses?.items || [];
+    if (expenseItems.length > 0) {
+      const grouped = expenseItems.reduce((acc, item) => {
+        acc[item.category] = (acc[item.category] || 0) + item.amount;
+        return acc;
+      }, {});
 
-// Income Sources Chart
-var ctxIncomeSources = document.getElementById('incomeSourcesChart').getContext('2d');
-var incomeLabels = dashboardData.income.items.map(item => item.label);
-var incomeValues = dashboardData.income.items.map(item => item.value);
-var incomeSourcesChart = new Chart(ctxIncomeSources, {
-  type: 'pie',
-  data: {
-    labels: incomeLabels,
-    datasets: [{
-      label: 'Income',
-      data: incomeValues,
-      backgroundColor: ['#e6f571', '#1a7f8c', '#ffe066', '#198754', '#6c757d', '#5275ed', '#cc917d', '#aa1349', '#be6559']
-    }]
-  },
-  options: { responsive: true, plugins: { legend: { display: true } } }
-});
+      const expenseLabels = Object.keys(grouped);
+      const expenseValues = Object.values(grouped);
 
-// Income vs EXpenses Chart
-var ctxIncomeExpenses = document.getElementById('incomeExpensesChart').getContext('2d');
-var incomeExpensesChart = new Chart(ctxIncomeExpenses, {
-  type: 'bar',
-  data: {
-    labels: ['Income', 'Expenses'],
-    datasets: [{
-      label: 'Amount',
-      data: [dashboardData.income.total, dashboardData.expenses.total],
-      backgroundColor: ['#3bb3c3', '#1a7f8c']
-    }]
-  },
-  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-});
+      new Chart(document.getElementById('expenseBreakdownChart'), {
+        type: 'bar',
+        data: {
+          labels: expenseLabels,
+          datasets: [{
+            label: 'Amount ($)',
+            data: expenseValues,
+            backgroundColor: '#f6c23e',
+          }]
+        },
+        options: {
+          responsive: true,
+          indexAxis: 'y',
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'Expense Breakdown' }
+          },
+          scales: {
+            x: { beginAtZero: true }
+          }
+        }
+      });
+    } else {
+      document.getElementById('expenseBreakdownChart').style.display = 'none';
+    }
 
-// something
-var ctxInsuranceCoverage = document.getElementById('').getContext('2d');
-var insuranceCoverageChart = new Chart(ctxInsuranceCoverage, {
-  type: 'bar',
-  data: {
-    labels: [],
-    datasets: [{
-      label: '???',
-      data: [],
-      backgroundColor: '#6c757d'
-    }]
-  },
-  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-});
+    // ================================
+    //  5. Drawdown Over Time
+    // ================================
+    const ddMonths = dashboardData.drawdown_over_time?.months || [];
+    const ddValues = dashboardData.drawdown_over_time?.values || [];
+
+    if (ddMonths.length && ddValues.length) {
+      new Chart(document.getElementById('drawdownChart'), {
+        type: 'line',
+        data: {
+          labels: ddMonths,
+          datasets: [{
+            label: 'Drawdown ($)',
+            data: ddValues,
+            borderColor: '#e74a3b',
+            fill: false,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'Drawdown Over Time' }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    } else {
+      document.getElementById('drawdownChart').style.display = 'none';
+    }
+
+    // ================================
+    //  6. Income Sources
+    // ================================
+    const incomeItems = dashboardData.income?.items || [];
+
+    if (incomeItems.length > 0) {
+      const incomeLabels = incomeItems.map(item => item.label);
+      const incomeValues = incomeItems.map(item => item.value);
+
+      const ctxIncome = document.getElementById('incomeSourcesChart').getContext('2d');
+
+      new Chart(ctxIncome, {
+        type: 'pie',
+        data: {
+          labels: incomeLabels,
+          datasets: [{
+            data: incomeValues,
+            backgroundColor: [
+              '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+              '#858796', '#fd7e14', '#6f42c1', '#20c997'
+            ],
+            borderWidth: 1,
+            borderColor: '#fff'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'right'
+            },
+            title: {
+              display: true,
+              text: 'Income Sources'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const value = context.raw;
+                  const total = incomeValues.reduce((a,b) => a+b, 0);
+                  const percent = ((value / total) * 100).toFixed(1);
+                  return `${context.label}: $${value.toLocaleString()} (${percent}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    } else {
+      document.getElementById('incomeSourcesChart').style.display = 'none';
+    }
+
+    // ================================
+    //  7. Income vs Expenses
+    // ================================
+    const ctxIncomeExpenses = document.getElementById('incomeExpensesChart')?.getContext('2d');
+
+    if (ctxIncomeExpenses) {
+      const totalIncome = dashboardData.income?.total || 0;
+      const totalExpenses = dashboardData.expenses?.total || 0;
+
+      new Chart(ctxIncomeExpenses, {
+        type: 'bar',
+        data: {
+          labels: ['Income', 'Expenses'],
+          datasets: [{
+            label: 'Amount ($)',
+            data: [totalIncome, totalExpenses],
+            backgroundColor: ['#4e73df', '#e74a3b']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: 'Income vs Expenses'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `$${context.raw.toLocaleString()}`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Amount ($)'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Category'
+              }
+            }
+          }
+        }
+      });
+    } else {
+      document.getElementById('incomeExpensesChart').style.display = 'none';
+    }
+ 
 </script>
 {% endblock %}
