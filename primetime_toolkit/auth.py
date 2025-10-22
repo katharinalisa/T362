@@ -6,6 +6,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from email_validator import validate_email, EmailNotValidError
 from .forms import RegisterForm
 from .extension import limiter
+from .views import get_calculator_summary
 from werkzeug.security import generate_password_hash
 import pyotp
 import qrcode
@@ -138,7 +139,9 @@ def skip_2fa():
 
 @auth.route('/profile')
 def profile():
-    return render_template('profile.html', user=current_user)
+    fin_summary_data = get_calculator_summary(current_user.id)
+    print("DEBUG - fin_summary_data:", fin_summary_data)
+    return render_template('profile.html', user=current_user, summary_data=fin_summary_data)
 
 
 
