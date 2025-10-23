@@ -163,11 +163,6 @@
         transition: transform 0.5s ease;
       }
 
-      .alert-dismissible {
-        transition: opacity 0.5s ease-out;
-      }
-
-
   </style>
   
   <meta charset="UTF-8" />
@@ -270,26 +265,21 @@
     </div>
   </nav>
 
-
-
-  <!------- Flash messages -------->
-  <div id="flash-overlay" style="position:fixed; top:90px; left:0; width:100%; z-index:2000; pointer-events:none;margin-top:35px;">
+  <!-- Flash messages -->
+  <div id="flash-overlay" style="position:fixed; top:90px; left:0; width:100%; z-index:2000; pointer-events:none;">
     <div class="d-flex flex-column align-items-center w-100">
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           {% for category, message in messages %}
-            <div class="alert alert-{{ category }} alert-dismissible fade show shadow" role="alert" style="max-width:480px; pointer-events:auto; background: #fff; opacity: 1; padding-left:50px;padding-right:50px;">
+            <div class="alert alert-{{ category }} alert-dismissible fade show shadow" role="alert" style="max-width:480px; pointer-events:auto; background: #fff; opacity: 1;">
               {{ message }}
-              <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
           {% endfor %}
         {% endif %}
       {% endwith %}
     </div>
   </div>
-  
-
-
 
   <main class="container mt-4">
     {% block content %}{% endblock %}
@@ -300,6 +290,7 @@
     <section class="gradient-section2 footer-section" style="padding-top:2rem; padding-bottom:2rem;">
       <div class="container"><br>
         <div class="footer-container">
+          <!-- Brand + blurb + socials -->
           <div class="footer-column footer-brand">
             <div class="brand-line d-flex align-items-center gap-2 mb-2">
               <img src="{{ url_for('static', filename='img/primetime_image.png') }}" alt="PrimeTime Toolkit" class="brand-logo" onerror="this.style.display='none'">
@@ -312,6 +303,7 @@
             </ul>
           </div>
 
+          <!-- Middle navigation links -->
           <div class="footer-column">
             <h3 class="footer-title">Explore</h3>
             <ul>
@@ -324,6 +316,7 @@
             </ul>
           </div>
 
+          <!-- Contact details with icons -->
           <div class="footer-column">
             <h3 class="footer-title">Contact</h3>
             <ul class="contact-list">
@@ -343,6 +336,7 @@
           </div>
         </div>
 
+        <!-- Bottom legal bar -->
         <div class="footer-bottom">
           <div class="footer-bottom-inner">
             <div class="legal-left">© 2025 <em>PrimeTime Toolkit</em>. All rights reserved.</div>
@@ -351,7 +345,6 @@
       </div>
     </section>
   </footer>
-
 
 
 <!--_________________________-->
@@ -436,19 +429,6 @@
     });
   </script>
 
-
-
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const alerts = document.querySelectorAll('.alert-dismissible');
-      alerts.forEach(alert => {
-        setTimeout(() => {
-          alert.style.opacity = '0';
-          setTimeout(() => alert.remove(), 500); // remove after fade
-        }, 8000); // stays for 8 seconds
-      });
-    });
-  </script>
 
 
   <!-- Bootstrap JS -->
