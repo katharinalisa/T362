@@ -59,7 +59,7 @@
       Your Financial Dashboard
     </h1>
 
-    {% if data.net_worth is defined and data.net_worth is not none %}
+    {% if net_worth is defined and net_worth is not none %}
       <p style="color:#787878">
         This is your Dashboard based on your uploaded <strong style="color:#007f73">Excel spreadsheet</strong>. Here you can view your financial stability and evaluate your current financial situation. We recommend calculating your finances at least every 6 months.
       </p>
@@ -102,409 +102,361 @@
   <div class="row g-4 mb-5">
     <div class="col-md-4">
       <div class="dashboard-chart p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 style="margin-top: -35px" class="mb-2">Current Net Worth</h5><br>
-        <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
-          {% if data.net_worth is defined and data.net_worth is not none %}
-            ${{ "{:,.2f}".format(data.net_worth) }}
-          {% else %}
-            <span class="text-muted">Please upload a spreadsheet to calculate your net worth</span>
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 style="margin-top: -35px" class="mb-2">Current Net Worth</h5>
+        <div style="font-size:2.5rem; font-weight:700; color:#198754">
+          {% if net_worth is defined and net_worth is not none %}
+            ${{ "{:,.2f}".format(net_worth) }}
+            <canvas id="netWorthChart" style="max-width: 100%; max-height: 220px; display:none;"></canvas>
           {% endif %}
         </div>
 
-        <span class="text-muted mt-2">Calculated from your assets and liabilities</span>
-        <canvas id="netWorthChart" style="max-width: 100%; max-height: 220px; display:none;"></canvas>
-      </div>
-    </div>
-    <div class="col-md-4 ">
-      <div class="dashboard-chart p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Assets vs Liabilities</h5>
-        <canvas id="assetsLiabilitiesChart" style="max-width: 100%; max-height: 220px;"></canvas>
       </div>
     </div>
     <div class="col-md-4">
       <div class="dashboard-chart p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Monthly Savings</h5>
-        <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
-          <!-- monthly surplus or deficit -->
-           {% if data.monthly_savings is defined and data.monthly_savings is not none %}
-            ${{ "{:,.2f}".format(data.monthly_savings) }}
-           {% else %}
-            <span class="text-muted mt-2">Income minus expenses</span>
-          {% endif %}
-        </div>
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Assets vs Liabilities</h5><br>
+        <canvas id="assetsLiabilitiesChart" style="max-width: 100%; max-height: 220px;"></canvas>
+        <span class="text-muted mt-2">Assets minus Liabilities</span>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="dashboard-chart p-3 text-center"
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Income vs Expenses</h5><br>
+        <canvas id="incomeVsExpensesChart" style="max-width: 100%; max-height: 200px;"></canvas>
+        <span class="text-muted mt-2">All expenses including subscriptions, excluding one-offs.</span>
       </div>
     </div>
   </div>
+
   
-  <!-- Second row: two wide charts -->
-  <div class="row g-4 mb-5">
+  <div class="row g-4 mb-4">
     <div class="col-md-6">
       <div class="dashboard-chart p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Subscription Amount ($)</h5>
-        <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
-          {% if data.subscriptions is defined and data.subscriptions is not none %}
-            ${{ "{:,.2f}".format(data.subscriptions.total) }}
-          {% else %}
-            <span class="text-muted">Please provide your subscriptions in spreadsheet subscriptions</span>
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Annual Surplus / Deficit</h5>
+        <div style="font-size:2.5rem; font-weight:700; color:#198754;">
+          {% if surplus_annual is defined and surplus_annual is not none %}
+            ${{ "{:,.2f}".format(surplus_annual) }}
           {% endif %}
         </div>
+        <span class="text-muted mt-2">Total income minus total expenses, excluding one-offs.</span>
+        <div style="font-size:2.5rem; font-weight:700; color:#198754;">
+          {% if surplus_annual is defined and surplus_annual is not none %}
+            <br>
+            <h5 class="mb-2">Post-Epic Annual Surplus / Deficit</h5>
+              ${{ "{:,.2f}".format(post_epic_surplus) }}
+          {% endif %}
+        </div>
+        <span class="text-muted mt-2">Annual Surplus / Deficit after one-offs.</span>
       </div>
     </div>
+
     <div class="col-md-6">
       <div class="dashboard-chart p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Monthly Expenses</h5>
-        <div style="font-size:2.5rem; font-weight:700; color:#3bb3c3;">
-          {% if data.expenses is defined and data.expenses is not none %}
-            ${{ "{:,.2f}".format(data.expenses.total) }}
-          {% else %}
-            <span class="text-muted">Please provide your expenses in spreadsheet</span>
-          {% endif %}
-        </div>
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Expense Breakdown</h5>
+        <canvas id="expensesBreakdownChart" style="max-width: 100%; max-height: 220px;"></canvas>
       </div>
     </div>
-  </div>
-  <!-- Third row: tw0 charts -->
+  </div><br>
+
+  <div class="col-md-12">
+    <div class="dashboard-chart p-3 text-center"
+      style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+      <h5 class="mb-2">Income Sources</h5>
+      <canvas id="incomeSourcesChart" style="max-width: 100%; max-height: 320px;"></canvas>
+    </div>
+  </div><br><br>
+
+
   <div class="row g-4 mb-5">
-    <!--<div class="col-md-4">
+    <div class="col-md-8">
       <div class="dashboard-chart p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Superannuation Growth</h5>
-        {% if data.super is defined and data.super is not none %}
-            <canvas id="superGrowthChart" style="max-width: 100%; max-height: 220px;"></canvas>
-           
-        {% else %}
-          <span class="text-muted">Please calculate your superannuation growth</span>
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 class="mb-2">Subscription Breakdown</h5><br>
+        {% if subs_annual is defined and subs_annual is not none %}
+            <canvas id="subscriptionChart" style="max-width: 100%; max-height: 220px;"></canvas>
         {% endif %}
       </div>
-    </div>-->
-    <div class="col-md-6">
-      <div class="dashboard-chart p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Expense Breakdown</h5>
-        <canvas id="expenseBreakdownChart" style="max-width: 100%; max-height: 220px;"></canvas>
-      </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
       <div class="dashboard-chart p-3 text-center"
-        style="height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Drawdown Over Time</h5>
-        <canvas id="drawdownChart" style="max-width: 100%; max-height: 220px;"></canvas>
+        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h5 style="margin-top:120px;" class="mb-2">Subscription Amount ($)</h5>
+        <div style="font-size:2.5rem; font-weight:700; color:#198754;">
+        {% if subs_annual is defined and subs_annual is not none %}
+            ${{ "{:,.2f}".format(subs_annual) }}
+            <canvas id="subscriptionChart" style="max-width: 100%; max-height: 220px;"></canvas>
+        {% endif %}
+        </div>
       </div>
     </div>
   </div>
-  <!-- Fourth row: two wide charts -->
-  <div class="row g-4 mb-5">
-    <div class="col-md-6">
-      <div class="dashboard-chart p-3 text-center"
-        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Income Sources</h5>
-        <canvas id="incomeSourcesChart" style="max-width: 100%; max-height: 320px;"></canvas>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="dashboard-chart p-3 text-center"
-        style="height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h5 class="mb-2">Income vs Expenses</h5>
-        <canvas id="incomeExpensesChart" style="max-width: 100%; max-height: 220px;"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
+
+
+<div class="row">
+  <div class="col-md-12 text-center mt-4">
+    <hr>💌
+    <p class="text-muted fst-italic mb-1">
+      More charts and insights are currently being developed and you can find them here once they are released. <br>Until then, we wish you a wonderful pre-retirement journey!
+    </p>
+    <br>
+    <p class="text-muted fst-italic">
+      With care,
+      <br><strong>Your PrimeTime Toolkit Team</strong>
+    </p><br>
+  </div><hr>
+</div><br><br>
 
 <!-- Chart.js scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-  const dashboardData = JSON.parse(`{{ data|tojson|safe }}`);
-  console.log("Dashboard Data:", dashboardData);
+   
+  const financialSummary = {
+    income: {{ income_annual|default(0)|float }},
+    expenses: {{ expenses_annual|default(0)|float }},
+    surplus: {{ surplus_annual|default(0)|float }}
+  };
 
-  //  Helper to get safe values
-  const safe = (obj, path, def = 0) =>
-    path.split('.').reduce((o, p) => (o ? o[p] : def), obj) ?? def;
 
- 
-    // ================================
-    //  1. Assets vs Liabilities
-    // ================================
-    const assetsTotal = safe(dashboardData, 'assets.total');
-    const liabilitiesTotal = safe(dashboardData, 'liabilities.total');
-    console.log("Total assets : ", assetsTotal);
-    const assetsChartEl = document.getElementById('assetsLiabilitiesChart');
-    if (assetsChartEl && (assetsTotal || liabilitiesTotal)) {
-      new Chart(document.getElementById('assetsLiabilitiesChart'), {
-        type: 'doughnut',
-        data: {
-          labels: ['Assets', 'Liabilities'],
-          datasets: [{
-            data: [assetsTotal, liabilitiesTotal],
-            backgroundColor: ['#4CAF50', '#F44336'],
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: 'bottom' },
-            title: { display: true, text: 'Assets vs Liabilities' }
-          }
+  const expensesBreakdown = {
+    essentials: {{ expense_buckets_sum|float }},
+    subscriptions: {{ subs_annual|float }},
+    oneOffs: {{ epic_annual|float }}
+  };
+
+console.log({{subs_breakdown}})
+const dashboardData = {
+  assets: { total: {{ assets_total|float }} },
+  liabilities: { total: {{ liabilities_total|float }} },
+  income: {
+    total: {{ income_annual|float }},
+    items: [
+      { label: "Annual Income", value: {{ income_annual|float }} }
+    ]
+  },
+  expenses: {
+    total: {{ expenses_annual|float }},
+    items: [
+      { label: "Essentials", value: {{ expense_buckets_sum|default(0)|float }} },
+      { label: "Subscriptions", value: {{ subs_annual|default(0)|float }} },
+      { label: "One-Offs", value: {{ epic_annual|default(0)|float }} }
+    ]
+
+  },
+  net_worth: {{ net_worth|float }},
+  drawdown_over_time: {
+    months: ["Year 1", "Year 2", "Year 3", "Year 4", "Year 5"],
+    values: [{{ net_worth|float }}, {{ net_worth|float * 0.9 }}, {{ net_worth|float * 0.75 }}, {{ net_worth|float * 0.6 }}, {{ net_worth|float * 0.45 }}]
+  },
+  super: {
+    years: ["2025", "2026", "2027", "2028", "2029"],
+    values: [{{ assets_total|float * 0.1 }}, {{ assets_total|float * 0.2 }}, {{ assets_total|float * 0.3 }}, {{ assets_total|float * 0.4 }}, {{ assets_total|float * 0.5 }}]
+  },
+  subscriptions: {
+    items: [
+      { label: "Placeholder Subscription", value: 0 }
+    ]
+  }
+};
+
+console.log(dashboardData);
+
+  // ---------------------Start of Charts --------------------------
+
+// --------- ASSETS VS LIABILITIES ------------
+
+var ctxAssetsLiabilities = document.getElementById('assetsLiabilitiesChart').getContext('2d');
+var assetsLiabilitiesChart = new Chart(ctxAssetsLiabilities, {
+  type: 'bar',
+  data: {
+    labels: ['Assets', 'Liabilities'],
+    datasets: [{
+      label: 'Amount',
+      data: [dashboardData.assets.total, dashboardData.liabilities.total],
+      backgroundColor: ['#3bb3c3', '#1a7f8c']
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+
+// --------- INCOME VS EXPENSES ------------
+
+const ctxIncomeVsExpenses = document.getElementById('incomeVsExpensesChart').getContext('2d');
+new Chart(ctxIncomeVsExpenses, {
+  type: 'bar',
+  data: {
+    labels: ['Income', 'Expenses'],
+    datasets: [{
+      label: 'Annual Amount',
+      data: [financialSummary.income, financialSummary.expenses],
+      backgroundColor: ['#198754', '#dc3545']
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `$${ctx.parsed.toLocaleString()}`
         }
-      });
-    } else {
-      document.getElementById('assetsLiabilitiesChart').style.display = 'none';
+      },
+  
+    },
+    scales: {
+      y: { beginAtZero: true }
     }
+  }
+});
 
-    // ================================
-    //  2. Subscription Amount Chart
-    // ================================
-    /*const subItems = dashboardData.subscriptions?.items || [];
-    if (subItems.length > 0) {
-      const subLabels = subItems.map(item => item.name);
-      const subValues = subItems.map(item => item.amount);
 
-      new Chart(document.getElementById('debtPaydownChart'), {
-        type: 'bar',
-        data: {
-          labels: subLabels,
-          datasets: [{
-            label: 'Amount ($)',
-            data: subValues,
-            backgroundColor: '#3bb3c3',
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            title: { display: true, text: 'Subscriptions' }
-          },
-          scales: {
-            y: { beginAtZero: true }
-          }
+// --------- INCOME SOURCES ------------
+
+const incomeSources = {{ income_breakdown | tojson }};
+
+const ctxIncomeSources = document.getElementById('incomeSourcesChart').getContext('2d');
+const incomeLabels = incomeSources.map(item => item.label);
+const incomeValues = incomeSources.map(item => item.value);
+
+new Chart(ctxIncomeSources, {
+  type: 'bar',
+  data: {
+    labels: incomeLabels,
+    datasets: [{
+      label: 'Annual Income by Source',
+      data: incomeValues,
+      backgroundColor: '#198754'
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `$${ctx.parsed.toLocaleString()}`
         }
-      });
-    } else {
-      document.getElementById('debtPaydownChart').style.display = 'none';
+      }
+    },
+    scales: {
+      y: { beginAtZero: true }
     }
-    */
-    /*
-    // ================================
-    //  3. Superannuation Growth
-    // ================================
-    const superYears = dashboardData.super?.years || [];
-    const superBalance = dashboardData.super?.balance || [];
+  }
+});
 
-    if (superYears.length && superBalance.length) {
-      new Chart(document.getElementById('superGrowthChart'), {
-        type: 'line',
-        data: {
-          labels: superYears,
-          datasets: [{
-            label: 'Balance ($)',
-            data: superBalance,
-            borderColor: '#4e73df',
-            fill: false,
-            tension: 0.3
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            title: { display: true, text: 'Superannuation Over Time' }
-          },
-          scales: {
-            y: { beginAtZero: true }
-          }
+
+// --------- EXPENSE BREAKDOWN ------------
+
+const ctxExpensesBreakdown = document.getElementById('expensesBreakdownChart').getContext('2d');
+new Chart(ctxExpensesBreakdown, {
+  type: 'bar',
+  data: {
+    labels: ['Essentials', 'Subscriptions', 'One-Offs'],
+    datasets: [{
+      label: 'Annual Cost',
+      data: [
+        expensesBreakdown.essentials,
+        expensesBreakdown.subscriptions,
+        expensesBreakdown.oneOffs
+      ],
+      backgroundColor: ['#6c757d', '#ffe066', '#cc917d']
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `$${ctx.parsed.toLocaleString()}`
         }
-      });
-    } else {
-      document.getElementById('superGrowthChart').style.display = 'none';
+      }
+    },
+    scales: {
+      y: { beginAtZero: true }
     }
-    */
-    // ================================
-    //  4. Expense Breakdown by Category
-    // ================================
-    const expenseItems = dashboardData.expenses?.items || [];
-    if (expenseItems.length > 0) {
-      const grouped = expenseItems.reduce((acc, item) => {
-        acc[item.category] = (acc[item.category] || 0) + item.amount;
-        return acc;
-      }, {});
+  }
+});
 
-      const expenseLabels = Object.keys(grouped);
-      const expenseValues = Object.values(grouped);
 
-      new Chart(document.getElementById('expenseBreakdownChart'), {
-        type: 'bar',
-        data: {
-          labels: expenseLabels,
-          datasets: [{
-            label: 'Amount ($)',
-            data: expenseValues,
-            backgroundColor: '#f6c23e',
-          }]
-        },
-        options: {
-          responsive: true,
-          indexAxis: 'y',
-          plugins: {
-            legend: { display: false },
-            title: { display: true, text: 'Expense Breakdown' }
-          },
-          scales: {
-            x: { beginAtZero: true }
-          }
+// --------- SUBSCRIPTIONS ------------
+
+const subscriptionItems = {{ subs_breakdown | tojson }};
+
+const ctxSubscriptionChart = document.getElementById('subscriptionChart').getContext('2d');
+const subsLabels = subscriptionItems.map(item => item.label);
+const subsValues = subscriptionItems.map(item => item.value);
+
+new Chart(ctxSubscriptionChart, {
+  type: 'bar',
+  data: {
+    labels: subsLabels,
+    datasets: [{
+      label: 'Annual Subscription Cost',
+      data: subsValues,
+      backgroundColor: '#ffe066'
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `$${ctx.parsed.toLocaleString()}`
         }
-      });
-    } else {
-      document.getElementById('expenseBreakdownChart').style.display = 'none';
+      }
+    },
+    scales: {
+      y: { beginAtZero: true }
     }
+  }
+});
 
-    // ================================
-    //  5. Drawdown Over Time
-    // ================================
-    const ddMonths = dashboardData.drawdown_over_time?.months || [];
-    const ddValues = dashboardData.drawdown_over_time?.values || [];
 
-    if (ddMonths.length && ddValues.length) {
-      new Chart(document.getElementById('drawdownChart'), {
-        type: 'line',
-        data: {
-          labels: ddMonths,
-          datasets: [{
-            label: 'Drawdown ($)',
-            data: ddValues,
-            borderColor: '#e74a3b',
-            fill: false,
-            tension: 0.3
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            title: { display: true, text: 'Drawdown Over Time' }
-          },
-          scales: {
-            y: { beginAtZero: true }
-          }
-        }
-      });
-    } else {
-      document.getElementById('drawdownChart').style.display = 'none';
-    }
+// --------- NEEDED??? ------------
 
-    // ================================
-    //  6. Income Sources
-    // ================================
-    const incomeItems = dashboardData.income?.items || [];
+var ctxSuperGrowth = document.getElementById('superGrowthChart').getContext('2d');
+var superGrowthChart = new Chart(ctxSuperGrowth, {
+  type: 'line',
+  data: {
+    labels: dashboardData.super.years,
+    datasets: [{
+      label: 'Super Growth',
+      data: dashboardData.super.values,
+      backgroundColor: 'rgba(59,179,195,0.15)',
+      borderColor: '#3bb3c3',
+      borderWidth: 2
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
 
-    if (incomeItems.length > 0) {
-      const incomeLabels = incomeItems.map(item => item.label);
-      const incomeValues = incomeItems.map(item => item.value);
 
-      const ctxIncome = document.getElementById('incomeSourcesChart').getContext('2d');
+// --------- DRAWDOWN ------------
 
-      new Chart(ctxIncome, {
-        type: 'pie',
-        data: {
-          labels: incomeLabels,
-          datasets: [{
-            data: incomeValues,
-            backgroundColor: [
-              '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
-              '#858796', '#fd7e14', '#6f42c1', '#20c997'
-            ],
-            borderWidth: 1,
-            borderColor: '#fff'
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'right'
-            },
-            title: {
-              display: true,
-              text: 'Income Sources'
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const value = context.raw;
-                  const total = incomeValues.reduce((a,b) => a+b, 0);
-                  const percent = ((value / total) * 100).toFixed(1);
-                  return `${context.label}: $${value.toLocaleString()} (${percent}%)`;
-                }
-              }
-            }
-          }
-        }
-      });
-    } else {
-      document.getElementById('incomeSourcesChart').style.display = 'none';
-    }
-
-    // ================================
-    //  7. Income vs Expenses
-    // ================================
-    const ctxIncomeExpenses = document.getElementById('incomeExpensesChart')?.getContext('2d');
-
-    if (ctxIncomeExpenses) {
-      const totalIncome = dashboardData.income?.total || 0;
-      const totalExpenses = dashboardData.expenses?.total || 0;
-
-      new Chart(ctxIncomeExpenses, {
-        type: 'bar',
-        data: {
-          labels: ['Income', 'Expenses'],
-          datasets: [{
-            label: 'Amount ($)',
-            data: [totalIncome, totalExpenses],
-            backgroundColor: ['#4e73df', '#e74a3b']
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            title: {
-              display: true,
-              text: 'Income vs Expenses'
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return `$${context.raw.toLocaleString()}`;
-                }
-              }
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'Amount ($)'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Category'
-              }
-            }
-          }
-        }
-      });
-    } else {
-      document.getElementById('incomeExpensesChart').style.display = 'none';
-    }
+var ctxDrawdownOverTime = document.getElementById('drawdownChart').getContext('2d');
+var drawdownOverTimeChart = new Chart(ctxDrawdownOverTime, {
+  type: 'line',
+  data: {
+    labels: dashboardData.drawdown_over_time.months,
+    datasets: [{
+      label: 'Drawdown Over Time',
+      data: dashboardData.drawdown_over_time.values,
+      backgroundColor: 'rgba(26,127,140,0.15)',
+      borderColor: '#1a7f8c',
+      borderWidth: 2
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
  
 </script>
 {% endblock %}
