@@ -518,7 +518,8 @@ input:checked+.slider:before{transform:translateX(24px)}
 }
 
 .btn-start:active {
-  background: rgba(190,146,0,0.12);       
+  background: rgba(190,146,0,0.12);
+}
 
 .btn-start:focus-visible {
   outline: 2px solid rgba(190,146,0,0.35);
@@ -781,13 +782,16 @@ input:checked+.slider:before{transform:translateX(24px)}
 
 
 
-/* Footer */
+/* =====================
+   Footer Redesign — Modern Clean Look
+   ===================== */
 footer {
-  background: linear-gradient(90deg, var(--darker-blue), #001c3d);
-  color: #e5e5e5;
-  padding: 2.5rem 0 1.6rem;
-  font-size: 0.95rem;
+  background: var(--darker-blue);
+  color: #ffffff;
+  padding: 3rem 0 2rem;
 }
+
+/* Ensure footer headings are visible on dark background */
 .footer-section .footer-title {
   color: #ffffff;
   font-weight: 700;
@@ -828,7 +832,7 @@ footer {
 .footer-column li { margin-bottom: 0.25rem; }
 
 .footer-column a {
-  color: #d6d6d6;
+  color: #ffffff;
   text-decoration: none;
   font-size: 0.98rem;
   line-height: 1.6;
@@ -908,12 +912,9 @@ footer {
   font-size: 0.9rem;
 }
 
+/* Footer bottom bar */
 .footer-bottom {
-  text-align: center;
-  border-top: 1px solid rgba(255,255,255,0.15);
-  margin-top: 2rem;
-  padding-top: 1.2rem;
-  color: #aaa;
+  color: #cccccc;
   font-size: 0.9rem;
 }
 
@@ -933,14 +934,19 @@ footer {
     text-align: center;
   }
 }
+/* Contact item alignment and color */
 .contact-item {
   display: flex;
   align-items: center;
   gap: .6rem;
-  color: #d6d6d6;
+  color: #ffffff;
   line-height: 1.6;
 }
-.footer-container i.bi { color: #e5e5e5; font-size: 1rem; line-height: 1; }
+
+/* Bootstrap icons in footer inherit color */
+.footer-container i.bi { color: #ffffff; font-size: 1rem; line-height: 1; }
+
+/* Social icons: horizontal, left-aligned with subtle spacing */
 .social-list {
   list-style: none;
   display: flex;
@@ -949,7 +955,7 @@ footer {
   justify-content: flex-start;
   gap: 12px;
   padding: 0;
-  margin: 8px 0 0; 
+  margin: 8px 0 0; /* gentle spacing from paragraph above */
   text-align: left;
 }
 .social-list li { margin: 0; padding: 0; }
@@ -961,6 +967,7 @@ footer {
   object-fit: contain;
 }
 
+/* Footer blurb description text style */
 .footer-blurb {
   color: #ffffff !important;
   max-width: 420px;
