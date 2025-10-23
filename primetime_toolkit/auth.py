@@ -89,9 +89,12 @@ def register():
         img_b64 = base64.b64encode(buf.getvalue()).decode('utf-8')
 
 
-        flash('Account created successfully!','success')
-        return render_template('verify_2fa.html', qr_code=img_b64)
+        flash('Account created successfully!', 'success')
+        login_user(new_user) 
+        return redirect(url_for('auth.verify_2fa', method='qr'))
     return render_template('register.html', form=form)
+
+
 
 
 

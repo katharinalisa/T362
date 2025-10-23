@@ -2,9 +2,11 @@
 {% extends 'layout.html' %}
 {% block title %}Something Went Wrong{% endblock %}
 {% block content %}
+<br>
 <div class="text-center mt-5">
   <h2>Oops! Something went wrong.</h2>
   <p>Our server responded with an error. Please try again later or contact the support if the issue persists.</p>
   <a href="{{ url_for('views.home') }}" class="btn btn-primary mt-3">Back to Home</a>
 </div>
+<div style="height:300px;"></div>
 {% endblock %}

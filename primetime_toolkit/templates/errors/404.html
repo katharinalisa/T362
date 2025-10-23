@@ -2,9 +2,11 @@
 {% extends 'layout.html' %}
 {% block title %}Page Not Found{% endblock %}
 {% block content %}
+<br>
 <div class="text-center mt-5">
   <h2>The page you requested was not found.</h2>
   <p>Please go back to the home page.</p>
   <a href="{{ url_for('views.home') }}" class="btn btn-primary mt-3">Back to Home</a>
 </div>
+<div style="height:300px;"></div>
 {% endblock %}

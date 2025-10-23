@@ -163,6 +163,11 @@
         transition: transform 0.5s ease;
       }
 
+      .alert-dismissible {
+        transition: opacity 0.5s ease-out;
+      }
+
+
   </style>
   
   <meta charset="UTF-8" />
@@ -265,21 +270,26 @@
     </div>
   </nav>
 
-  <!-- Flash messages -->
-  <div id="flash-overlay" style="position:fixed; top:90px; left:0; width:100%; z-index:2000; pointer-events:none;">
+
+
+  <!------- Flash messages -------->
+  <div id="flash-overlay" style="position:fixed; top:90px; left:0; width:100%; z-index:2000; pointer-events:none;margin-top:35px;">
     <div class="d-flex flex-column align-items-center w-100">
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           {% for category, message in messages %}
-            <div class="alert alert-{{ category }} alert-dismissible fade show shadow" role="alert" style="max-width:480px; pointer-events:auto; background: #fff; opacity: 1;">
+            <div class="alert alert-{{ category }} alert-dismissible fade show shadow" role="alert" style="max-width:480px; pointer-events:auto; background: #fff; opacity: 1; padding-left:50px;padding-right:50px;">
               {{ message }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
             </div>
           {% endfor %}
         {% endif %}
       {% endwith %}
     </div>
   </div>
+  
+
+
 
   <main class="container mt-4">
     {% block content %}{% endblock %}
@@ -406,6 +416,19 @@
     });
   </script>
 
+
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const alerts = document.querySelectorAll('.alert-dismissible');
+      alerts.forEach(alert => {
+        setTimeout(() => {
+          alert.style.opacity = '0';
+          setTimeout(() => alert.remove(), 500); // remove after fade
+        }, 8000); // stays for 8 seconds
+      });
+    });
+  </script>
 
 
   <!-- Bootstrap JS -->
