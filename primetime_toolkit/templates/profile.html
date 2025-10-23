@@ -13,14 +13,9 @@
       <!-- Personal Info -->
       <div class="row mb-3">
         <div class="col">
-          <label class="form-label">First Name</label>
+          <label class="form-label">Name</label>
           <input type="text" name="first_name" class="form-control"
-                 value="{{ user.first_name | default("") }}">
-        </div>
-        <div class="col">
-          <label class="form-label">Last Name</label>
-          <input type="text" name="last_name" class="form-control"
-                 value="{{ user.last_name | default("") }}">
+                 value="{{ user.name | default("") }}">
         </div>
       </div>
 
@@ -29,63 +24,45 @@
         <input type="email" name="email" class="form-control"
                value="{{ user.email | default("") }}">
       </div>
-
-      <div class="mb-3">
-        <label class="form-label">Phone Number</label>
-        <input type="text" name="phone" class="form-control"
-               value="{{ user.phone | default("") }}">
-      </div>
-
-      <div class="row mb-3">
-        <div class="col">
-          <label class="form-label">Country</label>
-          <input type="text" name="country" class="form-control"
-                 value="{{ user.country | default("") }}">
-        </div>
-        <div class="col">
-          <label class="form-label">City</label>
-          <input type="text" name="city" class="form-control"
-                 value="{{ user.city | default("") }}">
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Zip Code</label>
-        <input type="text" name="zip_code" class="form-control"
-               value="{{ user.zip_code | default("") }}">
-      </div>
-
+    
       <!-- Financial Info -->
       <h4 class="mt-4 mb-3">Financial Information</h4>
 
-      <div class="mb-3">
-        <label class="form-label">Total Income</label>
-        <input type="number" step="0.01" name="income" class="form-control"
-               value="{{ user.income | default("") }}">
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Liabilities</label>
-        <input type="number" step="0.01" name="liabilities" class="form-control"
-               value="{{ user.liabilities | default("") }}">
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Assets</label>
+       <div class="mb-3">
+        <label class="form-label">Current Total Assets</label>
         <input type="number" step="0.01" name="assets" class="form-control"
-               value="{{ user.assets | default("") }}">
+               value="{{ summary_data['assets_total'] | default("") }}">
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Expenses</label>
-        <input type="number" step="0.01" name="expenses" class="form-control"
-               value="{{ user.expenses | default("") }}">
+        <label class="form-label">Current Total Liabilities</label>
+        <input type="number" step="0.01" name="liabilities" class="form-control"
+               value="{{ summary_data['liabilities_total'] | default("") }}">
       </div>
 
-      <div class="mb-3">
-        <label class="form-label">Subscriptions</label>
+        <div class="mb-3">
+        <label class="form-label">Current Net Worth</label>
         <input type="text" name="subscriptions" class="form-control"
-               value="{{ user.subscriptions | default("") }}">
+               value="{{ summary_data['net_worth'] | default("") }}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Total Annual Income</label>
+        <input type="number" step="0.01" name="income" class="form-control"
+               value="{{ summary_data['income_annual'] | default("") }}">
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Total Annual Expenses</label>
+        <input type="number" step="0.01" name="expenses" class="form-control"
+               value="{{ summary_data['expenses_annual'] | default("") }}">
+      </div>
+      
+       {% set net_income = summary_data['income_annual'] - summary_data['expenses_annual'] %}
+      <div class="mb-3">
+        <label class="form-label">Annual Net Income</label>
+        <input type="number" step="0.01" name="expenses" class="form-control"
+              value="{{ net_income | default("") }}">
       </div>
 
       <!-- Buttons -->

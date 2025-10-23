@@ -188,7 +188,9 @@ def resend_email_otp():
 
 @auth.route('/profile')
 def profile():
-    return render_template('profile.html', user=current_user)
+    fin_summary_data = get_calculator_summary(current_user.id)
+    print("DEBUG - fin_summary_data:", fin_summary_data)
+    return render_template('profile.html', user=current_user, summary_data=fin_summary_data)
 
 
 

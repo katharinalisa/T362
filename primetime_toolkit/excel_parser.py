@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from collections import defaultdict
 
 def extract_items_auto(path, sheet_name, max_header_check=5):
  
@@ -18,6 +19,9 @@ def extract_items_auto(path, sheet_name, max_header_check=5):
             
             label_candidates = [c for c in cols if c != value_col]
             label_col = label_candidates[0] if label_candidates else cols[0]
+
+            freq_candidates = [c for c in cols if any(x in c.lower() for x in ["freq", "frequency"])]
+            freq_col = freq_candidates[0] if freq_candidates else None
 
             items, total = [], 0
             for _, row in df.iterrows():
@@ -99,10 +103,6 @@ def parse_excel(path):
     liab_name = find_sheet(sheets, ["liab", "debt", "loan", "mortgage"])
     liab_items, liab_total = extract_items_auto(path, liab_name) if liab_name else ([], 0)
 
-
-
-
-
     # --- Net Worth (explicit override if available) ---
     nw_sheet = find_sheet(sheets, ["summary", "overview", "net worth"])
     explicit_net_worth = extract_net_worth(path, nw_sheet) if nw_sheet else None
@@ -110,16 +110,40 @@ def parse_excel(path):
 
     print(f"Net Worth = {net_worth}\n")
 
-
-
+    frequency_map = defaultdict(lambda: 12, {
+        "weekly": 52,
+        "fortnightly": 26,
+        "monthly": 12,
+        "quarterly": 4,
+        "annually": 1,
+        "yearly": 1,
+        "daily": 365,
+    })
 
     # --- Expenses ---
     exp_name = find_sheet(sheets, ["expense", "spending"])
     exp_items, exp_total = extract_items_auto(path, exp_name) if exp_name else ([], 0)
 
+    expense_buckets_sum = defaultdict(float)
+    for item in exp_items:
+        label = (item.get("label") or "Other").strip().title()
+        value = float(item.get("value") or 0.0)
+        expense_buckets_sum[label] += value
+
+    
     # --- Subscriptions ---
     subs_name = find_sheet(sheets, ["subs", "subscription", "services"])
     subs_items, subs_total = extract_items_auto(path, subs_name) if subs_name else ([], 0)
+
+    grouped_subs = defaultdict(float)
+    for item in subs_items:
+        label = (item.get("label") or "Other").strip().title()
+        value = float(item.get("value") or 0.0)
+        grouped_subs[label] += value
+    
+    subs_breakdown = [
+        {"label": lbl, "value": round(val, 2)} for lbl, val in grouped_subs.items()
+    ]
 
     # Merge subscriptions into expenses
     exp_total += subs_total
@@ -131,6 +155,17 @@ def parse_excel(path):
     if inc_total == 0:
         inc_total = 5000
         print("No income found, using fallback=5000")
+
+    grouped_incomes = defaultdict(float)
+    for item in inc_items:
+        label = (item.get("label") or "Other").strip().title()
+        value = float(item.get("value") or 0.0)
+        grouped_incomes[label] += value
+    
+    income_breakdown = [
+        {"label": lbl, "value": round(val, 2)} for lbl, val in grouped_incomes.items()
+    ]
+
     monthly_savings = max(0, inc_total - exp_total)
     print(f"Monthly Savings = {monthly_savings}\n")
 
@@ -181,9 +216,9 @@ def parse_excel(path):
         "assets": {"total": assets_total, "items": assets_items},
         "liabilities": {"total": liab_total, "items": liab_items},
         "monthly_savings": monthly_savings,
-        "expenses": {"total": exp_total, "items": exp_items},
-        "subscriptions": {"total": subs_total, "items": subs_items},
-        "income": {"total": inc_total, "items": inc_items},
+        "expenses": {"total": exp_total, "items": exp_items, "buckets_sum": expense_buckets_sum},
+        "subscriptions": {"total": subs_total, "items": subs_items, "breakdown": subs_breakdown},
+        "income": {"total": inc_total, "items": inc_items, "breakdown": income_breakdown},
         "emergency_fund": {"goal": ef_goal, "current": ef_current},
         "super": {"years": super_years, "values": super_values},
         "savings_over_time": {"months": months, "values": savings_values},

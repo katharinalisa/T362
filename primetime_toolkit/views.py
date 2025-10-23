@@ -30,6 +30,7 @@ def dashboard():
 
 @views.route('/dashboard-spreadsheet', methods=['GET'])
 def dashboard_spreadsheet():
+    user_id = current_user.id
     upload_folder = current_app.config['UPLOAD_FOLDER']
     data = {}
     if os.path.exists(upload_folder):
@@ -38,9 +39,34 @@ def dashboard_spreadsheet():
             latest_file = max(files, key=os.path.getmtime)
             data = parse_excel(latest_file)
 
-    net_worth = data.get("net_worth", 0)
-    assets_total = data.get("assets", {}).get("total", 0)
-    return render_template('dashboard-spreadsheet.html', data=data, net_worth=net_worth, assets_total=assets_total)
+    epic_years = session.get("epic_years", 10)
+    epic_items = EpicExperience.query.filter_by(user_id=user_id, include=True).all()
+
+    epic_annual = sum(
+        e.amount * (
+            1 if e.frequency == 'Once only' else
+            epic_years if e.frequency == 'Every year' else
+            math.floor(epic_years / 2)
+        )
+        for e in epic_items
+    ) / epic_years
+   
+    post_epic_surplus = data.get("monthly_savings", 0) - epic_annual
+
+    return render_template('dashboard-spreadsheet.html', 
+        net_worth = data.get("net_worth", 0),
+        assets_total = data.get("assets", {}).get("total", 0),
+        liabilities_total = data.get("liabilities", {}).get("total", 0),
+        income_annual = data.get("income", {}).get("total", 0),
+        income_breakdown = data.get("income", {}).get("breakdown", ""),
+        subs_annual = data.get("subscriptions", {}).get("total", 0),
+        subs_breakdown = data.get("subscriptions", {}).get("breakdown", ""),
+        expenses_annual = data.get("expenses", {}).get("total", 0),
+        expense_buckets_sum = data.get("expenses", {}).get("buckets_sum", 0),
+        surplus_annual = data.get("monthly_savings", 0),
+        epic_annual=epic_annual,
+        post_epic_surplus=post_epic_surplus,
+    )
 
 
 
