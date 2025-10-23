@@ -94,9 +94,7 @@ a:hover{text-decoration:underline}
 /* ------------------
    Navbar & Mega Menu
 ------------------- */
-.navbar{
-  background:var(--nav-color);padding:2.4rem 0;position:sticky;top:0;z-index:100
-}
+
 .navbar-brand img{height:60px}
 .logo-img{max-height:25px!important;width:auto}
 .navbar-nav{gap:1rem}
@@ -301,10 +299,11 @@ input:checked+.slider:before{transform:translateX(24px)}
 .white-bg{background:#fff}
 .white-bg.full-bleed{background:#fff;border-radius:0!important;box-shadow:none!important}
 .hero-dark{background:linear-gradient(135deg,var(--hero-deep-1) 0%,var(--hero-deep-2) 70%);color:#fff;padding:88px 0}
+.hero-black{background:rgb(22, 23, 27) 0%; padding:88px 0}
 .hero-wrap{max-width:1100px;margin:0 auto}
-.hero-title{font-size:clamp(38px,5.4vw,64px);line-height:1.15;font-weight:800;margin:0 0 12px;text-shadow:0 2px 6px rgba(0,0,0,.35)}
+.hero-title{font-size:clamp(38px,5.0vw,50px);line-height:1.15;font-weight:800;margin:0 0 12px;}
 .hero-dark .hero-title{color:#fff!important}
-.hero-sub{color:#E6EEF8;font-size:clamp(14px,2.2vw,18px);margin:0 0 24px}
+.hero-sub{color:#1d2631;font-size:clamp(14px,2.2vw,18px);margin:0 0 24px}
 .hero-dark .hero-sub{color:#E6EEF8!important}
 .btn-cta{background:#E11D48;border:0;font-weight:600;border-radius:.75rem;padding:.95rem 1.25rem;color:#fff}
 .btn-cta:hover{filter:brightness(.95);color:#fff}
@@ -336,6 +335,20 @@ input:checked+.slider:before{transform:translateX(24px)}
 .more-icon{width:40px;height:40px;border-radius:10px;background:#F6F3EE;display:grid;place-items:center;font-size:20px}
 @media (max-width:900px){.more-grid{grid-template-columns:1fr}}
 
+
+.more-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.more-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px); 
+}
 
 /* -----------------------
    Extras
