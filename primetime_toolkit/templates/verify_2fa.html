@@ -3,22 +3,48 @@
 {% block title %}Verify your Account - PrimeTime{% endblock %}
 
 {% block content %}
-<div class="container mt-5 text-center">
-    <h2>Enable Two-Factor Authentication</h2>
+<div class="container mt-5 text-center"><br>
+  <h1>Two-Factor Authentication</h1>
+
+  {% if method == 'qr' %}
     <p>Scan the QR code below with your authenticator app, then enter the 6-digit code it generates.</p>
-
     <img src="data:image/png;base64,{{ qr_code }}" style="width:180px;" alt="2FA QR Code" class="mb-3"><br><br>
+  {% elif method == 'email' %}
+    <p>Enter the 6-digit code sent to your email:</p>
+  {% endif %}
 
+  <form method="POST">
+    <input type="text" name="code" maxlength="6"
+          class="form-control mx-auto mb-3"
+          style="max-width: 300px; border-radius: 1px;"
+          placeholder="Enter the 6-digit code">
 
-    <form method="POST">
-        <input type="text" name="code" maxlength="6" class="form-control d-inline-block w-auto" placeholder="Enter the 6-digit code"><br>
-        <button type="submit" class="btn btn-primary mt-2">Verify</button>
-    </form><br>
+    <button type="submit"
+            class="btn mt-2"
+            style="background-color: #8457df; color: #f3f3f3; border-radius: 20px; padding: 10px 40px; width:300px; font-weight: 500;">
+      Verify
+    </button>
+  </form>
 
-
-    <form method="POST" action="{{ url_for('auth.skip_2fa') }}">
-        <button type="submit" class="btn btn-secondary mt-2">Skip for Now</button>
+  
+{% if method == 'qr' %}
+  <p>
+    Can't scan the QR code?
+    <a href="{{ url_for('auth.verify_2fa', method='email') }}" style="color:rgb(12, 49, 255)">Use email verification</a>
+  </p>
+  {% elif method == 'email' %}
+    <p>
+      Didn’t receive the code?
+      <a href="{{ url_for('auth.resend_email_otp') }}" style="color:rgb(12, 49, 255)">Resend email</a>
+    </p>
+    <br>
+    <p>Prefer using a QR code for verification?</p>
+    <form method="GET" action="{{ url_for('auth.verify_2fa') }}">
+      <input type="hidden" name="method" value="qr">
+      <button type="submit" class="btn btn-outline-primary">Use Authenticator App</button>
     </form>
+  {% endif %}
+
 
 
   {% with messages = get_flashed_messages(with_categories=true) %}
@@ -26,5 +52,5 @@
       <div class="alert alert-{{ category }} mt-3">{{ message }}</div>
     {% endfor %}
   {% endwith %}
-</div><br><br>
+</div><br><br><br>
 {% endblock %}
