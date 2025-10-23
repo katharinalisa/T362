@@ -493,18 +493,36 @@ input:checked+.slider:before{transform:translateX(24px)}
 
 /* Buttons */
 
-.btn-start{
-  background-color: var(--brand, #009688);
-  border: none;
-  color:#fff;
-  font-weight:500;
+.btn-start {
+  display: inline-block;
+  font-size: 1.1rem;
+  padding: 0.7rem 1.4rem;
+  background: transparent;                 
+  color: var(--accent-color, #be9200);     
+  border: 1.5px solid currentColor;        
+  border-radius: 36px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+  line-height: 1.2;
+  box-shadow: none;                      
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.btn-start:hover,
+.btn-start:focus {
+  background: rgba(190,146,0,0.08);      
+  color: var(--accent-color, #be9200);
+  border-color: var(--accent-color, #be9200);
   text-decoration: none;
 }
-.btn-start:hover{
-  filter:brightness(.95);
-  color:#fff;
-  text-decoration: none;
-  background-color: #006f65;
+
+.btn-start:active {
+  background: rgba(190,146,0,0.12);       
+
+.btn-start:focus-visible {
+  outline: 2px solid rgba(190,146,0,0.35);
+  outline-offset: 2px;
 }
 
 @media (max-width: 576px) {
