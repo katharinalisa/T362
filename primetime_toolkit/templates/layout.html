@@ -167,7 +167,6 @@
         transition: opacity 0.5s ease-out;
       }
 
-
   </style>
   
   <meta charset="UTF-8" />
@@ -177,6 +176,8 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="icon" type="image/webp" href="{{ url_for('static', filename='img/primetime-favicon.webp') }}">
+
 
   <!-- Global Styles -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
@@ -201,15 +202,6 @@
           <li class="nav-item dropdown">
             <a class="nav-link px-3 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">Overview</a>
             <div class="dropdown-menu mega-menu">
-              <a class="mega-item" href="{{ url_for('views.learninghub') }}">
-                <div class="flex-grow-1">
-                  <div class="title">Learning Hub</div>
-                  <div class="desc">Bite‑size guides and explainers to build money confidence.</div>
-                </div>
-                <div class="thumb" style="width:120px; height:72px; border-radius:12px; overflow:hidden;">
-                  <img src="{{ url_for('static', filename='img/lh.png') }}" alt="Self Assessment" style="width:100%; height:100%; object-fit:cover; display:block; border-radius:inherit;">
-                </div>
-              </a>
               <a class="mega-item" href="{{ url_for('views.assessment_intro') }}">
                 <div class="flex-grow-1">
                   <div class="title">Self‑Assessment</div>

@@ -55,7 +55,9 @@ def create_app():
         response.headers['Content-Security-Policy'] = (
             "default-src 'self'; "
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
-            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://code.jquery.com; "
+            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://code.jquery.com https://www.youtube.com; "
+            "frame-src 'self' https://www.youtube.com; "
+            "img-src 'self' data: https://i.ytimg.com; "
             "img-src 'self' data:; "
             "font-src 'self' https://cdn.jsdelivr.net; "
             "connect-src 'self' https://cdn.jsdelivr.net;"
