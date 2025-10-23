@@ -1,8 +1,6 @@
-/* === PrimeTime Toolkit — Global Styles (cleaned) === */
+/* === PrimeTime Toolkit  === */
 
-/* ------------------
-   Theme Variables
-------------------- */
+/* -------Theme Variables----------- */
 :root{
   --primary-color:#000;
   --accent-color:#be9200;
@@ -23,9 +21,6 @@
   --hero-deep-1:#0F1C2E;
   --hero-deep-2:#173451;
 }
-
-/* Helper for full-bleed backgrounds:
-   width:100vw; margin-left:calc(-50vw + 50%); */
 
 /* ------------------
    Base & Typography
@@ -526,7 +521,7 @@ input:checked+.slider:before{transform:translateX(24px)}
 
 
 /* =====================
-   Global Progress Bar (merged)
+   Global Progress Bar 
    ===================== */
 .progress-container {
   width: 100%;
@@ -755,4 +750,192 @@ input:checked+.slider:before{transform:translateX(24px)}
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   max-width: 800px;
   margin: 0 auto;
+}
+
+
+
+/* Footer */
+footer {
+  background: linear-gradient(90deg, var(--darker-blue), #001c3d);
+  color: #e5e5e5;
+  padding: 2.5rem 0 1.6rem;
+  font-size: 0.95rem;
+}
+.footer-section .footer-title {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 0.1px;
+  margin-bottom: 0.5rem;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+  padding: 0 2rem;
+}
+
+@media (min-width: 992px) {
+  .footer-container {
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 2.5rem;
+  }
+}
+
+.footer-column h3 {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column li { margin-bottom: 0.25rem; }
+
+.footer-column a {
+  color: #d6d6d6;
+  text-decoration: none;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.footer-column a:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* Subscribe box */
+.footer-subscribe {
+  text-align: left;
+}
+
+.footer-subscribe p {
+  color: #d1d1d1;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.footer-subscribe .subscribe-form .d-flex {
+  display: flex;
+  gap: 10px;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.footer-subscribe .footer-input {
+  flex: 1 1 auto;
+  height: 44px;
+  border-radius: 28px;
+  border: 1.5px solid rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  padding: 0 16px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.footer-subscribe .footer-input::placeholder {
+  color: rgba(255,255,255,0.8);
+}
+
+.footer-subscribe .footer-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  background: rgba(255,255,255,0.15);
+}
+
+.footer-subscribe .subscribe-btn {
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 28px;
+  background: var(--accent-color);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background 0.25s ease, transform 0.15s ease;
+}
+
+.footer-subscribe .subscribe-btn:hover {
+  background: #d9a200;
+  transform: translateY(-1px);
+}
+
+.footer-subscribe .form-check {
+  margin-top: 10px;
+}
+
+.footer-subscribe .form-check-label {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.footer-bottom {
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  margin-top: 2rem;
+  padding-top: 1.2rem;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 575.98px) {
+  .footer-subscribe .subscribe-form .d-flex {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .footer-subscribe .footer-input,
+  .footer-subscribe .subscribe-btn {
+    width: 100%;
+  }
+  .footer-container {
+    text-align: center;
+  }
+  .footer-subscribe {
+    text-align: center;
+  }
+}
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  color: #d6d6d6;
+  line-height: 1.6;
+}
+.footer-container i.bi { color: #e5e5e5; font-size: 1rem; line-height: 1; }
+.social-list {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 0;
+  margin: 8px 0 0; 
+  text-align: left;
+}
+.social-list li { margin: 0; padding: 0; }
+.footer-brand .brand-logo{
+  display: block;
+  height: 26px;        
+  max-width: 160px;    
+  width: auto;
+  object-fit: contain;
+}
+
+.footer-blurb {
+  color: #ffffff !important;
+  max-width: 420px;
+  opacity: 1;
 }
