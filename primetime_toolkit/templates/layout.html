@@ -297,41 +297,61 @@
 
   <!-- Footer -->
   <footer><br>
-    <section class="gradient-section2 text-center" style="padding-top:2rem; padding-bottom:2rem;">
+    <section class="gradient-section2 footer-section" style="padding-top:2rem; padding-bottom:2rem;">
       <div class="container"><br>
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <h3 style="color:#bbbbbb;">Quick Links</h3>
-            <ul class="list-unstyled">
-              <li><a href="{{ url_for('views.home') }}" class="footer-list-item text-decoration-none">Home</a></li>
-              <li><a href="{{ url_for('views.learninghub') }}" class="footer-list-item text-decoration-none">Learning Hub</a></li>
-              <li><a href="{{ url_for('views.superannuation') }}" class="footer-list-item text-decoration-none">Superannuation</a></li>
-              <li><a href="{{ url_for('views.learninghub') }}#faq" class="footer-list-item text-decoration-none">FAQ</a></li>
+        <div class="footer-container">
+          <div class="footer-column footer-brand">
+            <div class="brand-line d-flex align-items-center gap-2 mb-2">
+              <img src="{{ url_for('static', filename='img/primetime_image.png') }}" alt="PrimeTime Toolkit" class="brand-logo" onerror="this.style.display='none'">
+            </div>
+            <p class="footer-blurb">Tools to help Australians plan, track and optimise their retirement journey with confidence.</p>
+            <ul class="social-list">
+              <li><a href="#" aria-label="Instagram" class="social-link"><i class="bi bi-instagram"></i></a></li>
+              <li><a href="#" aria-label="LinkedIn" class="social-link"><i class="bi bi-linkedin"></i></a></li>
+              <li><a href="#" aria-label="Facebook" class="social-link"><i class="bi bi-facebook"></i></a></li>
             </ul>
           </div>
-          <div class="col-md-4 mb-3">
-            <h3 style="color:#bbbbbb;">Contact Us</h3>
-            <p style="color:#bbbbbb;">
-              Email: <a href="mailto:support@primetimetoolkit.com.au">support@primetimetoolkit.com.au</a><br>
-              Phone: 1300 000 111<br>
-              Address: 88 Retirement Ave, Brisbane, QLD
-            </p>
-          </div>
-          <div class="col-md-4 mb-3">
-            <h3 style="color:#bbbbbb;">Tools & Resources</h3>
-            <ul class="list-unstyled">
-              <li><a href="{{ url_for('views.assessment_intro') }}" class="footer-list-item text-decoration-none">Self-Assessment</a></li>
-              <li><a href="{{ url_for('views.dashboard') }}" class="footer-list-item text-decoration-none">Dashboard</a></li>
-              <li><a href="{{ url_for('views.tracker') }}" class="footer-list-item text-decoration-none">Web Calculator</a></li>
+
+          <div class="footer-column">
+            <h3 class="footer-title">Explore</h3>
+            <ul>
+              <li><a href="{{ url_for('views.home') }}" class="footer-list-item">Home</a></li>
+              <li><a href="{{ url_for('views.learninghub') }}" class="footer-list-item">Learning Hub</a></li>
+              <li><a href="{{ url_for('views.tracker') }}" class="footer-list-item">Web Calculator</a></li>
+              <li><a href="{{ url_for('views.dashboard') }}" class="footer-list-item">Dashboard</a></li>
+              <li><a href="{{ url_for('views.assessment_intro') }}" class="footer-list-item">Self-Assessment</a></li>
+              <li><a href="{{ url_for('views.learninghub') }}#faq" class="footer-list-item">FAQ</a></li>
             </ul>
+          </div>
+
+          <div class="footer-column">
+            <h3 class="footer-title">Contact</h3>
+            <ul class="contact-list">
+              <li class="contact-item">
+                <i class="bi bi-geo-alt-fill icon" aria-hidden="true"></i>
+                <span>88 Retirement Ave, Brisbane, QLD</span>
+              </li>
+              <li class="contact-item">
+                <i class="bi bi-telephone-fill icon" aria-hidden="true"></i>
+                <span>1300 000 111</span>
+              </li>
+              <li class="contact-item">
+                <i class="bi bi-envelope-fill icon" aria-hidden="true"></i>
+                <span><a href="mailto:support@primetimetoolkit.com.au" class="footer-list-item">support@primetimetoolkit.com.au</a></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div class="footer-bottom-inner">
+            <div class="legal-left">© 2025 <em>PrimeTime Toolkit</em>. All rights reserved.</div>
           </div>
         </div>
       </div>
     </section>
-    <div class="text-center" style="font-size: 0.85rem; color:#aeaeae; background:transparent;">
-      © 2025 <span class="accent-text" style="color:#be9200;">PrimeTime Toolkit</span>. All rights reserved.
-    </div>
   </footer>
+
 
 
 <!--_________________________-->
