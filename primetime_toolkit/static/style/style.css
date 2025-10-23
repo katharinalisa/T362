@@ -492,6 +492,7 @@ input:checked+.slider:before{transform:translateX(24px)}
 }
 
 /* Buttons */
+
 .btn-start{
   background-color: var(--brand, #009688);
   border: none;
@@ -504,6 +505,14 @@ input:checked+.slider:before{transform:translateX(24px)}
   color:#fff;
   text-decoration: none;
   background-color: #006f65;
+}
+
+@media (max-width: 576px) {
+  .btn-start {
+    font-size: 0.95rem;
+    padding: 0.55rem 1rem;
+    border-radius: 28px;
+  }
 }
 
 .section-title{
