@@ -27,6 +27,8 @@ def extract_items_auto(path, sheet_name, max_header_check=5):
             for _, row in df.iterrows():
                 label = row[label_col]
                 value = row[value_col]
+                freq = row[freq_col] if freq_col else None
+
 
                 if pd.isna(label) or pd.isna(value):
                     continue
@@ -39,7 +41,7 @@ def extract_items_auto(path, sheet_name, max_header_check=5):
                 except (ValueError, TypeError):
                     continue
 
-                items.append({"label": label_str, "value": value})
+                items.append({"label": label_str, "value": value, "frequency": freq})
                 total += value
 
             if items:
@@ -169,6 +171,12 @@ def parse_excel(path):
     monthly_savings = max(0, inc_total - exp_total)
     print(f"Monthly Savings = {monthly_savings}\n")
 
+    #----Epic & One Off-----
+    epic_name = find_sheet(sheets, ["epic", "one-off",])
+    epic_years = 10
+    epic_items, epic_total = extract_items_auto(path, epic_name) if epic_name else ([], 0)
+
+    
     # --- Emergency Fund ---
     ef_name = find_sheet(sheets, ["emergency"])
     ef_goal, ef_current = 0, 0
@@ -219,6 +227,7 @@ def parse_excel(path):
         "expenses": {"total": exp_total, "items": exp_items, "buckets_sum": expense_buckets_sum},
         "subscriptions": {"total": subs_total, "items": subs_items, "breakdown": subs_breakdown},
         "income": {"total": inc_total, "items": inc_items, "breakdown": income_breakdown},
+        "epic": {"total": epic_total, "items": epic_items, "years": epic_years},
         "emergency_fund": {"goal": ef_goal, "current": ef_current},
         "super": {"years": super_years, "values": super_values},
         "savings_over_time": {"months": months, "values": savings_values},

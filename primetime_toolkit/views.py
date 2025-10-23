@@ -30,7 +30,6 @@ def dashboard():
 
 @views.route('/dashboard-spreadsheet', methods=['GET'])
 def dashboard_spreadsheet():
-    user_id = current_user.id
     upload_folder = current_app.config['UPLOAD_FOLDER']
     data = {}
     if os.path.exists(upload_folder):
@@ -39,17 +38,17 @@ def dashboard_spreadsheet():
             latest_file = max(files, key=os.path.getmtime)
             data = parse_excel(latest_file)
 
-    epic_years = session.get("epic_years", 10)
-    epic_items = EpicExperience.query.filter_by(user_id=user_id, include=True).all()
-
+    epic_years = data.get("epic").get("years", 10)
+    epic_items = data.get("epic").get("items", [])
+    
     epic_annual = sum(
-        e.amount * (
-            1 if e.frequency == 'Once only' else
-            epic_years if e.frequency == 'Every year' else
+        float(e.get("value", 0.0)) * (
+            1 if str(e.get("frequency", "")).lower() == "once only" else
+            epic_years if str(e.get("frequency", "")).lower() == "every year" else
             math.floor(epic_years / 2)
         )
-        for e in epic_items
-    ) / epic_years
+        for e in epic_items if isinstance(e, dict)
+    ) / max(epic_years, 1)
    
     post_epic_surplus = data.get("monthly_savings", 0) - epic_annual
 
@@ -77,6 +76,7 @@ def dashboard_spreadsheet():
 @views.route('/dashboard-web-calculator')
 @login_required
 def dashboard_web_calculator():
+    print("Current User :", current_user)
     user_id = current_user.id
     summary = get_calculator_summary(user_id)
     epic_years = session.get("epic_years", 10)
