@@ -20,6 +20,9 @@ views = Blueprint('views', __name__)
 def home():
     return render_template('home.html')
 
+@views.route('/learninghub')
+def learninghub():
+    return render_template('learninghub.html')
 
 @views.route('/dashboard', methods=['GET'])
 def dashboard():
